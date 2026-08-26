@@ -16,9 +16,16 @@ public class Invincibility : MonoBehaviour
     private Vector3 initialScale;
     private bool isCollected = false;
 
-    void Start()
+    void Awake()
     {
         initialScale = transform.localScale;
+    }
+
+    // 🔥 HAVUZ NOTU: Start() havuzdan yeniden kullanımda çalışmaz, bu yüzden
+    // "toplandı" bayrağı ve fizik durumu burada sıfırlanıyor.
+    void OnEnable()
+    {
+        isCollected = false;
 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
@@ -46,7 +53,7 @@ public class Invincibility : MonoBehaviour
             float camBottomY = cam.transform.position.y - (camHeight / 2f);
 
             if (transform.position.y < camBottomY - 2f)
-                Destroy(gameObject);
+                PoolManager.Despawn(gameObject);
         }
     }
 
@@ -70,18 +77,18 @@ public class Invincibility : MonoBehaviour
                 MissionsManager.AddGameplayProgress(MissionType.CollectShield, 1);
             }
 
-            if (AudioManager.instance != null && AudioManager.instance.powerUpSound != null)
+            if (AudioManager.instance != null && AudioManager.instance.shieldPickupSound != null)
             {
-                AudioManager.instance.PlaySFX(AudioManager.instance.powerUpSound);
+                AudioManager.instance.PlaySFX(AudioManager.instance.shieldPickupSound);
             }
 
             if (collectEffectPrefab != null)
             {
-                GameObject effectInstance = Instantiate(collectEffectPrefab, transform.position, Quaternion.identity);
-                Destroy(effectInstance, 2f);
+                GameObject effectInstance = PoolManager.Spawn(collectEffectPrefab, transform.position, Quaternion.identity);
+                PoolManager.DespawnAfter(effectInstance, 2f);
             }
 
-            Destroy(gameObject);
+            PoolManager.Despawn(gameObject);
         }
     }
 }

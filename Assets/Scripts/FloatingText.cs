@@ -39,7 +39,7 @@ public class FloatingText : MonoBehaviour
     IEnumerator DestroyAfter(float t)
     {
         yield return new WaitForSeconds(t);
-        Destroy(gameObject);
+        PoolManager.Despawn(gameObject);
     }
 
     // Call right after Instantiate to make this text match the streak duration

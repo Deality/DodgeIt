@@ -105,7 +105,14 @@ public class CarController2D : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.instance != null && !GameManager.instance.isGameActive) return;
+        // 🔥 DÜZELTME: Bu kontrol tersti ("GameManager varsa VE oyun aktif değilse" yerine
+        // "GameManager yoksa VEYA oyun aktif değilse" olmalıydı). Ters mantık, MainMenu
+        // sahnesindeki önizleme arabasının (GameManager orada da mevcut olduğu için) input
+        // işlemeye devam etmesine ve çift dokunuşla Öfke Modu'nu (boost) tetiklemesine yol
+        // açıyordu. ObstacleManager kontrolü de yalnızca gerçek oyun sahnesinde (menüdeki
+        // önizlemede değil) çalışmasını garanti eder.
+        if (GameManager.instance == null || !GameManager.instance.isGameActive) return;
+        if (ObstacleManager.instance == null) return;
         if (Time.timeScale == 0f) return;
 
         if (!isInitialized)
@@ -151,7 +158,7 @@ public class CarController2D : MonoBehaviour
 
     void TryActivateBoost()
     {
-        if (GameManager.instance == null || !GameManager.instance.isGameActive || isBoostActive || isBoostOnCooldown) return;
+        if (GameManager.instance == null || !GameManager.instance.isGameActive || ObstacleManager.instance == null || isBoostActive || isBoostOnCooldown) return;
 
         if (GameManager.instance.UseBoostItem())
         {
@@ -414,6 +421,8 @@ public class CarController2D : MonoBehaviour
 
         currentLane = laneIndex;
         targetX = centerLaneX + (currentLane - 1) * laneDistance;
+
+        if (AudioManager.instance != null) AudioManager.instance.PlayRandomSwipeSound();
 
         if (carAnimator != null && carAnimator.enabled)
         {

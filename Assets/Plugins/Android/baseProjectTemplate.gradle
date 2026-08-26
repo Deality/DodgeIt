@@ -11,3 +11,15 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+allprojects {
+    buildscript {
+        repositories {
+            google()
+            mavenCentral()
+        }
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

@@ -296,10 +296,10 @@ public class ObstacleManager : MonoBehaviour
         if (warningSignPrefab != null && lanes.Length > targetLane)
         {
             Vector3 warningPos = new Vector3(lanes[targetLane].position.x, 3f, 0f);
-            GameObject warning = Instantiate(warningSignPrefab, warningPos, Quaternion.identity);
+            GameObject warning = PoolManager.Spawn(warningSignPrefab, warningPos, Quaternion.identity);
 
             yield return new WaitForSeconds(currentWarnDuration);
-            if (warning != null) Destroy(warning);
+            if (warning != null) PoolManager.Despawn(warning);
         }
         else
         {
@@ -315,7 +315,7 @@ public class ObstacleManager : MonoBehaviour
             float truckSpawnY = normalSpawnY + truckSpawnYOffset;
 
             Vector3 spawnPos = new Vector3(lanes[targetLane].position.x, truckSpawnY, 0f);
-            GameObject truck = Instantiate(bigTruckPrefab, spawnPos, Quaternion.identity);
+            GameObject truck = PoolManager.Spawn(bigTruckPrefab, spawnPos, Quaternion.identity);
 
             FastMover mover = truck.GetComponent<FastMover>();
             if (mover != null)
@@ -387,7 +387,7 @@ public class ObstacleManager : MonoBehaviour
                 if (positionFound)
                 {
                     usedPositions.Add(finalPos);
-                    GameObject effect = Instantiate(speedEffectUnderCarPrefab, speedEffectOverlay.transform);
+                    GameObject effect = PoolManager.Spawn(speedEffectUnderCarPrefab, Vector3.zero, Quaternion.identity, speedEffectOverlay.transform);
                     activeEffects.Add(effect);
 
                     RectTransform rect = effect.GetComponent<RectTransform>();
@@ -482,7 +482,7 @@ public class ObstacleManager : MonoBehaviour
 
     void ClearActiveEffects()
     {
-        foreach (GameObject effect in activeEffects) { if (effect != null) Destroy(effect); }
+        foreach (GameObject effect in activeEffects) { if (effect != null) PoolManager.Despawn(effect); }
         activeEffects.Clear();
     }
 
@@ -579,13 +579,13 @@ public class ObstacleManager : MonoBehaviour
 
         if (spawnReducer)
         {
-            Instantiate(speedReducerPrefab, spawnPos, Quaternion.identity);
+            PoolManager.Spawn(speedReducerPrefab, spawnPos, Quaternion.identity);
             lastReducerSpawnTime = Time.time;
             lastPowerUpSpawnTime = Time.time;
         }
         else if (spawnInvincibility)
         {
-            Instantiate(invincibilityPrefab, spawnPos, Quaternion.identity);
+            PoolManager.Spawn(invincibilityPrefab, spawnPos, Quaternion.identity);
             lastInvincibilitySpawnTime = Time.time;
             lastPowerUpSpawnTime = Time.time;
         }
@@ -598,7 +598,7 @@ public class ObstacleManager : MonoBehaviour
                 int prefabIndex = Random.Range(0, magandaPrefabs.Count);
                 if (magandaPrefabs[prefabIndex] != null)
                 {
-                    GameObject magandaObj = Instantiate(magandaPrefabs[prefabIndex], spawnPos, Quaternion.identity);
+                    GameObject magandaObj = PoolManager.Spawn(magandaPrefabs[prefabIndex], spawnPos, Quaternion.identity);
 
                     Obstacle obs = magandaObj.GetComponent<Obstacle>();
                     if (obs != null)
@@ -612,7 +612,7 @@ public class ObstacleManager : MonoBehaviour
                 int prefabIndex = Random.Range(0, obstaclePrefabs.Count);
                 if (obstaclePrefabs[prefabIndex] != null)
                 {
-                    Instantiate(obstaclePrefabs[prefabIndex], spawnPos, Quaternion.identity);
+                    PoolManager.Spawn(obstaclePrefabs[prefabIndex], spawnPos, Quaternion.identity);
 
                     if (!isTruckEventActive && coinPrefab != null && Random.value < coinSpawnChance)
                     {
@@ -623,7 +623,7 @@ public class ObstacleManager : MonoBehaviour
                         {
                             // Her bir altını "coinSpacing" kadar daha aşağı (oyuncuya doğru) kaydırarak spawn et
                             Vector3 coinPos = spawnPos + new Vector3(0, coinSpawnOffset - (j * coinSpacing), 0);
-                            Instantiate(coinPrefab, coinPos, Quaternion.identity);
+                            PoolManager.Spawn(coinPrefab, coinPos, Quaternion.identity);
                         }
                     }
                 }

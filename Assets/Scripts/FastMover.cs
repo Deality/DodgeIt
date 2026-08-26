@@ -7,13 +7,19 @@ public class FastMover : MonoBehaviour
 
     private Camera mainCam;
     private Collider2D myCollider;
+    private SpriteRenderer sr;
 
-    void Start()
+    void Awake()
+    {
+        myCollider = GetComponent<Collider2D>();
+        sr = GetComponent<SpriteRenderer>();
+    }
+
+    // 🔥 HAVUZ NOTU: Start() havuzdan yeniden kullanımda çalışmaz, bu yüzden
+    // spawn'a bağlı sıfırlama (kamera referansı, sıralama) OnEnable()'da.
+    void OnEnable()
     {
         mainCam = Camera.main;
-        myCollider = GetComponent<Collider2D>();
-
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null) sr.sortingOrder = 11; // Diğer arabaların hafif önüne geçsin
     }
 
@@ -30,7 +36,7 @@ public class FastMover : MonoBehaviour
             Vector3 viewportPos = mainCam.WorldToViewportPoint(transform.position);
             if (viewportPos.y < -0.5f)
             {
-                Destroy(gameObject);
+                PoolManager.Despawn(gameObject);
             }
         }
     }
@@ -50,13 +56,13 @@ public class FastMover : MonoBehaviour
                 if (GameManager.instance.isBoosting || isGrace)
                 {
                     GameManager.instance.TriggerBoostCrash(transform.position);
-                    Destroy(gameObject);
+                    PoolManager.Despawn(gameObject);
                     return;
                 }
                 else if (GameManager.instance.IsInvincible)
                 {
                     GameManager.instance.TriggerInvincibleCrash(transform.position);
-                    Destroy(gameObject);
+                    PoolManager.Despawn(gameObject);
                     return;
                 }
             }

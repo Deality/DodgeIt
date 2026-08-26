@@ -7,7 +7,9 @@ public class Scroller : MonoBehaviour
     private Camera mainCam;
     // Rigidbody2D referansını artık hareket için kullanmıyoruz, sadece çarpışma için gerekli.
 
-    void Start()
+    // 🔥 HAVUZ NOTU: Start() havuzdan yeniden kullanımda çalışmaz, kamera referansı
+    // bu yüzden OnEnable()'da tazeleniyor.
+    void OnEnable()
     {
         mainCam = Camera.main;
 
@@ -31,7 +33,7 @@ public class Scroller : MonoBehaviour
 
             if (viewportPos.y < 0)
             {
-                Destroy(gameObject);
+                PoolManager.Despawn(gameObject);
             }
         }
     }

@@ -21,15 +21,21 @@ public class Obstacle : MonoBehaviour
 
     private float initialX;
     private float randomOffset;
+    private SpriteRenderer sr;
 
-    void Start()
+    void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+        myCollider = GetComponent<Collider2D>();
+    }
+
+    // 🔥 HAVUZ NOTU: Bu obje havuzdan tekrar kullanıldığında Start() ikinci kez
+    // ÇALIŞMAZ, ama OnEnable() her SetActive(true) çağrısında çalışır. Bu yüzden
+    // spawn'a bağlı sıfırlama (pozisyon, rastgele ofset, kamera referansı) burada.
+    void OnEnable()
     {
         mainCam = Camera.main;
-
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null) sr.sortingOrder = 10;
-
-        myCollider = GetComponent<Collider2D>();
 
         // Başlangıçtaki X konumunu kaydet
         initialX = transform.position.x;
@@ -70,7 +76,7 @@ public class Obstacle : MonoBehaviour
             // Ekranın altına indiğinde yok et
             if (viewportPos.y < -0.5f)
             {
-                Destroy(gameObject);
+                PoolManager.Despawn(gameObject);
             }
         }
     }
@@ -101,14 +107,14 @@ public class Obstacle : MonoBehaviour
                 {
                     Debug.Log("🔥 Öfke Modu veya yavaşlama koruması aktif! Engel parçalandı.");
                     GameManager.instance.TriggerBoostCrash(crashPosition);
-                    Destroy(gameObject);
+                    PoolManager.Despawn(gameObject);
                     return;
                 }
                 else if (GameManager.instance.IsInvincible)
                 {
                     Debug.Log("🛡️ Görünmezlik aktif! Engel yok edildi.");
                     GameManager.instance.TriggerInvincibleCrash(crashPosition);
-                    Destroy(gameObject);
+                    PoolManager.Despawn(gameObject);
                     return;
                 }
             }

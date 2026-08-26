@@ -14,17 +14,32 @@ public class AudioManager : MonoBehaviour
     public AudioClip engineLoop;
     public AudioClip crashSound;
     public AudioClip coinSound;
-    public AudioClip powerUpSound; // Hız düşürücü / Kalkan
-    public AudioClip boostSound;   // Boost power-up
+    public AudioClip powerUpSound; // Hız düşürücü
+    public AudioClip shieldPickupSound;  // Kalkan toplama sesi
+    public AudioClip shieldDestroySound; // Kalkan ile engel yok etme sesi
+    public AudioClip boostSound;   // Boost power-up (aktivasyon)
+    public AudioClip boostDestroySound; // Öfke Modu ile araba patlatma sesi
     public AudioClip nearMissSound; // Near miss geçiş sesi
     public AudioClip truckHornSound; // Kamyon kornası
     public AudioClip buttonClickSound; // Buton tıklama sesi
     public AudioClip countdownBeep;
     public AudioClip countdownGo;
 
+    [Header("Şerit Değiştirme (Swipe) Sesleri")]
+    [Tooltip("Şerit değiştirirken rastgele seçilip çalınacak swipe sesleri (aynı temada birkaç varyasyon).")]
+    public AudioClip[] swipeSounds;
+
+    [Header("Duraklat / Kaza Ses Kısma Ayarı")]
+    [Tooltip("Duraklatıldığında veya kaza anında motor/müzik sesinin ne kadar hızlı kısılıp geri açılacağı")]
+    public float duckFadeSpeed = 6f;
+
     // Ayarlar
     private bool isMusicOn = true;
     private bool isSfxOn = true;
+
+    // 🔥 Motor ve müzik seslerinin Inspector'da ayarlanan orijinal seviyeleri (kısma/geri açma bunlara göre yapılır)
+    private float engineBaseVolume = 0.6f;
+    private float musicBaseVolume = 0.4f;
 
     void Awake()
     {
@@ -38,6 +53,9 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        if (engineSource != null) engineBaseVolume = engineSource.volume;
+        if (musicSource != null) musicBaseVolume = musicSource.volume;
 
         LoadSettings();
         ApplyMuteStates();
@@ -94,6 +112,32 @@ public class AudioManager : MonoBehaviour
             float pitch = Mathf.Lerp(0.8f, 2.0f, currentSpeed / 180f);
             engineSource.pitch = pitch;
         }
+
+        // 🔥 DURAKLATMA / KAZA SESİ KISMA: Oyun duraklatıldığında (Time.timeScale == 0)
+        // veya kaza anında (GameOver / oyun aktif değil) motor ve müzik sesini yumuşakça
+        // kısıyoruz; oyun devam ederken de orijinal seviyesine geri getiriyoruz.
+        // unscaledDeltaTime kullanıyoruz ki Time.timeScale=0 iken bile geçiş animasyonlu olsun.
+        bool shouldDuck = Time.timeScale == 0f ||
+            (GameManager.instance != null && (GameManager.instance.IsGameOver || !GameManager.instance.isGameActive));
+
+        // 🔥 Motor sesi SADECE gerçek oyun sırasında (SampleScene, ObstacleManager mevcutken)
+        // duyulmalı. Main Menu'de ObstacleManager hiç var olmadığından, motor sesi orada
+        // otomatik olarak kısılır (menüde araba önizlemesi olsa bile).
+        bool shouldDuckEngine = shouldDuck || ObstacleManager.instance == null;
+
+        float fadeStep = duckFadeSpeed * Time.unscaledDeltaTime;
+
+        if (engineSource != null)
+        {
+            float targetVolume = shouldDuckEngine ? 0f : engineBaseVolume;
+            engineSource.volume = Mathf.MoveTowards(engineSource.volume, targetVolume, fadeStep);
+        }
+
+        if (musicSource != null)
+        {
+            float targetVolume = shouldDuck ? 0f : musicBaseVolume;
+            musicSource.volume = Mathf.MoveTowards(musicSource.volume, targetVolume, fadeStep);
+        }
     }
 
     // --- MÜZİK ---
@@ -137,6 +181,14 @@ public class AudioManager : MonoBehaviour
         {
             sfxSource.PlayOneShot(clip);
         }
+    }
+
+    // Şerit değiştirirken aynı temalı birkaç varyasyondan rastgele birini çalar (tekdüzelik olmasın diye).
+    public void PlayRandomSwipeSound()
+    {
+        if (swipeSounds == null || swipeSounds.Length == 0) return;
+        AudioClip clip = swipeSounds[Random.Range(0, swipeSounds.Length)];
+        PlaySFX(clip);
     }
 
     // 🔥 EKSİK OLAN FONKSİYON EKLENDİ

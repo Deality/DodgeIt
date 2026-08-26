@@ -375,10 +375,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1293538814}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.1, y: -840}
-  m_SizeDelta: {x: 1082, y: 32}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -1.0999756, y: 120}
+  m_SizeDelta: {x: 2, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &260628142
 MonoBehaviour:
@@ -1369,9 +1369,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 765006246}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -351, y: -19.800024}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 201, y: -119.800026}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &580598971 stripped
@@ -2037,16 +2037,25 @@ MonoBehaviour:
   sfxSource: {fileID: 908215375}
   engineSource: {fileID: 908215377}
   backgroundMusic: {fileID: 0}
-  engineLoop: {fileID: 0}
+  engineLoop: {fileID: 8300000, guid: 75caf78687a5c904e92bb97fd1179651, type: 3}
   crashSound: {fileID: 8300000, guid: 274591366f09da54d88b3b8bfb7e0cfc, type: 3}
   coinSound: {fileID: 8300000, guid: 092ad8130fe1bdf43b295c66a9d1f820, type: 3}
   powerUpSound: {fileID: 8300000, guid: 08a9cd340cbac954a92e8663f6c537be, type: 3}
-  boostSound: {fileID: 8300000, guid: 704924cf0b32a7c4aad87878c4e5ebaf, type: 3}
+  shieldPickupSound: {fileID: 8300000, guid: 045f46507dcb57340a99223dc95db26a, type: 3}
+  shieldDestroySound: {fileID: 8300000, guid: ac3ce4fdc0074b04584d665509e1bae9, type: 3}
+  boostSound: {fileID: 8300000, guid: e0b573ada4532c44596b0b17a566c400, type: 3}
+  boostDestroySound: {fileID: 8300000, guid: f1075db476e5a434a9d0e04835ed8bf2, type: 3}
   nearMissSound: {fileID: 8300000, guid: d4e522704bd247f48808eb9bf796370c, type: 3}
   truckHornSound: {fileID: 8300000, guid: 8dec1111c36263d49a4f565935d65ff2, type: 3}
   buttonClickSound: {fileID: 8300000, guid: f0a011f28dc58b9488cc705a8de97af1, type: 3}
   countdownBeep: {fileID: 0}
   countdownGo: {fileID: 0}
+  swipeSounds:
+  - {fileID: 8300000, guid: 9e151f881485d72488c5eadecbf7222d, type: 3}
+  - {fileID: 8300000, guid: 2f6a180512697014bab89f43ca1e226c, type: 3}
+  - {fileID: 8300000, guid: 93fb6abe75258f1469210da330fc680b, type: 3}
+  - {fileID: 8300000, guid: 6b44a7fee50233f49ae302bf27f6c542, type: 3}
+  duckFadeSpeed: 6
 --- !u!4 &908215374
 Transform:
   m_ObjectHideFlags: 0
@@ -2506,10 +2515,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1293538814}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -886.5}
-  m_SizeDelta: {x: 1115, y: 169.4}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 73.5}
+  m_SizeDelta: {x: 35, y: 169.40002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &963477847
 MonoBehaviour:
@@ -2525,7 +2534,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2817,10 +2826,10 @@ MonoBehaviour:
     rewardAmount: 15000
     isCompleted: 0
     isClaimed: 0
-  - missionID: Reach_score_300.000
+  - missionID: Reach_score_500.000
     description: 
     missionType: 6
-    targetValue: 300000
+    targetValue: 500000
     currentValue: 0
     rewardType: 0
     rewardAmount: 50000
@@ -2842,6 +2851,168 @@ MonoBehaviour:
     currentValue: 0
     rewardType: 0
     rewardAmount: 250000
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Grab_10_shields
+    description: 
+    missionType: 3
+    targetValue: 10
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 1000
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Grab_30_shields
+    description: 
+    missionType: 3
+    targetValue: 30
+    currentValue: 0
+    rewardType: 1
+    rewardAmount: 5
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Grab_75_shields
+    description: 
+    missionType: 3
+    targetValue: 75
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 2500
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Grab_150_shields
+    description: 
+    missionType: 3
+    targetValue: 150
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 5000
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Grab_5_speedreducers
+    description: 
+    missionType: 2
+    targetValue: 5
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 1500
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Grab_20_speedreducers
+    description: 
+    missionType: 2
+    targetValue: 20
+    currentValue: 0
+    rewardType: 1
+    rewardAmount: 10
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Grab_50_speedreducers
+    description: 
+    missionType: 2
+    targetValue: 50
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 5000
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Use_boost_5_times
+    description: 
+    missionType: 0
+    targetValue: 5
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 2000
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Use_boost_20_times
+    description: 
+    missionType: 0
+    targetValue: 20
+    currentValue: 0
+    rewardType: 1
+    rewardAmount: 5
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Use_boost_50_times
+    description: 
+    missionType: 0
+    targetValue: 50
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 5000
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Use_boost_100_times
+    description: 
+    missionType: 0
+    targetValue: 100
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 7500
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Make_5_nearmisses
+    description: 
+    missionType: 1
+    targetValue: 5
+    currentValue: 0
+    rewardType: 1
+    rewardAmount: 2
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Make_20_nearmisses
+    description: 
+    missionType: 1
+    targetValue: 20
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 1000
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Make_50_nearmisses
+    description: 
+    missionType: 1
+    targetValue: 50
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 2500
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Make_100_nearmisses
+    description: 
+    missionType: 1
+    targetValue: 100
+    currentValue: 0
+    rewardType: 0
+    rewardAmount: 5000
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Buy_all_roads
+    description: 
+    missionType: 5
+    targetValue: 4
+    currentValue: 0
+    rewardType: 1
+    rewardAmount: 20
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Buy_3_cars
+    description: 
+    missionType: 4
+    targetValue: 3
+    currentValue: 0
+    rewardType: 1
+    rewardAmount: 5
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Buy_all_cars
+    description: 
+    missionType: 4
+    targetValue: 8
+    currentValue: 0
+    rewardType: 1
+    rewardAmount: 20
     isCompleted: 0
     isClaimed: 0
 --- !u!4 &1003686420
@@ -3487,8 +3658,8 @@ MonoBehaviour:
   highScoreAnimDuration: 0.45
   highScoreColor: {r: 0, g: 1, b: 0, a: 1}
   streak1Duration: 6
-  streak2Duration: 4
-  streak3Duration: 2.5
+  streak2Duration: 5
+  streak3Duration: 4
   restartButton: {fileID: 1782626066}
   restartPulseSpeed: 3
   restartPulseAmount: 0.08
@@ -4040,10 +4211,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1293538814}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.0999756, y: -840}
-  m_SizeDelta: {x: 1075, y: 25}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -1.0999756, y: 120}
+  m_SizeDelta: {x: -5, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1346184202
 CanvasGroup:
@@ -4087,7 +4258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

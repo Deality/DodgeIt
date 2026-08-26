@@ -32,10 +32,18 @@ public class Collectable : MonoBehaviour
     private Vector3 initialScale;
     private bool isCollected = false; // Çifte toplamayı önlemek için bayrak
 
-    void Start()
+    void Awake()
     {
-        // Başlangıç büyüklüğünü kaydet
+        // Başlangıç büyüklüğünü kaydet (prefab'ın orijinal ölçeği, bir kere yeterli)
         initialScale = transform.localScale;
+    }
+
+    // 🔥 HAVUZ NOTU: Start() havuzdan yeniden kullanımda çalışmaz, bu yüzden
+    // "toplandı" bayrağı burada sıfırlanıyor; aksi halde havuzdan dönen coin
+    // bir daha asla toplanamazdı.
+    void OnEnable()
+    {
+        isCollected = false;
     }
 
     void Update()
@@ -78,7 +86,7 @@ public class Collectable : MonoBehaviour
             float camBottomY = cam.transform.position.y - (camHeight / 2f);
 
             if (transform.position.y < camBottomY - 2f)
-                Destroy(gameObject);
+                PoolManager.Despawn(gameObject);
         }
     }
 
@@ -106,7 +114,7 @@ public class Collectable : MonoBehaviour
             if (floatingTextPrefab != null)
             {
                 Vector3 spawnPos = transform.position + new Vector3(0, 1.5f, -2f);
-                GameObject textObj = Instantiate(floatingTextPrefab, spawnPos, Quaternion.identity);
+                GameObject textObj = PoolManager.Spawn(floatingTextPrefab, spawnPos, Quaternion.identity);
 
                 FloatingText ft = textObj.GetComponent<FloatingText>();
                 if (ft != null)
@@ -129,7 +137,7 @@ public class Collectable : MonoBehaviour
             // PARÇACIK EFEKTİ
             if (collectEffectPrefab != null)
             {
-                GameObject effectInstance = Instantiate(collectEffectPrefab, transform.position, Quaternion.identity);
+                GameObject effectInstance = PoolManager.Spawn(collectEffectPrefab, transform.position, Quaternion.identity);
 
                 Rigidbody2D rb = effectInstance.GetComponent<Rigidbody2D>();
                 if (rb == null)
@@ -140,11 +148,11 @@ public class Collectable : MonoBehaviour
                 rb.bodyType = RigidbodyType2D.Kinematic;
                 rb.linearVelocity = Vector2.zero;
 
-                Destroy(effectInstance, 2f);
+                PoolManager.DespawnAfter(effectInstance, 2f);
             }
 
-            // Objenin kendisini yok et
-            Destroy(gameObject);
+            // Objenin kendisini havuza iade et
+            PoolManager.Despawn(gameObject);
         }
     }
 }

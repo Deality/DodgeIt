@@ -21,7 +21,8 @@
       "mcp__coplay-mcp__get_unity_logs",
       "mcp__coplay-mcp__read_file",
       "mcp__coplay-mcp__add_persistent_listener",
-      "PowerShell(Get-Item *)"
+      "PowerShell(Get-Item *)",
+      "Bash(grep -v -E \"\\\\.meta$\")"
     ]
   }
 }

@@ -353,14 +353,26 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ShowGameOverPanelRoutine());
     }
 
-    public void TriggerBoostCrash(Vector3 pos) { if (boostCrashEffect != null) Instantiate(boostCrashEffect, pos, Quaternion.identity); }
-    public void TriggerInvincibleCrash(Vector3 pos) { if (invincibilityCrashEffect != null) Instantiate(invincibilityCrashEffect, pos, Quaternion.identity); }
+    public void TriggerBoostCrash(Vector3 pos)
+    {
+        if (boostCrashEffect != null) Instantiate(boostCrashEffect, pos, Quaternion.identity);
+
+        if (AudioManager.instance != null && AudioManager.instance.boostDestroySound != null)
+            AudioManager.instance.PlaySFX(AudioManager.instance.boostDestroySound);
+    }
+    public void TriggerInvincibleCrash(Vector3 pos)
+    {
+        if (invincibilityCrashEffect != null) Instantiate(invincibilityCrashEffect, pos, Quaternion.identity);
+
+        if (AudioManager.instance != null && AudioManager.instance.shieldDestroySound != null)
+            AudioManager.instance.PlaySFX(AudioManager.instance.shieldDestroySound);
+    }
 
     public void ShowFloatingText(string text, Vector3 pos)
     {
         if (scorePopupPrefab != null)
         {
-            GameObject go = Instantiate(scorePopupPrefab, pos, Quaternion.identity);
+            GameObject go = PoolManager.Spawn(scorePopupPrefab, pos, Quaternion.identity);
             FloatingText ft = go.GetComponent<FloatingText>();
             if (ft != null) ft.SetText(text);
         }

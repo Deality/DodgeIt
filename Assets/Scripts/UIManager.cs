@@ -88,7 +88,9 @@ public class UIManager : MonoBehaviour
         if (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject);
 
-        QualitySettings.vSyncCount = 0;
+        // VSync açık olmalı: Android'de Optimized Frame Pacing yalnızca VSync açıkken ekranın
+        // gerçek yüksek yenileme hızını (90/120Hz) düzgün şekilde talep edip koruyabiliyor.
+        QualitySettings.vSyncCount = 1;
         Application.targetFrameRate = 120;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
@@ -503,8 +505,21 @@ public class UIManager : MonoBehaviour
     }
 
     // --- TOGGLE FONKSİYONLARI ---
-    public void SetMusic(bool isOn) { PlayerPrefs.SetInt(MusicKey, isOn ? 1 : 0); PlayerPrefs.Save(); }
-    public void SetEffects(bool isOn) { PlayerPrefs.SetInt(EffectsKey, isOn ? 1 : 0); PlayerPrefs.Save(); }
+    // 🔥 DÜZELTME: Sadece PlayerPrefs'e yazmak yetmiyordu; AudioManager'a haber vermeden
+    // hiçbir ses anlık olarak değişmiyordu (yalnızca bir sonraki uygulama açılışında etkili
+    // oluyordu). UpdateSettings() çağrısı mute durumunu ANINDA uygular.
+    public void SetMusic(bool isOn)
+    {
+        PlayerPrefs.SetInt(MusicKey, isOn ? 1 : 0);
+        PlayerPrefs.Save();
+        if (AudioManager.instance != null) AudioManager.instance.UpdateSettings();
+    }
+    public void SetEffects(bool isOn)
+    {
+        PlayerPrefs.SetInt(EffectsKey, isOn ? 1 : 0);
+        PlayerPrefs.Save();
+        if (AudioManager.instance != null) AudioManager.instance.UpdateSettings();
+    }
     public void SetControlMode(bool isButtonMode) { PlayerPrefs.SetInt(ControlModeKey, isButtonMode ? 1 : 0); PlayerPrefs.Save(); }
     public void SetVibration(bool isOn)
     {

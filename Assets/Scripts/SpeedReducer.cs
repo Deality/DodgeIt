@@ -46,7 +46,7 @@ public class SpeedReducer : MonoBehaviour
                 Debug.LogError("Sahne üzerinde aktif bir ObstacleManager instance'ı bulunamadı!");
             }
 
-            Destroy(gameObject);
+            PoolManager.Despawn(gameObject);
         }
     }
 }

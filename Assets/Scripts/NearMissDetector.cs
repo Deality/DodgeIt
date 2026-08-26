@@ -66,8 +66,7 @@ public class NearMissDetector : MonoBehaviour
                 StartCoroutine(TriggerGhostEffectRoutine());
                 processedObstacles.Add(other.gameObject);
 
-                if (AudioManager.instance != null && AudioManager.instance.nearMissSound != null)
-                    AudioManager.instance.PlaySFX(AudioManager.instance.nearMissSound);
+                StartCoroutine(PlayNearMissSoundWithDelay());
 
                 MissionsManager.AddGameplayProgress(MissionType.TriggerNearmiss, 1);
                 StartCoroutine(TriggerStreakWithDelay());
@@ -87,6 +86,20 @@ public class NearMissDetector : MonoBehaviour
     {
         yield return new WaitForSeconds(displayDelay);
         if (GameManager.instance != null) GameManager.instance.TriggerNearMissStreak();
+    }
+
+    // 🔥 Near miss sesi hafifçe geciktirilir; eğer bu süre içinde oyuncu asıl çarpışmayı
+    // yaparsa (Game Over), near miss sesi çalınmaz. Böylece kaza sesi ve efektiyle
+    // üst üste binip birbirine karışmaz.
+    IEnumerator PlayNearMissSoundWithDelay()
+    {
+        yield return new WaitForSeconds(displayDelay);
+
+        if (GameManager.instance != null && (!GameManager.instance.isGameActive || GameManager.instance.IsGameOver))
+            yield break;
+
+        if (AudioManager.instance != null && AudioManager.instance.nearMissSound != null)
+            AudioManager.instance.PlaySFX(AudioManager.instance.nearMissSound);
     }
 
     void TriggerMessage()
@@ -174,7 +187,7 @@ public class NearMissDetector : MonoBehaviour
 
             if (customTextPrefab != null)
             {
-                GameObject textObj = Instantiate(customTextPrefab, spawnPos, Quaternion.identity);
+                GameObject textObj = PoolManager.Spawn(customTextPrefab, spawnPos, Quaternion.identity);
 
                 TextMeshPro[] tmps = textObj.GetComponentsInChildren<TextMeshPro>();
                 foreach (var tmp in tmps)
