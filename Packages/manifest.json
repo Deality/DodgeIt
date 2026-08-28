@@ -1,8 +1,6 @@
 {
   "dependencies": {
     "com.coplaydev.coplay": "https://github.com/CoplayDev/coplay-unity-plugin.git#beta",
-    "com.unity.2d.enhancers": "1.0.0",
-    "com.unity.ai.generators": "1.7.0-pre.1",
     "com.unity.burst": "1.8.29",
     "com.unity.feature.2d": "2.0.2",
     "com.unity.ide.rider": "3.0.40",

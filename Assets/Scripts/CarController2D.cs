@@ -34,6 +34,19 @@ public class CarController2D : MonoBehaviour
     public ParticleSystem frontFireEffect;
     public float maxShakeMagnitude = 0.3f;
 
+    [Header("Şerit Değişimi Lastik İzi Ayarları")]
+    [Tooltip("Atanmazsa Resources/Materials/TireTrackTrail otomatik yüklenir.")]
+    public Material tireTrackMaterial;
+    [Tooltip("Araba sprite'ının gövde genişliği ~6.8 birim (kök transform ölçeği 6.8x, ham sprite 1 birim). Varsayılanlar buna göre ayarlandı; farklı boyutlu araba prefabları için Inspector'dan ince ayar yapılabilir.")]
+    public float rearWheelOffsetX = 2.2f;
+    public float rearWheelOffsetY = -6.5f;
+    public float tireTrackWidth = 0.7f;
+    public int tireTrackSortingOrder = 1;
+
+    private static GameObject tireMarkTemplate;
+    private Coroutine leftTireMarkRoutine;
+    private Coroutine rightTireMarkRoutine;
+
     [HideInInspector] public bool isBoostActive = false;
     [HideInInspector] public float currentBoostTimer = 0f;
 
@@ -87,6 +100,135 @@ public class CarController2D : MonoBehaviour
         {
             frontFireEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             frontFireEffect.gameObject.SetActive(false);
+        }
+
+        if (tireTrackMaterial == null)
+        {
+            tireTrackMaterial = Resources.Load<Material>("Materials/TireTrackTrail");
+        }
+    }
+
+    // 🔥 ÖNEMLİ: Arabaya bağlı bir TrailRenderer KULLANMIYORUZ. Bu oyunda araba neredeyse
+    // sabit durur, hareket illüzyonu yolun/zeminin aşağı kaymasıyla (Scroller, ObstacleManager.scrollSpeed)
+    // yaratılır. Arabaya bağlı bir trail'in zaten çizilmiş noktaları arabayla birlikte SABİT kalır ve
+    // yolla birlikte aşağı kaymaz. Bunun yerine, diğer tüm zemin objeleri (engeller, yol parçaları) gibi
+    // şerit değişimi sırasında iz izlerini WORLD SPACE'te tek seferlik bir eğrisel çizgi (LineRenderer)
+    // olarak oluşturup üzerine Scroller ekliyoruz; böylece iz de yolla birlikte kayıp ekrandan çıkınca
+    // kendini yok eder. LineRenderer.useWorldSpace = false olduğu için noktalar objenin LOCAL uzayında
+    // tutulur ve Scroller'ın transform.Translate çağrısı çizginin TAMAMINI birlikte aşağı kaydırır.
+    static GameObject GetTireMarkTemplate()
+    {
+        if (tireMarkTemplate != null) return tireMarkTemplate;
+
+        tireMarkTemplate = new GameObject("TireMarkTemplate");
+        tireMarkTemplate.SetActive(false);
+        tireMarkTemplate.AddComponent<LineRenderer>();
+        tireMarkTemplate.AddComponent<TireMarkScroller>();
+        Object.DontDestroyOnLoad(tireMarkTemplate);
+
+        return tireMarkTemplate;
+    }
+
+    void SpawnTireMarks(float fromX, float toX)
+    {
+        if (tireTrackMaterial == null) return;
+
+        // İz, şerit değişimi süresi boyunca yolun ne kadar kaydığı kadar UZUNLUKTA (dikey),
+        // ve şeritler arası yatay mesafe kadar EĞİMLİ (yanal) çiziliyor -> "dikey ama az kavisli" görünüm.
+        float swipeDuration = laneDistance / Mathf.Max(moveSpeed, 0.01f);
+        float forwardTravel = Mathf.Max(ObstacleManager.scrollSpeed * swipeDuration, tireTrackWidth * 4f);
+        float worldY = transform.position.y + rearWheelOffsetY;
+
+        SpawnTireMark(fromX - rearWheelOffsetX, toX - rearWheelOffsetX, worldY, forwardTravel, swipeDuration, ref leftTireMarkRoutine);
+        SpawnTireMark(fromX + rearWheelOffsetX, toX + rearWheelOffsetX, worldY, forwardTravel, swipeDuration, ref rightTireMarkRoutine);
+    }
+
+    const int TireMarkSegments = 10;
+
+    void SpawnTireMark(float fromX, float toX, float worldY, float forwardTravel, float drawDuration, ref Coroutine wheelRoutine)
+    {
+        if (Mathf.Abs(toX - fromX) < 0.01f) return;
+
+        // Önceki iz bu tekerlek için hâlâ çiziliyorsa (oyuncu şeridi çok hızlı değiştirdiyse),
+        // onu olduğu yerde YARIM bırakıp durduruyoruz ve hemen yeni şerit değişimi için yeni
+        // izi çizmeye başlıyoruz.
+        if (wheelRoutine != null) StopCoroutine(wheelRoutine);
+
+        Vector3 anchor = new Vector3((fromX + toX) * 0.5f, worldY, 0f);
+        GameObject template = GetTireMarkTemplate();
+        GameObject instance = PoolManager.Spawn(template, anchor, Quaternion.identity);
+
+        LineRenderer lr = instance.GetComponent<LineRenderer>();
+        lr.material = tireTrackMaterial;
+        lr.sortingOrder = tireTrackSortingOrder;
+        lr.startWidth = tireTrackWidth;
+        lr.endWidth = tireTrackWidth;
+        lr.useWorldSpace = false;
+        lr.textureMode = LineTextureMode.Tile;
+        lr.alignment = LineAlignment.TransformZ;
+        lr.numCapVertices = 2;
+        lr.numCornerVertices = 2;
+        lr.positionCount = TireMarkSegments + 1;
+
+        float fromXLocal = fromX - anchor.x;
+        float toXLocal = toX - anchor.x;
+        wheelRoutine = StartCoroutine(DrawTireMarkRoutine(lr, fromXLocal, toXLocal, forwardTravel, drawDuration));
+    }
+
+    // 🔥 ÖNEMLİ: Bu obje kendi Scroller'ıyla spawn anından itibaren SÜREKLİ aşağı kayıyor.
+    // Bir nokta İLK açığa çıktığı anda y = forwardTravel*ti olarak DONDURULUP bir daha asla
+    // güncellenmezse, o anki gerçek dünya konumu HER ZAMAN tam olarak "arabanın o anki arka
+    // teker konumuna" denk gelir (çünkü obje o ana kadar tam olarak forwardTravel*ti kadar
+    // kaymıştır) -> iz gerçekten tekerlekten başlayıp büyüyormüş gibi görünür. Zaten donmuş
+    // noktaları HER KAREDE yeniden hesaplamak, Scroller'ın kendi kaymasıyla ÇAKIŞIP izi iki
+    // katı hızla kaydırır (önceki hata buydu); bu yüzden her nokta sadece BİR KEZ dondurulur.
+    // Henüz sırası gelmemiş (gelecekteki) noktalar, şu anki büyüyen ucun DEĞERİNE kenetlenir.
+    IEnumerator DrawTireMarkRoutine(LineRenderer lr, float fromXLocal, float toXLocal, float forwardTravel, float duration)
+    {
+        const int lastIndex = TireMarkSegments;
+        duration = Mathf.Max(duration, 0.05f);
+
+        bool[] frozen = new bool[lastIndex + 1];
+        float[] frozenY = new float[lastIndex + 1];
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            if (lr == null) yield break;
+
+            elapsed += Time.deltaTime;
+            float p = Mathf.Clamp01(elapsed / duration);
+            float liveY = forwardTravel * p;
+            int revealedIndex = Mathf.FloorToInt(p * lastIndex);
+
+            for (int i = 0; i <= revealedIndex; i++)
+            {
+                if (!frozen[i])
+                {
+                    frozen[i] = true;
+                    frozenY[i] = forwardTravel * ((float)i / lastIndex);
+                }
+            }
+
+            for (int i = 0; i <= lastIndex; i++)
+            {
+                float x = Mathf.SmoothStep(fromXLocal, toXLocal, frozen[i] ? (float)i / lastIndex : p);
+                float y = frozen[i] ? frozenY[i] : liveY;
+                lr.SetPosition(i, new Vector3(x, y, 0f));
+            }
+
+            yield return null;
+        }
+
+        if (lr != null)
+        {
+            for (int i = 0; i <= lastIndex; i++)
+            {
+                float ti = (float)i / lastIndex;
+                float x = Mathf.SmoothStep(fromXLocal, toXLocal, ti);
+                float y = forwardTravel * ti;
+                lr.SetPosition(i, new Vector3(x, y, 0f));
+            }
         }
     }
 
@@ -419,8 +561,13 @@ public class CarController2D : MonoBehaviour
     {
         if (currentLane == laneIndex) return;
 
+        float fromX = logicalX;
         currentLane = laneIndex;
         targetX = centerLaneX + (currentLane - 1) * laneDistance;
+
+        // Lastik izi: sınır şeritlerin ötesine geçilemediği için (MoveLeft/MoveRight zaten
+        // kontrol ediyor) bu metod yalnızca geçerli bir şerit değişiminde çağrılır.
+        SpawnTireMarks(fromX, targetX);
 
         if (AudioManager.instance != null) AudioManager.instance.PlayRandomSwipeSound();
 
