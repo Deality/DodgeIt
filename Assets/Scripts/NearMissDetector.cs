@@ -134,6 +134,8 @@ public class NearMissDetector : MonoBehaviour
 
             SpriteRenderer ghostSr = ghostObj.AddComponent<SpriteRenderer>();
             ghostSr.sprite = playerSprite.sprite;
+            ghostSr.flipX = playerSprite.flipX;
+            ghostSr.flipY = playerSprite.flipY;
             ghostSr.color = ghostColor;
 
             ghostSr.sortingLayerID = playerSprite.sortingLayerID;
