@@ -10,16 +10,21 @@ public class TireMarkScroller : MonoBehaviour
 {
     private Camera mainCam;
     private Renderer rend;
+    private static InfiniteRoad2D road;
 
     void OnEnable()
     {
         mainCam = Camera.main;
         rend = GetComponent<Renderer>();
+        if (road == null) road = FindObjectOfType<InfiniteRoad2D>();
     }
 
     void Update()
     {
-        float currentSpeed = ObstacleManager.scrollSpeed;
+        // İz, yolun kendi hızında kaymalı (yol ObstacleManager.scrollSpeed'in scrollFactor
+        // kadarını kullanıyor); tam hızda kayarsa iz zamanla yolun üzerinde ileri sürüklenir.
+        float roadFactor = road != null ? road.scrollFactor : 1f;
+        float currentSpeed = ObstacleManager.scrollSpeed * roadFactor;
         transform.Translate(Vector3.down * currentSpeed * Time.deltaTime, Space.World);
 
         if (mainCam == null || rend == null) return;

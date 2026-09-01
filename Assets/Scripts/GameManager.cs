@@ -489,6 +489,7 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt(HighScoreKey, currentScore);
             PlayerPrefs.Save();
+            if (GooglePlayGamesManager.instance != null) GooglePlayGamesManager.instance.SubmitScore(currentScore);
         }
     }
 
