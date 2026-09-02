@@ -135,8 +135,12 @@ public class CarController2D : MonoBehaviour
 
         // İz, şerit değişimi süresi boyunca yolun ne kadar kaydığı kadar UZUNLUKTA (dikey),
         // ve şeritler arası yatay mesafe kadar EĞİMLİ (yanal) çiziliyor -> "dikey ama az kavisli" görünüm.
+        // İz, TireMarkScroller ile YOLUN hızında (ObstacleManager.scrollSpeed * scrollFactor)
+        // kayıyor; bu yüzden izin baked uzunluğu da engellerin tam hızı yerine yolun gerçek
+        // kayma hızına göre hesaplanmalı. Aksi halde iz, yoldan biraz daha hızlı/uzun görünür.
+        float roadFactor = InfiniteRoad2D.Instance != null ? InfiniteRoad2D.Instance.scrollFactor : 1f;
         float swipeDuration = laneDistance / Mathf.Max(moveSpeed, 0.01f);
-        float forwardTravel = Mathf.Max(ObstacleManager.scrollSpeed * swipeDuration, tireTrackWidth * 4f);
+        float forwardTravel = Mathf.Max(ObstacleManager.scrollSpeed * roadFactor * swipeDuration, tireTrackWidth * 4f);
         float worldY = transform.position.y + rearWheelOffsetY;
 
         SpawnTireMark(fromX - rearWheelOffsetX, toX - rearWheelOffsetX, worldY, forwardTravel, swipeDuration, ref leftTireMarkRoutine);

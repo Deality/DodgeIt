@@ -2,6 +2,8 @@
 
 public class InfiniteRoad2D : MonoBehaviour
 {
+    public static InfiniteRoad2D Instance { get; private set; }
+
     public Transform[] roadTiles;
 
     [Header("Road Scroll Settings")]
@@ -15,6 +17,11 @@ public class InfiniteRoad2D : MonoBehaviour
 
     private float tileHeight;
     private float repositionHeight; // Hesaplanan yeni yerleştirme yüksekliği
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {

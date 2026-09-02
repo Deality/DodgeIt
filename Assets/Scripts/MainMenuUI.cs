@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -18,18 +19,23 @@ public class MainMenuUI : MonoBehaviour
     {
         // Başlangıçta hemen güncelle
         UpdateAllGemTexts();
+        StartCoroutine(PollGemsRoutine());
     }
 
-    void Update()
+    // Her karede PlayerPrefs okumak gereksiz CPU harcıyordu (para her karede değişmiyor);
+    // bunun yerine düşük frekanslı bir döngüyle kontrol ediyoruz.
+    IEnumerator PollGemsRoutine()
     {
-        // 🔥 DÜZELTME 2: Update içinde sürekli cüzdanı kontrol ediyoruz.
-        int currentGems = PlayerPrefs.GetInt(GemsKey, 0);
-
-        // Eğer cüzdandaki para (harcama veya kazanma yüzünden) değiştiyse:
-        if (currentGems != lastGemCount)
+        WaitForSeconds wait = new WaitForSeconds(0.25f);
+        while (true)
         {
-            lastGemCount = currentGems;
-            UpdateAllGemTexts(); // Tüm yazıları anında güncelle
+            int currentGems = PlayerPrefs.GetInt(GemsKey, 0);
+            if (currentGems != lastGemCount)
+            {
+                lastGemCount = currentGems;
+                UpdateAllGemTexts();
+            }
+            yield return wait;
         }
     }
 
