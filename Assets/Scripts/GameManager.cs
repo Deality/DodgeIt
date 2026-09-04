@@ -491,6 +491,10 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.Save();
             if (GooglePlayGamesManager.instance != null) GooglePlayGamesManager.instance.SubmitScore(currentScore);
         }
+
+        // Submit every run's score, not just new personal bests - the cloud leaderboard
+        // keeps each player's best automatically (Update type: Keep Best).
+        _ = CloudLeaderboardManager.instance?.SubmitScoreAsync(currentScore);
     }
 
     IEnumerator AnimateHighScoreText()
