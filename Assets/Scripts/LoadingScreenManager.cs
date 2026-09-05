@@ -195,7 +195,7 @@ public class LoadingScreenManager : MonoBehaviour
         float progress = 0f;
 
         // --- 1. AŞAMA: Dosyalar Hazırlanıyor ---
-        UpdateStatus("Oyun dosyaları yükleniyor...");
+        UpdateStatus("Loading game files...");
         float stage1Speed = simulatedSpeed * 2.5f;
         while (progress < 0.35f)
         {
@@ -208,7 +208,7 @@ public class LoadingScreenManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.25f);
 
         // --- 2. AŞAMA: Sunucu Senkronizasyonu ---
-        UpdateStatus("Sunucu verileri senkronize ediliyor...");
+        UpdateStatus("Syncing with server...");
         float stage2Speed = simulatedSpeed * 0.45f;
         while (progress < 0.75f)
         {
@@ -219,7 +219,7 @@ public class LoadingScreenManager : MonoBehaviour
         progress = 0.75f;
 
         // --- 3. AŞAMA: %75 KİLİDİ VE MOBİL İNTERNET/BAĞLANTI KONTROLÜ ---
-        UpdateStatus("İnternet bağlantısı kontrol ediliyor...");
+        UpdateStatus("Checking internet connection...");
 
         float checkTimer = 0f;
         float minimumCheckTime = 1.8f;
@@ -231,7 +231,7 @@ public class LoadingScreenManager : MonoBehaviour
 
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {
-                UpdateStatus("İnternet bağlantısı bekleniyor...");
+                UpdateStatus("Connection failed: please check your internet connection.");
                 if (loadingBorderImage != null)
                 {
                     float pulse = (Mathf.Sin(Time.unscaledTime * 6f) + 1f) * 0.5f;
@@ -240,7 +240,7 @@ public class LoadingScreenManager : MonoBehaviour
             }
             else
             {
-                UpdateStatus("Bağlantı kuruldu, profil doğrulanıyor...");
+                UpdateStatus("Connected, verifying profile...");
                 if (loadingBorderImage != null)
                 {
                     loadingBorderImage.color = Color.Lerp(loadingBorderImage.color, originalBorderColor, Time.unscaledDeltaTime * 5f);
@@ -256,7 +256,7 @@ public class LoadingScreenManager : MonoBehaviour
         }
 
         // --- 4. AŞAMA: Profil Yükleme ve Giriş Yapma ---
-        UpdateStatus("Giriş yapılıyor...");
+        UpdateStatus("Signing in...");
         float stage4Speed = simulatedSpeed * 1.8f;
         while (progress < 1f)
         {
@@ -270,7 +270,7 @@ public class LoadingScreenManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.5f);
 
         // --- 5. AŞAMA: Siyah Ekran Kararma Geçişi ---
-        UpdateStatus("Giriş doğrulanıyor...");
+        UpdateStatus("Verifying sign-in...");
         if (fadeOverlay != null)
         {
             fadeOverlay.gameObject.SetActive(true);

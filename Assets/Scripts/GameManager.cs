@@ -409,6 +409,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ShowGameOverPanelRoutine()
     {
+        TutorialManager.instance?.HideAllLiveUI();
+
         yield return new WaitForSecondsRealtime(panelDelay);
 
         Time.timeScale = 0f;
@@ -425,6 +427,8 @@ public class GameManager : MonoBehaviour
 
             gameOverPanel.SetActive(true);
             gameOverPanel.transform.localScale = originalPanelScale;
+
+            ConnectionWatcher.instance?.CheckConnectionAndShowPopupIfNeeded();
 
             if (rect != null)
             {

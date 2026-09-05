@@ -40,6 +40,7 @@ public class SpeedReducer : MonoBehaviour
 
                 // 🔥 Statik bağımsız tampon sistemini kullanarak Yavaşlatıcı ilerlemesini ekle!
                 MissionsManager.AddGameplayProgress(MissionType.CollectSlowMotion, 1);
+                TutorialManager.instance?.NotifyReducerCollected();
             }
             else
             {

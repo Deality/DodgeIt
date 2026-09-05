@@ -31,12 +31,39 @@ public class BuffTimerUI : MonoBehaviour
     [Tooltip("TİK AÇIKSA: Bar merkezden sağa ve sola doğru dolar/boşalır. (Alt Bar İçin)\nTİK KAPALIYSA: Klasik Fill Amount (Yuvarlak) kullanır.")]
     public bool fillFromCenter = false;
 
+    [Header("Dolunca Parlama (Glow) Efekti")]
+    [Tooltip("Bar tamamen dolup (yetenek kullanıma hazır) olduğunda parlayacak görsel. Genelde çerçeve (Frame) buraya atanır. Boş bırakılırsa efekt uygulanmaz.")]
+    public Image glowImage;
+
+    [Tooltip("Hazır olduğunda döngünün başladığı/bittiği renk.")]
+    public Color glowColorStart = Color.white;
+
+    [Tooltip("Döngünün orta rengi.")]
+    public Color glowColorMid = new Color(1f, 0.92f, 0.2f, 1f);
+
+    [Tooltip("Döngünün en uç (dikkat çeken) rengi.")]
+    public Color glowColorEnd = new Color(1f, 0.15f, 0.15f, 1f);
+
+    [Tooltip("Beyaz -> Sarı -> Kırmızı -> Beyaz döngüsünün bir turunun kaç saniye sürdüğü. Bar dolu kaldığı sürece bu döngü, oyuncuyu yeteneği kullanmaya davet etmek için sürekli tekrar eder.")]
+    public float glowCycleDuration = 1.5f;
+
+    [Tooltip("Bar tam dolduğu anda oynatılan küçük 'pop' büyüme efektinin oranı.")]
+    public float readyPunchScale = 1.2f;
+
+    [Tooltip("Pop efektinin toplam süresi (saniye).")]
+    public float readyPunchDuration = 0.2f;
+
     private CanvasGroup canvasGroup;
     private CarController2D playerCar;
 
     // Yavaşlatıcı için özel sayaç
     private float internalReducerTimer = 0f;
     private bool wasReducerActiveLastFrame = false;
+
+    private Color glowBaseColor = Color.white;
+    private bool glowBaseColorCached = false;
+    private bool wasFull = false;
+    private float punchTimer = 0f;
 
     void Awake()
     {
@@ -157,18 +184,71 @@ public class BuffTimerUI : MonoBehaviour
 
         // --- GÖRSELİ UYGULA (MILISANIYESINE KADAR SENKRONIZE) ---
         canvasGroup.alpha = targetAlpha;
+        ratio = Mathf.Clamp01(ratio);
+
+        // --- DOLUNCA PARLAMA (Yetenek kullanıma hazır olduğunu vurgular) ---
+        bool isFullNow = timerMode == TimerMode.CooldownTime && targetAlpha > 0f && ratio >= 0.999f;
+        if (isFullNow && !wasFull) punchTimer = readyPunchDuration;
+        wasFull = isFullNow;
+
+        float punchMultiplier = 1f;
+        if (punchTimer > 0f)
+        {
+            punchTimer -= Time.unscaledDeltaTime;
+            float half = readyPunchDuration * 0.5f;
+            float elapsed = readyPunchDuration - Mathf.Max(punchTimer, 0f);
+            float t = elapsed < half ? (elapsed / half) : (1f - (elapsed - half) / half);
+            punchMultiplier = Mathf.Lerp(1f, readyPunchScale, Mathf.Clamp01(t));
+        }
+
+        // Dolum ve "pop" büyümesi AYNI transform üzerinde uygulanıyorsa (ör. glowImage,
+        // fillImage'ın kendisiyse) ikisini tek seferde birleştiriyoruz; aksi halde ikinci
+        // bir yazma aynı frame'de birincisini geçersiz kılıp titremeye yol açardı.
+        bool glowSharesFillTransform = glowImage != null && fillImage != null && glowImage.rectTransform == fillImage.rectTransform;
 
         if (fillImage != null)
         {
-            ratio = Mathf.Clamp01(ratio);
+            float sharedPunch = glowSharesFillTransform ? punchMultiplier : 1f;
 
             if (fillFromCenter)
             {
-                fillImage.rectTransform.localScale = new Vector3(ratio, 1f, 1f);
+                fillImage.rectTransform.localScale = new Vector3(ratio * sharedPunch, sharedPunch, 1f);
             }
             else
             {
                 fillImage.fillAmount = ratio;
+                fillImage.rectTransform.localScale = Vector3.one * sharedPunch;
+            }
+        }
+
+        if (glowImage != null)
+        {
+            if (!glowBaseColorCached)
+            {
+                glowBaseColor = glowImage.color;
+                glowBaseColorCached = true;
+            }
+
+            if (isFullNow)
+            {
+                float cycleT = Mathf.Repeat(Time.unscaledTime, glowCycleDuration) / glowCycleDuration;
+                float segment = cycleT * 3f; // 0-1: start->mid, 1-2: mid->end, 2-3: end->start
+
+                if (segment < 1f)
+                    glowImage.color = Color.Lerp(glowColorStart, glowColorMid, segment);
+                else if (segment < 2f)
+                    glowImage.color = Color.Lerp(glowColorMid, glowColorEnd, segment - 1f);
+                else
+                    glowImage.color = Color.Lerp(glowColorEnd, glowColorStart, segment - 2f);
+            }
+            else
+            {
+                glowImage.color = glowBaseColor;
+            }
+
+            if (!glowSharesFillTransform)
+            {
+                glowImage.rectTransform.localScale = Vector3.one * punchMultiplier;
             }
         }
     }

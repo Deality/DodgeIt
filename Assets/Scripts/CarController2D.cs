@@ -313,6 +313,7 @@ public class CarController2D : MonoBehaviour
             GameManager.instance.isBoosting = true;
 
             MissionsManager.AddGameplayProgress(MissionType.UseBoost, 1);
+            TutorialManager.instance?.NotifyBoostActivated();
 
             if (frontFireEffect != null)
             {
@@ -568,6 +569,8 @@ public class CarController2D : MonoBehaviour
         float fromX = logicalX;
         currentLane = laneIndex;
         targetX = centerLaneX + (currentLane - 1) * laneDistance;
+
+        TutorialManager.instance?.NotifyPlayerSwiped();
 
         // Lastik izi: sınır şeritlerin ötesine geçilemediği için (MoveLeft/MoveRight zaten
         // kontrol ediyor) bu metod yalnızca geçerli bir şerit değişiminde çağrılır.

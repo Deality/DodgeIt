@@ -75,6 +75,7 @@ public class Invincibility : MonoBehaviour
 
                 // 🔥 Statik bağımsız tampon sistemini kullanarak Kalkan ilerlemesini ekle!
                 MissionsManager.AddGameplayProgress(MissionType.CollectShield, 1);
+                TutorialManager.instance?.NotifyShieldCollected();
             }
 
             if (AudioManager.instance != null && AudioManager.instance.shieldPickupSound != null)
