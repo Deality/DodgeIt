@@ -49,7 +49,7 @@ public class CarCollision : MonoBehaviour
                 // çağırıyor. TriggerCrash() zaten "IsGameOver ise tekrar çalışma" koruması
                 // içerdiğinden efekt/ses YALNIZCA bir kez, ama HER ZAMAN çalışır.
                 Vector3 crashPosition = carBodyCollider != null ? carBodyCollider.ClosestPoint(other.transform.position) : transform.position;
-                GameManager.instance.TriggerCrash(crashPosition);
+                GameManager.instance.TriggerCrash(crashPosition, other.gameObject);
             }
         }
     }

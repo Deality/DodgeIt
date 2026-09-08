@@ -124,7 +124,7 @@ public class Obstacle : MonoBehaviour
 
             if (GameManager.instance != null)
             {
-                GameManager.instance.TriggerCrash(crashPosition);
+                GameManager.instance.TriggerCrash(crashPosition, gameObject);
             }
         }
     }

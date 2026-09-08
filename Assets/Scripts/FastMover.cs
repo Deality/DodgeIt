@@ -69,7 +69,7 @@ public class FastMover : MonoBehaviour
 
             if (GameManager.instance != null)
             {
-                GameManager.instance.TriggerCrash(transform.position);
+                GameManager.instance.TriggerCrash(transform.position, gameObject);
             }
         }
     }

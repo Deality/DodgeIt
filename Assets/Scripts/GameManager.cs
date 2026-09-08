@@ -66,6 +66,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float restartPulseSpeed = 3f;
     [SerializeField] private float restartPulseAmount = 0.08f;
 
+    [Header("Reklam İzleyerek Devam Etme (Revive)")]
+    public GameObject revivePanel;
+    public RectTransform reviveCountdownFill;
+    public float reviveDecisionDuration = 5f;
+    public float reviveInvincibilityDuration = 5f;
+    private bool hasUsedRevive = false;
+    private bool isCrashPending = false;
+    private GameObject pendingCrashObstacle;
+    private Coroutine reviveOfferCoroutine;
+
     public Image gameOverOverlay;
     public float gameOverFadeDuration = 0.5f;
     [Range(0f, 1f)] public float maxGameOverAlpha = 0.7f;
@@ -136,6 +146,9 @@ public class GameManager : MonoBehaviour
         IsGameOver = false;
         isGameActive = false;
         isBoosting = false;
+        hasUsedRevive = false;
+        isCrashPending = false;
+        pendingCrashObstacle = null;
 
         nearMissStreakCount = 0;
         nearMissStreakTimer = 0f;
@@ -166,6 +179,8 @@ public class GameManager : MonoBehaviour
             invincibilityOverlay.color = c;
             invincibilityOverlay.gameObject.SetActive(false);
         }
+
+        if (revivePanel != null) revivePanel.SetActive(false);
 
         StartCoroutine(GameStartSequence());
     }
@@ -323,24 +338,14 @@ public class GameManager : MonoBehaviour
     // --- OYUN BİTİŞİ ---
     public void GameOver()
     {
-        if (IsGameOver) return;
-        IsGameOver = true;
-        isGameActive = false;
-
-        SaveHighScore();
-        MissionsManager.AddGameplayProgress(MissionType.ReachScore, Mathf.FloorToInt(score));
-
-        StartCoroutine(ShowGameOverPanelRoutine());
+        FinalizeGameOver();
     }
 
-    public void TriggerCrash(Vector3 pos)
+    public void TriggerCrash(Vector3 pos, GameObject hitObstacle = null)
     {
-        if (IsGameOver || IsInvincible) return;
-        IsGameOver = true;
+        if (IsGameOver || IsInvincible || isCrashPending) return;
+        isCrashPending = true;
         isGameActive = false;
-
-        SaveHighScore();
-        MissionsManager.AddGameplayProgress(MissionType.ReachScore, Mathf.FloorToInt(score));
 
         if (crashEffectPrefab != null) Instantiate(crashEffectPrefab, pos, Quaternion.identity);
 
@@ -350,7 +355,109 @@ public class GameManager : MonoBehaviour
         if (CameraShake.instance != null)
             CameraShake.instance.Shake(shakeDuration, shakeMagnitude);
 
+        if (!hasUsedRevive && revivePanel != null)
+        {
+            pendingCrashObstacle = hitObstacle;
+            reviveOfferCoroutine = StartCoroutine(ShowReviveOfferRoutine());
+        }
+        else
+        {
+            FinalizeGameOver();
+        }
+    }
+
+    private void FinalizeGameOver()
+    {
+        if (IsGameOver) return;
+        IsGameOver = true;
+        isGameActive = false;
+        isCrashPending = false;
+
+        SaveHighScore();
+        MissionsManager.AddGameplayProgress(MissionType.ReachScore, Mathf.FloorToInt(score));
+
         StartCoroutine(ShowGameOverPanelRoutine());
+    }
+
+    // --- REKLAM İZLEYEREK DEVAM ETME (REVIVE) ---
+    IEnumerator ShowReviveOfferRoutine()
+    {
+        yield return new WaitForSecondsRealtime(panelDelay);
+        Time.timeScale = 0f;
+
+        revivePanel.SetActive(true);
+
+        float t = reviveDecisionDuration;
+        if (reviveCountdownFill != null) reviveCountdownFill.localScale = new Vector3(1f, 1f, 1f);
+        while (t > 0f)
+        {
+            t -= Time.unscaledDeltaTime;
+            if (reviveCountdownFill != null)
+            {
+                float ratio = Mathf.Clamp01(t / reviveDecisionDuration);
+                reviveCountdownFill.localScale = new Vector3(ratio, 1f, 1f);
+            }
+            yield return null;
+        }
+
+        reviveOfferCoroutine = null;
+        DeclineRevive();
+    }
+
+    // Hooked to the revive panel's "Watch Ad" button.
+    public void WatchAdForRevive()
+    {
+        if (reviveOfferCoroutine == null) return;
+
+        StopCoroutine(reviveOfferCoroutine);
+        reviveOfferCoroutine = null;
+
+        if (revivePanel != null) revivePanel.SetActive(false);
+
+        // TODO: replace with a real rewarded-ad SDK call (e.g. AdMob) once one is
+        // integrated. For now the "ad" always succeeds after a short simulated delay.
+        StartCoroutine(SimulateRewardedAdRoutine());
+    }
+
+    IEnumerator SimulateRewardedAdRoutine()
+    {
+        yield return new WaitForSecondsRealtime(0.3f);
+        RevivePlayer();
+    }
+
+    // Hooked to the revive panel's "No Thanks" button, and also fires when the decision countdown runs out.
+    public void DeclineRevive()
+    {
+        if (revivePanel != null) revivePanel.SetActive(false);
+
+        if (reviveOfferCoroutine != null)
+        {
+            StopCoroutine(reviveOfferCoroutine);
+            reviveOfferCoroutine = null;
+        }
+
+        Time.timeScale = 1f;
+        FinalizeGameOver();
+    }
+
+    private void RevivePlayer()
+    {
+        hasUsedRevive = true;
+        isCrashPending = false;
+
+        if (pendingCrashObstacle != null)
+        {
+            PoolManager.Despawn(pendingCrashObstacle);
+            pendingCrashObstacle = null;
+        }
+
+        Time.timeScale = 1f;
+        isGameActive = true;
+
+        ActivateInvincibility(reviveInvincibilityDuration);
+
+        if (ObstacleManager.instance != null)
+            ObstacleManager.instance.ActivateSpeedReduction();
     }
 
     public void TriggerBoostCrash(Vector3 pos)
