@@ -422,18 +422,20 @@ public class UIManager : MonoBehaviour
     // --- COIN SHOP KONTROLLERİ ---
     public void OpenCoinShop()
     {
-        if (coinShopPanel != null)
-        {
-            StartCoroutine(SlidePanelInRoutine(coinShopPanel, coinShopSlideDirection));
-        }
+        if (coinShopPanel == null) return;
+
+        CoinShopPanelAnimator animator = coinShopPanel.GetComponent<CoinShopPanelAnimator>();
+        if (animator != null) animator.Open();
+        else StartCoroutine(SlidePanelInRoutine(coinShopPanel, coinShopSlideDirection));
     }
 
     public void CloseCoinShop()
     {
-        if (coinShopPanel != null)
-        {
-            StartCoroutine(SlidePanelOutRoutine(coinShopPanel, coinShopSlideDirection));
-        }
+        if (coinShopPanel == null) return;
+
+        CoinShopPanelAnimator animator = coinShopPanel.GetComponent<CoinShopPanelAnimator>();
+        if (animator != null) animator.Close();
+        else StartCoroutine(SlidePanelOutRoutine(coinShopPanel, coinShopSlideDirection));
     }
 
     // --- YENİ: GÖREVLER KONTROLLERİ ---

@@ -70,6 +70,11 @@ public class TutorialManager : MonoBehaviour
 
     private bool IsMainActive => !mainDone && step != Step.Done;
 
+    // Boost is real gameplay from the moment the "DOUBLE TAP" prompt shows onward - a
+    // double tap earlier in the tutorial (swipe intro / near miss explain) must not
+    // trigger it, since it would burn the one-shot tutorial boost before it's explained.
+    public bool CanUseBoost() => !IsMainActive || step == Step.DoubleTapPrompt || step == Step.BoostExplain;
+
     void Awake()
     {
         if (instance == null)
@@ -123,7 +128,19 @@ public class TutorialManager : MonoBehaviour
         if (!IsMainActive || step != Step.WaitingToPromptBoost) yield break;
 
         step = Step.DoubleTapPrompt;
+        GrantTutorialBoost();
         ShowPrompt(doubleTapPromptText);
+    }
+
+    // A brand new player has 0 boosts in their inventory, so give them exactly one to
+    // try here - without it the DOUBLE TAP prompt would have nothing to demonstrate.
+    private void GrantTutorialBoost()
+    {
+        if (PlayerPrefs.GetInt("PlayerBoosts", 0) >= 1) return;
+
+        PlayerPrefs.SetInt("PlayerBoosts", 1);
+        PlayerPrefs.Save();
+        if (GameManager.instance != null) GameManager.instance.currentBoostAmount = 1;
     }
 
     // --- Called by CarController2D right after Boost activates ---

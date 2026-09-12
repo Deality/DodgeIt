@@ -305,6 +305,7 @@ public class CarController2D : MonoBehaviour
     void TryActivateBoost()
     {
         if (GameManager.instance == null || !GameManager.instance.isGameActive || ObstacleManager.instance == null || isBoostActive || isBoostOnCooldown) return;
+        if (TutorialManager.instance != null && !TutorialManager.instance.CanUseBoost()) return;
 
         if (GameManager.instance.UseBoostItem())
         {
