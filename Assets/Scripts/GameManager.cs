@@ -76,6 +76,11 @@ public class GameManager : MonoBehaviour
     private GameObject pendingCrashObstacle;
     private Coroutine reviveOfferCoroutine;
 
+    // Second Chance is withheld for the player's very first-ever round (the tutorial round) -
+    // once that round ends in a game over, it's unlocked for every round after.
+    private const string SecondChanceUnlockedKey = "SecondChanceUnlocked";
+    private bool isFirstRound;
+
     public Image gameOverOverlay;
     public float gameOverFadeDuration = 0.5f;
     [Range(0f, 1f)] public float maxGameOverAlpha = 0.7f;
@@ -149,6 +154,7 @@ public class GameManager : MonoBehaviour
         hasUsedRevive = false;
         isCrashPending = false;
         pendingCrashObstacle = null;
+        isFirstRound = PlayerPrefs.GetInt(SecondChanceUnlockedKey, 0) == 0;
 
         nearMissStreakCount = 0;
         nearMissStreakTimer = 0f;
@@ -350,12 +356,12 @@ public class GameManager : MonoBehaviour
         if (crashEffectPrefab != null) Instantiate(crashEffectPrefab, pos, Quaternion.identity);
 
         if (AudioManager.instance != null && AudioManager.instance.crashSound != null)
-            AudioManager.instance.PlaySFX(AudioManager.instance.crashSound);
+            AudioManager.instance.PlayCritical(AudioManager.instance.crashSound);
 
         if (CameraShake.instance != null)
             CameraShake.instance.Shake(shakeDuration, shakeMagnitude);
 
-        if (!hasUsedRevive && revivePanel != null)
+        if (!hasUsedRevive && !isFirstRound && revivePanel != null)
         {
             pendingCrashObstacle = hitObstacle;
             reviveOfferCoroutine = StartCoroutine(ShowReviveOfferRoutine());
@@ -372,6 +378,12 @@ public class GameManager : MonoBehaviour
         IsGameOver = true;
         isGameActive = false;
         isCrashPending = false;
+
+        if (isFirstRound)
+        {
+            PlayerPrefs.SetInt(SecondChanceUnlockedKey, 1);
+            PlayerPrefs.Save();
+        }
 
         SaveHighScore();
         MissionsManager.AddGameplayProgress(MissionType.ReachScore, Mathf.FloorToInt(score));

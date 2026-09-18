@@ -1,13 +1,40 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
 
     [Header("Audio Sources")]
-    public AudioSource musicSource; // Arka plan müziği
-    public AudioSource sfxSource;   // Efektler (Coin, Kaza vb.)
-    public AudioSource engineSource;// Araba motor sesi (Loop)
+    public AudioSource musicSource; // Arka plan müziği (-> Ambient bus)
+    public AudioSource sfxSource;   // Efektler / Action sesleri (Coin, Swipe, vb.) (-> Action bus)
+    public AudioSource engineSource;// Araba motor sesi (Loop) (-> Gameplay Loop bus)
+    public AudioSource criticalSource; // Kaza/Boost gibi öncelikli sesler (-> Critical bus)
+    public AudioSource uiSource;       // Buton/menü sesleri (-> UI bus)
+
+    [Header("Audio Mixer (Bus Yönlendirme & Ducking)")]
+    [Tooltip("Assets/Audio klasöründeki AudioMixer asset'i. Bkz. AudioManager üstündeki kurulum notu.")]
+    public AudioMixer audioMixer;
+    public AudioMixerGroup ambientGroup;
+    public AudioMixerGroup gameplayLoopGroup;
+    public AudioMixerGroup actionGroup;
+    public AudioMixerGroup uiGroup;
+    public AudioMixerGroup criticalGroup;
+
+    [Header("Ducking (Action/Critical çalınca Ambient+Gameplay Loop kısılır)")]
+    [Tooltip("Ducking sırasında Ambient/Gameplay Loop bus'larının ineceği seviye (dB). -80 = tamamen sessiz.")]
+    public float duckedVolumeDb = -14f;
+    [Tooltip("Kısma/geri açma geçişinin süresi (saniye).")]
+    public float duckTransitionDuration = 0.15f;
+
+    private const string AmbientVolumeParam = "AmbientVolume";
+    private const string GameplayLoopVolumeParam = "GameplayLoopVolume";
+
+    private int activeDuckCount = 0;
+    private float ambientBaseDb = 0f;
+    private float gameplayLoopBaseDb = 0f;
+    private Coroutine duckFadeRoutine;
 
     [Header("Audio Clips (Ses Dosyaları)")]
     public AudioClip backgroundMusic;
@@ -57,8 +84,21 @@ public class AudioManager : MonoBehaviour
         if (engineSource != null) engineBaseVolume = engineSource.volume;
         if (musicSource != null) musicBaseVolume = musicSource.volume;
 
+        RouteMixerGroups();
         LoadSettings();
         ApplyMuteStates();
+    }
+
+    // Her AudioSource'u ilgili mixer grubuna bağlar - Inspector'da tek tek Output alanı
+    // ayarlamayı unutmaya karşı güvenlik: sadece bu 5 grup referansını AudioManager'da
+    // bir kez atamak yeterli olur.
+    private void RouteMixerGroups()
+    {
+        if (musicSource != null && ambientGroup != null) musicSource.outputAudioMixerGroup = ambientGroup;
+        if (engineSource != null && gameplayLoopGroup != null) engineSource.outputAudioMixerGroup = gameplayLoopGroup;
+        if (sfxSource != null && actionGroup != null) sfxSource.outputAudioMixerGroup = actionGroup;
+        if (criticalSource != null && criticalGroup != null) criticalSource.outputAudioMixerGroup = criticalGroup;
+        if (uiSource != null && uiGroup != null) uiSource.outputAudioMixerGroup = uiGroup;
     }
 
     private void ApplyMuteStates()
@@ -66,6 +106,8 @@ public class AudioManager : MonoBehaviour
         if (musicSource != null) musicSource.mute = !isMusicOn;
         if (sfxSource != null) sfxSource.mute = !isSfxOn;
         if (engineSource != null) engineSource.mute = !isSfxOn;
+        if (criticalSource != null) criticalSource.mute = !isSfxOn;
+        if (uiSource != null) uiSource.mute = !isSfxOn;
     }
 
     void Start()
@@ -174,27 +216,118 @@ public class AudioManager : MonoBehaviour
         if (engineSource != null) engineSource.Stop();
     }
 
-    // --- EFEKTLER (SFX) ---
-    public void PlaySFX(AudioClip clip)
-    {
-        if (sfxSource != null && clip != null)
-        {
-            sfxSource.PlayOneShot(clip);
-        }
-    }
+    // --- EFEKTLER (SFX) --- kept as an alias so every existing call site (coin, crash,
+    // shield, boost, near-miss, truck horn...) keeps working unchanged and still gets
+    // routed through the Action bus + ducking below.
+    public void PlaySFX(AudioClip clip) => PlayAction(clip);
 
     // Şerit değiştirirken aynı temalı birkaç varyasyondan rastgele birini çalar (tekdüzelik olmasın diye).
     public void PlayRandomSwipeSound()
     {
         if (swipeSounds == null || swipeSounds.Length == 0) return;
         AudioClip clip = swipeSounds[Random.Range(0, swipeSounds.Length)];
-        PlaySFX(clip);
+        PlayAction(clip);
     }
 
-    // 🔥 EKSİK OLAN FONKSİYON EKLENDİ
     public void PlayButtonSound()
     {
-        PlaySFX(buttonClickSound);
+        PlayUI(buttonClickSound);
+    }
+
+    // --- BUS'A GÖRE OYNATMA & DUCKING ---
+    // Action: genel oynanış sesleri (coin, swipe, near miss, kamyon kornası...). Gameplay
+    // Loop + Ambient'i kısar.
+    public void PlayAction(AudioClip clip)
+    {
+        if (sfxSource == null || clip == null) return;
+        sfxSource.PlayOneShot(clip);
+        RequestDuck(clip.length);
+    }
+
+    // Critical: kaza, boost aktivasyonu gibi öne çıkması gereken anlar. Kendi bus'ında
+    // çalar (Action ile aynı anda çakışmaz) ve aynı şekilde Gameplay Loop + Ambient'i kısar.
+    public void PlayCritical(AudioClip clip)
+    {
+        if (criticalSource == null || clip == null) return;
+        criticalSource.PlayOneShot(clip);
+        RequestDuck(clip.length);
+    }
+
+    // UI: buton/menü sesleri. Ducking tetiklemez, ducking'den etkilenmez.
+    public void PlayUI(AudioClip clip)
+    {
+        if (uiSource == null || clip == null) return;
+        uiSource.PlayOneShot(clip);
+    }
+
+    // Ambient/Gameplay Loop bus'larının kalıcı (ducking dışı) taban seviyesini ayarlar -
+    // örn. ayarlar menüsündeki bir ses kaydırıcısı. value: 0..1 lineer.
+    public void SetLoopVolume(string bus, float value)
+    {
+        if (audioMixer == null) return;
+        float db = LinearToDb(value);
+
+        if (bus == "Ambient")
+        {
+            ambientBaseDb = db;
+            if (activeDuckCount == 0) audioMixer.SetFloat(AmbientVolumeParam, db);
+        }
+        else if (bus == "GameplayLoop")
+        {
+            gameplayLoopBaseDb = db;
+            if (activeDuckCount == 0) audioMixer.SetFloat(GameplayLoopVolumeParam, db);
+        }
+    }
+
+    private static float LinearToDb(float linear)
+    {
+        return linear > 0.0001f ? Mathf.Log10(linear) * 20f : -80f;
+    }
+
+    // clip.length'lik bir "tutma" süresi ister; sayaç 0'a dönene kadar kısık kalır, böylece
+    // üst üste binen Action/Critical sesleri sesi erken geri açmaz. Fade geçişleri dışında
+    // hiçbir per-frame Update maliyeti yok - coroutine sadece geçiş sırasında çalışır.
+    private void RequestDuck(float holdDuration)
+    {
+        if (audioMixer == null) return;
+
+        activeDuckCount++;
+        StartCoroutine(ReleaseDuckAfter(Mathf.Max(holdDuration, 0.05f)));
+
+        if (duckFadeRoutine != null) StopCoroutine(duckFadeRoutine);
+        duckFadeRoutine = StartCoroutine(DuckFadeRoutine(true));
+    }
+
+    private IEnumerator ReleaseDuckAfter(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+
+        activeDuckCount = Mathf.Max(0, activeDuckCount - 1);
+        if (activeDuckCount == 0)
+        {
+            if (duckFadeRoutine != null) StopCoroutine(duckFadeRoutine);
+            duckFadeRoutine = StartCoroutine(DuckFadeRoutine(false));
+        }
+    }
+
+    // Gameplay Loop (motor) burada kasıtlı olarak yok - motor sabit bir arkaplan sesi olarak
+    // kalmalı, Action/Critical sesleri çalınca kısılmamalı. Sadece Ambient (müzik) kısılır.
+    private IEnumerator DuckFadeRoutine(bool duckIn)
+    {
+        audioMixer.GetFloat(AmbientVolumeParam, out float startAmbient);
+        float targetAmbient = duckIn ? duckedVolumeDb : ambientBaseDb;
+
+        float t = 0f;
+        while (t < duckTransitionDuration)
+        {
+            t += Time.unscaledDeltaTime;
+            float p = Mathf.Clamp01(t / duckTransitionDuration);
+            audioMixer.SetFloat(AmbientVolumeParam, Mathf.Lerp(startAmbient, targetAmbient, p));
+            yield return null;
+        }
+
+        audioMixer.SetFloat(AmbientVolumeParam, targetAmbient);
+        duckFadeRoutine = null;
     }
 
     // --- AYARLARI GÜNCELLEME ---
@@ -206,6 +339,8 @@ public class AudioManager : MonoBehaviour
         if (musicSource != null) musicSource.mute = !isMusicOn;
         if (sfxSource != null) sfxSource.mute = !isSfxOn;
         if (engineSource != null) engineSource.mute = !isSfxOn;
+        if (criticalSource != null) criticalSource.mute = !isSfxOn;
+        if (uiSource != null) uiSource.mute = !isSfxOn;
 
         // Ayarlar değişince müzik kapalıysa durdur, açıksa başlat
         if (!isMusicOn) StopMusic();
