@@ -56,9 +56,70 @@ public class CarController2D : MonoBehaviour
     private Vector2 mouseStartPos;
     private bool isMouseDragging = false;
     private Dictionary<int, Vector2> touchStartPositions = new Dictionary<int, Vector2>();
+    // Swipe'ı zaten tetiklemiş veya UI üzerinde başlamış parmaklar; kaldırılana kadar tekrar işlenmez
+    private readonly HashSet<int> handledTouchIds = new HashSet<int>();
 
     [Header("Hassasiyet Ayarları")]
     public float swipeRange = 50f;
+
+    [Header("Drift Boost Ayarları")]
+    [Tooltip("Drift sırasında ulaşılan en yüksek yatay hız (birim/sn).")]
+    [SerializeField] private float driftSpeed = 70f;
+    [Tooltip("Yön değiştirirken yatay hızın ne kadar çabuk değiştiği (birim/sn²). Düşük = daha kaygan.")]
+    [SerializeField] private float driftAcceleration = 350f;
+    [Tooltip("Drift sırasında arabanın yana dönme açısı (derece). Araba drift yönüne doğru bu açıyla yan durur.")]
+    [SerializeField] private float driftMaxTilt = 25f;
+    [Tooltip("Eğilme açısının hedefe ne kadar hızlı yumuşakça ulaştığı.")]
+    [SerializeField] private float driftTiltSmoothing = 10f;
+    [Tooltip("Dış şerit merkezlerinin ötesine ne kadar kayılabilsin? (0 = dış şerit merkezleri sınırdır)")]
+    [SerializeField] private float driftBoundsPadding = 0f;
+
+    [Header("Drift Lastik İzi")]
+    [Tooltip("İz noktaları arasındaki en az mesafe. Küçük = daha pürüzsüz kavis.")]
+    [SerializeField] private float driftMarkPointSpacing = 1.5f;
+    [Tooltip("Tek bir iz parçasındaki en fazla nokta; dolunca iz kesintisiz olarak yeni bir parçayla devam eder.")]
+    [SerializeField] private int driftMarkMaxPoints = 60;
+
+    [Header("Drift Dumanı")]
+    [Tooltip("Boş bırakılırsa arabanın egzoz dumanı materyali kullanılır.")]
+    [SerializeField] private Material driftSmokeMaterial;
+    [Tooltip("Tam yan kayarken tekerlek başına saniyede çıkan duman bulutu sayısı.")]
+    [SerializeField] private float driftSmokeRate = 30f;
+    [Tooltip("Duman bulutlarının başlangıç boyutu (dünya birimi).")]
+    [SerializeField] private float driftSmokeSize = 4f;
+    [Tooltip("Bir duman bulutunun ekranda kalma süresi (saniye).")]
+    [SerializeField] private float driftSmokeLifetime = 0.7f;
+    [Tooltip("Dumanın yanlara savrulma hızı.")]
+    [SerializeField] private float driftSmokeSpread = 3f;
+    [SerializeField] private Color driftSmokeColor = new Color(0.92f, 0.92f, 0.92f, 0.55f);
+    [Tooltip("Duman arabanın altında, lastik izinin üstünde kalsın diye.")]
+    [SerializeField] private int driftSmokeSortingOrder = 1;
+
+    private ParticleSystem leftDriftSmoke;
+    private ParticleSystem rightDriftSmoke;
+
+    public bool IsDrifting { get; private set; } = false;
+    public float DriftSpeed => driftSpeed;
+    private float driftVelocity = 0f;
+    private float driftSteerDirection = 0f;
+    private DriftMark leftDriftMark;
+    private DriftMark rightDriftMark;
+
+    // Drift boyunca tekerleği takip eden, yolla birlikte kayan tek bir iz parçası
+    private class DriftMark
+    {
+        public LineRenderer line;
+        public Vector3[] points;
+        public int count;
+    }
+    private float currentTilt = 0f;
+    private bool isTiltApplied = false;
+    private readonly Dictionary<int, int> driftHoldFingers = new Dictionary<int, int>(); // parmak id -> basılma sırası
+    private readonly List<int> releasedFingerIds = new List<int>();
+    private int driftFingerCounter = 0;
+    private readonly HashSet<int> driftIgnoredFingers = new HashSet<int>();
+    private readonly List<int> pressedFingerIds = new List<int>();
+    private bool driftMouseStartedOverUI = false;
 
     private int currentLane = 1;
     private float targetX;
@@ -280,7 +341,8 @@ public class CarController2D : MonoBehaviour
             isInitialized = true;
         }
 
-        HandleInput();
+        if (IsDrifting) HandleDriftInput();
+        else HandleInput();
         HandleBoostLogic();
     }
 
@@ -305,6 +367,8 @@ public class CarController2D : MonoBehaviour
     void TryActivateBoost()
     {
         if (GameManager.instance == null || !GameManager.instance.isGameActive || ObstacleManager.instance == null || isBoostActive || isBoostOnCooldown) return;
+        if (IsDrifting) return;
+        if (DriftBoostManager.instance != null && DriftBoostManager.instance.IsBusy) return; // COIN RUSH sırasında Öfke Modu yok
         if (TutorialManager.instance != null && !TutorialManager.instance.CanUseBoost()) return;
 
         if (GameManager.instance.UseBoostItem())
@@ -340,6 +404,142 @@ public class CarController2D : MonoBehaviour
     {
         isBoostActive = false;
         currentBoostTimer = 0f;
+    }
+
+    // Öfke Modu'nu hemen bitirir ve normal bekleme süresini başlatır (Drift Boost toplandığında kullanılır).
+    // Trafik zaten temizlendiği için ek koruma (grace) süresine gerek yok.
+    public void ForceEndBoost()
+    {
+        if (!isBoostActive) return;
+        StopBoostEarly();
+        isBoostOnCooldown = true;
+        currentCooldownTimer = boostCooldown;
+        if (GameManager.instance != null) GameManager.instance.isBoosting = false;
+    }
+
+    // --- DRIFT BOOST ---
+
+    public float DriftMinX => centerLaneX - laneDistance - driftBoundsPadding;
+    public float DriftMaxX => centerLaneX + laneDistance + driftBoundsPadding;
+
+    public void BeginDrift()
+    {
+        if (!isInitialized) return;
+
+        IsDrifting = true;
+        driftVelocity = 0f;
+        driftSteerDirection = 0f;
+
+        // Kısa şerit değiştirme izleri hâlâ çiziliyorsa yarıda bırak; drift izi devralıyor
+        if (leftTireMarkRoutine != null) { StopCoroutine(leftTireMarkRoutine); leftTireMarkRoutine = null; }
+        if (rightTireMarkRoutine != null) { StopCoroutine(rightTireMarkRoutine); rightTireMarkRoutine = null; }
+
+        // Yarım kalan swipe'lar drift bittikten sonra şerit değiştirmesin
+        touchStartPositions.Clear();
+        isMouseDragging = false;
+        driftHoldFingers.Clear();
+        driftIgnoredFingers.Clear();
+        driftMouseStartedOverUI = false;
+    }
+
+    public void EndDrift()
+    {
+        if (!IsDrifting) return;
+
+        IsDrifting = false;
+        driftVelocity = 0f;
+        driftSteerDirection = 0f;
+
+        // İzler olduğu yerde kalır ve yolla birlikte kayıp ekrandan çıkınca kendini havuza iade eder
+        leftDriftMark = null;
+        rightDriftMark = null;
+
+        // En yakın şeride otur; MoveCar arabayı normal şerit değiştirme hızıyla oraya taşır
+        int nearestLane = Mathf.Clamp(Mathf.RoundToInt((logicalX - centerLaneX) / laneDistance) + 1, 0, 2);
+        currentLane = nearestLane;
+        targetX = centerLaneX + (currentLane - 1) * laneDistance;
+
+        // Drift sırasında basılı tutulan parmak, bırakılınca tap/swipe olarak algılanmasın:
+        // hâlâ basılı olan parmakları "işlendi" say, kaldırılana kadar yok sayılsınlar
+        touchStartPositions.Clear();
+        isMouseDragging = false;
+        driftHoldFingers.Clear();
+        driftIgnoredFingers.Clear();
+
+        var touchscreen = Touchscreen.current;
+        if (touchscreen != null)
+        {
+            foreach (var touch in touchscreen.touches)
+                if (touch.press.isPressed) handledTouchIds.Add(touch.touchId.ReadValue());
+        }
+    }
+
+    // Ekranın SAĞ yarısına basılı tut = sağa drift, SOL yarısına basılı tut = sola drift,
+    // dokunma yok = araba düzelip dümdüz gider. Birden fazla parmak varsa en son basılan yönetir.
+    void HandleDriftInput()
+    {
+        float steer = 0f;
+
+        var kb = Keyboard.current;
+        if (kb != null)
+        {
+            if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) steer += 1f;
+            if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) steer -= 1f;
+        }
+
+        var touchscreen = Touchscreen.current;
+        if (touchscreen != null)
+        {
+            pressedFingerIds.Clear();
+            int newestOrder = -1;
+            float newestX = 0f;
+
+            foreach (var touch in touchscreen.touches)
+            {
+                if (!touch.press.isPressed) continue;
+
+                int fingerId = touch.touchId.ReadValue();
+                pressedFingerIds.Add(fingerId);
+
+                // Her parmak ilk görüldüğünde bir kez sınıflandırılır: UI üzerinde başladıysa (ör. Pause butonu) sayılmaz
+                if (!driftHoldFingers.ContainsKey(fingerId) && !driftIgnoredFingers.Contains(fingerId))
+                {
+                    if (IsPointerOverUI(touch.startPosition.ReadValue())) driftIgnoredFingers.Add(fingerId);
+                    else driftHoldFingers[fingerId] = driftFingerCounter++;
+                }
+
+                if (driftHoldFingers.TryGetValue(fingerId, out int order) && order > newestOrder)
+                {
+                    newestOrder = order;
+                    newestX = touch.position.ReadValue().x; // parmak ekranın diğer yarısına kaydırılırsa yön de değişir
+                }
+            }
+
+            if (newestOrder >= 0) steer = newestX >= Screen.width * 0.5f ? 1f : -1f;
+
+            // Bırakılan parmakları unut (duraklatma sırasında kaçırılan "Ended" olayları dahil)
+            releasedFingerIds.Clear();
+            foreach (int id in driftHoldFingers.Keys)
+                if (!pressedFingerIds.Contains(id)) releasedFingerIds.Add(id);
+            foreach (int id in releasedFingerIds) driftHoldFingers.Remove(id);
+            driftIgnoredFingers.RemoveWhere(id => !pressedFingerIds.Contains(id));
+        }
+        else
+        {
+            var mouse = Mouse.current;
+            if (mouse != null)
+            {
+                if (mouse.leftButton.wasPressedThisFrame)
+                    driftMouseStartedOverUI = IsPointerOverUI(mouse.position.ReadValue());
+
+                if (mouse.leftButton.isPressed && !driftMouseStartedOverUI)
+                    steer = mouse.position.ReadValue().x >= Screen.width * 0.5f ? 1f : -1f;
+            }
+        }
+
+        driftSteerDirection = Mathf.Clamp(steer, -1f, 1f);
+        float targetVelocity = driftSteerDirection * driftSpeed;
+        driftVelocity = Mathf.MoveTowards(driftVelocity, targetVelocity, driftAcceleration * Time.deltaTime);
     }
 
     void HandleBoostLogic()
@@ -434,6 +634,12 @@ public class CarController2D : MonoBehaviour
                     continue;
                 }
 
+                // 🔥 DÜZELTME: CanvasGroup ile gizlenmiş (alpha = 0) UI görünmez ama raycast almaya devam eder.
+                // Örn. NearMissStreakUI ve BuffTimerUI kendilerini CanvasGroup.alpha ile gizliyor; içlerindeki
+                // Image'ların kendi rengi hâlâ opak olduğu için ekranda hiçbir şey yokken swipe engelleniyordu.
+                float groupAlpha = GetCanvasGroupAlpha(result.gameObject);
+                if (groupAlpha <= 0.01f) continue;
+
                 // 4. KORUMA: Etkileşimli UI bileşenleri (Button, Toggle vb.) swipe'ı engeller
                 bool isInteractive = result.gameObject.GetComponent<Selectable>() != null ||
                                      result.gameObject.GetComponentInParent<Selectable>() != null ||
@@ -445,10 +651,47 @@ public class CarController2D : MonoBehaviour
                 // TextMeshPro elemanları (Countdown sayacı gibi) hariç tutulur — oyun alanındaki
                 // metin katmanlarında swipe çalışmaya devam etsin.
                 var image = result.gameObject.GetComponent<UnityEngine.UI.Image>();
-                if (image != null && image.color.a > 0.01f) return true;
+                if (image != null && image.color.a * groupAlpha > 0.01f) return true;
             }
         }
         return false;
+    }
+
+    // Başlangıçtan bu yana yatay swipe eşiği geçildiyse şerit değiştirir ve true döner.
+    // Dikey baskın hareketlerde başlangıç noktası güncellenir (dikey kaydırmadan sonra yatay swipe yine çalışsın).
+    bool TrySwipe(int fingerId, Vector2 startPos, Vector2 pos)
+    {
+        Vector2 direction = pos - startPos;
+        if (direction.magnitude < swipeRange) return false;
+
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            if (direction.x > 0) MoveRight();
+            else MoveLeft();
+            touchStartPositions.Remove(fingerId);
+            return true;
+        }
+
+        touchStartPositions[fingerId] = pos;
+        return false;
+    }
+
+    // Objenin üstündeki tüm CanvasGroup'ların alpha çarpımı (ekranda gerçekte ne kadar görünür olduğu)
+    static float GetCanvasGroupAlpha(GameObject go)
+    {
+        float alpha = 1f;
+        Transform t = go.transform;
+        while (t != null)
+        {
+            CanvasGroup group = t.GetComponent<CanvasGroup>();
+            if (group != null)
+            {
+                alpha *= group.alpha;
+                if (group.ignoreParentGroups) break;
+            }
+            t = t.parent;
+        }
+        return alpha;
     }
 
     void HandleInput()
@@ -464,54 +707,60 @@ public class CarController2D : MonoBehaviour
         var touchscreen = Touchscreen.current;
         if (touchscreen != null)
         {
+            // 🔥 DÜZELTME (swipe'ın "bazen" algılanmaması): Eskiden parmak yalnızca "Began" fazı görüldüğünde
+            // kaydediliyordu. Input System'de hızlı bir swipe'ın Began ve Moved olayları aynı kareye düşebilir;
+            // o karede faz doğrudan "Moved" okunur, Began hiç görülmez ve swipe tamamen yok sayılırdı.
+            // Artık faza bakmıyoruz: basılı olan ve daha önce görmediğimiz her parmağı, dokunuşun gerçek
+            // başlangıç noktasıyla (startPosition) kaydediyoruz.
+            pressedFingerIds.Clear();
+
             foreach (var touch in touchscreen.touches)
             {
-                var phase = touch.phase.ReadValue();
-                if (phase == UnityEngine.InputSystem.TouchPhase.None) continue;
+                bool pressed = touch.press.isPressed;
+                bool released = touch.press.wasReleasedThisFrame;
+                if (!pressed && !released) continue;
 
-                Vector2 pos = touch.position.ReadValue();
                 int fingerId = touch.touchId.ReadValue();
+                Vector2 pos = touch.position.ReadValue();
+                if (pressed) pressedFingerIds.Add(fingerId);
 
-                if (phase == UnityEngine.InputSystem.TouchPhase.Began)
+                // Yeni parmak: UI üzerinde başladıysa (ör. Pause) yok say, değilse başlangıç noktasıyla kaydet
+                if (!touchStartPositions.ContainsKey(fingerId) && !handledTouchIds.Contains(fingerId))
                 {
-                    if (!IsPointerOverUI(pos))
-                        touchStartPositions[fingerId] = pos;
+                    Vector2 start = touch.startPosition.ReadValue();
+                    if (IsPointerOverUI(start)) handledTouchIds.Add(fingerId);
+                    else touchStartPositions[fingerId] = start;
                 }
-                else if (phase == UnityEngine.InputSystem.TouchPhase.Moved ||
-                         phase == UnityEngine.InputSystem.TouchPhase.Stationary)
+
+                if (!touchStartPositions.TryGetValue(fingerId, out Vector2 startPos))
                 {
-                    if (controlMode == 0 && touchStartPositions.ContainsKey(fingerId))
-                    {
-                        Vector2 direction = pos - touchStartPositions[fingerId];
-                        if (direction.magnitude >= swipeRange)
-                        {
-                            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-                            {
-                                if (direction.x > 0) MoveRight();
-                                else MoveLeft();
-                                touchStartPositions.Remove(fingerId);
-                            }
-                            else
-                            {
-                                touchStartPositions[fingerId] = pos;
-                            }
-                        }
-                    }
+                    // Bu parmak zaten swipe yaptı veya UI'da başladı; bırakılınca unut
+                    if (released) handledTouchIds.Remove(fingerId);
+                    continue;
                 }
-                else if (phase == UnityEngine.InputSystem.TouchPhase.Ended ||
-                         phase == UnityEngine.InputSystem.TouchPhase.Canceled)
+
+                // 🔥 DÜZELTME: Swipe kontrolü bırakıldığı karede de yapılıyor. Eskiden parmak, mesafe eşiğini
+                // geçtiği karede kalkarsa (hızlı "fiske") hareket "tap" sayılıp şerit değişmiyordu.
+                if (controlMode == 0 && TrySwipe(fingerId, startPos, pos))
                 {
-                    if (touchStartPositions.ContainsKey(fingerId))
-                    {
-                        if (controlMode == 0) ProcessTap(pos);
-                        touchStartPositions.Remove(fingerId);
-                    }
-                    else if (controlMode == 1 && !IsPointerOverUI(pos))
-                    {
-                        ProcessTap(pos);
-                    }
+                    if (released) handledTouchIds.Remove(fingerId);
+                    else handledTouchIds.Add(fingerId); // aynı parmak kaldırılmadan ikinci kez swipe yapmasın
+                    continue;
+                }
+
+                if (released)
+                {
+                    ProcessTap(pos);
+                    touchStartPositions.Remove(fingerId);
                 }
             }
+
+            // Oyun duraklatılmışken (Update çalışmazken) kalkan parmakları unut
+            releasedFingerIds.Clear();
+            foreach (int id in touchStartPositions.Keys)
+                if (!pressedFingerIds.Contains(id)) releasedFingerIds.Add(id);
+            foreach (int id in releasedFingerIds) touchStartPositions.Remove(id);
+            handledTouchIds.RemoveWhere(id => !pressedFingerIds.Contains(id));
             return;
         }
 
@@ -610,9 +859,267 @@ public class CarController2D : MonoBehaviour
 
     void MoveCar()
     {
-        if (Mathf.Abs(logicalX - targetX) < 0.01f) logicalX = targetX;
-        else logicalX = Mathf.MoveTowards(logicalX, targetX, moveSpeed * Time.deltaTime);
+        float targetTilt = 0f;
+
+        if (IsDrifting)
+        {
+            logicalX += driftVelocity * Time.deltaTime;
+
+            // Yol sınırına dayanınca yatay hızı sıfırla ki araba duvara "yapışık" kalmasın
+            if (logicalX >= DriftMaxX) { logicalX = DriftMaxX; if (driftVelocity > 0f) driftVelocity = 0f; }
+            else if (logicalX <= DriftMinX) { logicalX = DriftMinX; if (driftVelocity < 0f) driftVelocity = 0f; }
+
+            // Araba drift yönüne doğru yan durur: sağa drift = burun sağa (saat yönü = negatif Z).
+            // Açı hıza değil yöne bağlı, böylece duvara dayanınca bile yan durmaya devam eder.
+            targetTilt = -driftSteerDirection * driftMaxTilt;
+        }
+        else
+        {
+            if (Mathf.Abs(logicalX - targetX) < 0.01f) logicalX = targetX;
+            else logicalX = Mathf.MoveTowards(logicalX, targetX, moveSpeed * Time.deltaTime);
+        }
 
         transform.position = new Vector3(logicalX, currentY, transform.position.z);
+
+        // Eğilme yalnızca drift sırasında ve drift bittikten sonra düzelene kadar uygulanır;
+        // diğer zamanlarda rotasyona dokunmuyoruz (Animator'ın şerit değiştirme animasyonları bozulmasın)
+        if (IsDrifting || isTiltApplied)
+        {
+            currentTilt = Mathf.Lerp(currentTilt, targetTilt, 1f - Mathf.Exp(-driftTiltSmoothing * Time.deltaTime));
+
+            if (!IsDrifting && Mathf.Abs(currentTilt) < 0.05f)
+            {
+                currentTilt = 0f;
+                isTiltApplied = false;
+            }
+            else
+            {
+                isTiltApplied = true;
+            }
+
+            transform.rotation = Quaternion.Euler(0f, 0f, currentTilt);
+        }
+
+        // İz ve duman yalnızca oyuncu gerçekten yön verip kayarken çıkar; dümdüz giderken çıkmaz
+        bool isSliding = IsDrifting && driftSteerDirection != 0f;
+        if (isSliding)
+        {
+            UpdateDriftMarks();
+        }
+        else
+        {
+            // Kayma bitti: mevcut iz parçaları olduğu yerde kalır, tekrar kayınca yeni iz başlar
+            leftDriftMark = null;
+            rightDriftMark = null;
+        }
+        UpdateDriftSmoke(isSliding);
+    }
+
+    void GetRearWheelPositions(out Vector3 leftWheel, out Vector3 rightWheel)
+    {
+        // Tekerlek konumları arabanın dönüşüyle birlikte döner
+        Quaternion rot = Quaternion.Euler(0f, 0f, currentTilt);
+        Vector3 carPos = transform.position;
+        leftWheel = carPos + rot * new Vector3(-rearWheelOffsetX, rearWheelOffsetY, 0f);
+        rightWheel = carPos + rot * new Vector3(rearWheelOffsetX, rearWheelOffsetY, 0f);
+        leftWheel.z = 0f;
+        rightWheel.z = 0f;
+    }
+
+    // --- DRIFT DUMANI ---
+    // Arka tekerleklerden çıkan küçük duman bulutları. Parçacıklar dünya uzayında kalır ve yolla aynı
+    // hızda aşağı kayar; böylece duman arabayı takip etmez, kaydığı yerde yol üzerinde kalıp dağılır.
+    void UpdateDriftSmoke(bool isSliding)
+    {
+        if (leftDriftSmoke == null)
+        {
+            if (!isSliding) return;
+            Material mat = GetDriftSmokeMaterial();
+            if (mat == null) return;
+            leftDriftSmoke = CreateDriftSmoke("DriftSmoke_L", mat);
+            rightDriftSmoke = CreateDriftSmoke("DriftSmoke_R", mat);
+        }
+
+        GetRearWheelPositions(out Vector3 leftWheel, out Vector3 rightWheel);
+        leftDriftSmoke.transform.position = leftWheel;
+        rightDriftSmoke.transform.position = rightWheel;
+
+        // Yan kayma hızı arttıkça duman yoğunlaşır; duvara dayanıp yön vermeye devam ederken de az da olsa çıkar
+        float intensity = isSliding ? Mathf.Max(0.4f, Mathf.Abs(driftVelocity) / Mathf.Max(driftSpeed, 0.01f)) : 0f;
+        float roadFactor = InfiniteRoad2D.Instance != null ? InfiniteRoad2D.Instance.scrollFactor : 1f;
+        float roadSpeed = ObstacleManager.scrollSpeed * roadFactor;
+
+        ApplyDriftSmoke(leftDriftSmoke, intensity, roadSpeed);
+        ApplyDriftSmoke(rightDriftSmoke, intensity, roadSpeed);
+    }
+
+    void ApplyDriftSmoke(ParticleSystem ps, float intensity, float roadSpeed)
+    {
+        var emission = ps.emission;
+        emission.rateOverTime = driftSmokeRate * intensity;
+
+        var velocity = ps.velocityOverLifetime;
+        velocity.x = new ParticleSystem.MinMaxCurve(-driftSmokeSpread, driftSmokeSpread);
+        velocity.y = new ParticleSystem.MinMaxCurve(-roadSpeed, -roadSpeed);
+        velocity.z = new ParticleSystem.MinMaxCurve(0f, 0f);
+    }
+
+    Material GetDriftSmokeMaterial()
+    {
+        if (driftSmokeMaterial != null) return driftSmokeMaterial;
+
+        // Atanmadıysa arabanın kendi egzoz dumanının materyalini kullan (aynı görünüm)
+        foreach (var r in GetComponentsInChildren<ParticleSystemRenderer>(true))
+        {
+            if (r.sharedMaterial != null && r.gameObject.name.Contains("Egzoz"))
+            {
+                driftSmokeMaterial = r.sharedMaterial;
+                break;
+            }
+        }
+        return driftSmokeMaterial;
+    }
+
+    ParticleSystem CreateDriftSmoke(string objName, Material mat)
+    {
+        var go = new GameObject(objName);
+        go.transform.position = transform.position;
+        var ps = go.AddComponent<ParticleSystem>();
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        var main = ps.main;
+        main.loop = true;
+        main.playOnAwake = false;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(driftSmokeLifetime * 0.7f, driftSmokeLifetime);
+        main.startSpeed = 0f;
+        main.startSize = new ParticleSystem.MinMaxCurve(driftSmokeSize * 0.7f, driftSmokeSize * 1.2f);
+        main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
+        main.startColor = driftSmokeColor;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.scalingMode = ParticleSystemScalingMode.Local;
+        main.maxParticles = 100;
+
+        var emission = ps.emission;
+        emission.rateOverTime = 0f;
+
+        var shape = ps.shape;
+        shape.shapeType = ParticleSystemShapeType.Circle;
+        shape.radius = 0.6f;
+
+        var colorOverLifetime = ps.colorOverLifetime;
+        colorOverLifetime.enabled = true;
+        var gradient = new Gradient();
+        gradient.SetKeys(
+            new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+            new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0.6f, 0.4f), new GradientAlphaKey(0f, 1f) });
+        colorOverLifetime.color = gradient;
+
+        var sizeOverLifetime = ps.sizeOverLifetime;
+        sizeOverLifetime.enabled = true;
+        sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 0.5f, 1f, 1.6f));
+
+        var velocity = ps.velocityOverLifetime;
+        velocity.enabled = true;
+        velocity.space = ParticleSystemSimulationSpace.World;
+        velocity.x = new ParticleSystem.MinMaxCurve(0f, 0f);
+        velocity.y = new ParticleSystem.MinMaxCurve(0f, 0f);
+        velocity.z = new ParticleSystem.MinMaxCurve(0f, 0f);
+
+        var psRenderer = go.GetComponent<ParticleSystemRenderer>();
+        psRenderer.sharedMaterial = mat;
+        psRenderer.sortingOrder = driftSmokeSortingOrder;
+
+        ps.Play();
+        return ps;
+    }
+
+    void OnDestroy()
+    {
+        // Duman objeleri sahnede bağımsız duruyor; araba yok olunca onları da temizle
+        if (leftDriftSmoke != null) Destroy(leftDriftSmoke.gameObject);
+        if (rightDriftSmoke != null) Destroy(rightDriftSmoke.gameObject);
+    }
+
+    // --- DRIFT LASTİK İZLERİ ---
+    // Şerit değiştirme iziyle aynı yöntem: iz, yolla birlikte kayan (TireMarkScroller) bir LineRenderer'dır
+    // ve noktaları objenin LOCAL uzayında tutulur. Her karede arka tekerleğin o anki dünya konumunu
+    // local uzaya çevirip eklediğimizde nokta yol üzerinde "donar" ve yolla birlikte aşağı kayar;
+    // böylece iz, arabanın drift ederken yol üzerinde çizdiği gerçek kavisi takip eder.
+    void UpdateDriftMarks()
+    {
+        if (tireTrackMaterial == null) return;
+
+        GetRearWheelPositions(out Vector3 leftWheel, out Vector3 rightWheel);
+
+        UpdateDriftMark(ref leftDriftMark, leftWheel);
+        UpdateDriftMark(ref rightDriftMark, rightWheel);
+    }
+
+    void UpdateDriftMark(ref DriftMark mark, Vector3 wheelWorld)
+    {
+        wheelWorld.z = 0f;
+
+        // İz ekrandan çıkıp havuza döndüyse (ör. uzun süre aynı parçada kalındıysa) yenisini başlat
+        if (mark != null && (mark.line == null || !mark.line.gameObject.activeInHierarchy)) mark = null;
+
+        if (mark == null)
+        {
+            mark = StartDriftMark(wheelWorld, null);
+        }
+        else if (mark.count >= mark.points.Length)
+        {
+            // Parça doldu: yenisini son noktadan başlatarak iz kesintisiz devam etsin
+            Vector3 lastWorld = mark.line.transform.position + mark.points[mark.count - 1];
+            mark = StartDriftMark(wheelWorld, lastWorld);
+        }
+
+        Vector3 local = wheelWorld - mark.line.transform.position;
+
+        // Son nokta "canlı uç"tur ve her karede tekerleği takip eder; bir önceki sabit noktadan
+        // yeterince uzaklaşınca sabitlenip yeni bir canlı uç eklenir
+        if (mark.count < 2 || Vector3.Distance(mark.points[mark.count - 2], local) >= driftMarkPointSpacing)
+        {
+            mark.points[mark.count] = local;
+            mark.count++;
+            mark.line.positionCount = mark.count;
+        }
+        else
+        {
+            mark.points[mark.count - 1] = local;
+        }
+
+        mark.line.SetPosition(mark.count - 1, local);
+    }
+
+    DriftMark StartDriftMark(Vector3 wheelWorld, Vector3? continueFrom)
+    {
+        GameObject template = GetTireMarkTemplate();
+        GameObject instance = PoolManager.Spawn(template, wheelWorld, Quaternion.identity);
+
+        LineRenderer lr = instance.GetComponent<LineRenderer>();
+        lr.material = tireTrackMaterial;
+        lr.sortingOrder = tireTrackSortingOrder;
+        lr.startWidth = tireTrackWidth;
+        lr.endWidth = tireTrackWidth;
+        lr.useWorldSpace = false;
+        lr.textureMode = LineTextureMode.Tile;
+        lr.alignment = LineAlignment.TransformZ;
+        lr.numCapVertices = 2;
+        lr.numCornerVertices = 2;
+        lr.positionCount = 0;
+
+        var mark = new DriftMark { line = lr, points = new Vector3[Mathf.Max(driftMarkMaxPoints, 4)], count = 0 };
+
+        if (continueFrom.HasValue)
+        {
+            Vector3 start = continueFrom.Value - lr.transform.position;
+            start.z = 0f;
+            mark.points[0] = start;
+            mark.count = 1;
+            lr.positionCount = 1;
+            lr.SetPosition(0, start);
+        }
+
+        return mark;
     }
 }

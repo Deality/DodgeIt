@@ -137,6 +137,23 @@ public class ObstacleManager : MonoBehaviour
     public float invincibilityStartDelay = 10.0f;
     public float invincibilityPityRate = 0.05f;
 
+    [Header("Drift Boost Settings")]
+    [SerializeField] private GameObject driftBoostPrefab;
+    [Tooltip("Her spawn denemesinde Drift Boost çıkma ihtimali (nadir olmalı).")]
+    [SerializeField, Range(0, 1)] private float driftBoostSpawnChance = 0.01f;
+    [Tooltip("İki Drift Boost arasında geçmesi gereken en az süre (saniye).")]
+    [SerializeField] private float driftBoostCooldownTime = 40f;
+    [Tooltip("Oyun başladıktan kaç saniye sonra Drift Boost çıkabilir?")]
+    [SerializeField] private float driftBoostStartDelay = 25f;
+
+    // 🔥 DRIFT BOOST KİLİDİ: Açıkken trafik spawn'ı, zorluk artışı ve tır etkinlikleri durur;
+    // scrollSpeed kilitlendiği andaki değerde kalır. Kilit kalkınca her şey kaldığı yerden devam eder.
+    public bool IsTrafficLocked { get; private set; } = false;
+    private float trafficLockStartTime;
+    private Coroutine truckEventCoroutine;
+    private GameObject activeWarningSign;
+    private float lastDriftBoostSpawnTime = 0f;
+
     private float currentInvincibilityChance;
     private float currentReducerChance;
 
@@ -177,6 +194,7 @@ public class ObstacleManager : MonoBehaviour
         lastReducerSpawnTime = -reducerCooldownTime;
         lastInvincibilitySpawnTime = -invincibilityCooldownTime;
         lastPowerUpSpawnTime = -sharedPowerUpCooldown;
+        lastDriftBoostSpawnTime = -driftBoostCooldownTime;
 
         lastTruckTime = Time.time;
 
@@ -223,6 +241,9 @@ public class ObstacleManager : MonoBehaviour
     {
         if (!canSpawn) return;
 
+        // Drift Boost sırasında (ve sonrasındaki kısa bekleme süresinde) hız sabit, zorluk ve spawn duraklatılmış
+        if (IsTrafficLocked) return;
+
         totalTimeElapsed += Time.deltaTime;
 
         // --- HIZ YÖNETİMİ ---
@@ -265,7 +286,7 @@ public class ObstacleManager : MonoBehaviour
             && Time.time >= lastTruckTime + currentTruckCooldown
             && totalTimeElapsed >= truckStartDelay)
         {
-            StartCoroutine(StartTruckEvent());
+            truckEventCoroutine = StartCoroutine(StartTruckEvent());
         }
 
         // 🔥 NORMAL SPAWN
@@ -296,10 +317,11 @@ public class ObstacleManager : MonoBehaviour
         if (warningSignPrefab != null && lanes.Length > targetLane)
         {
             Vector3 warningPos = new Vector3(lanes[targetLane].position.x, 3f, 0f);
-            GameObject warning = PoolManager.Spawn(warningSignPrefab, warningPos, Quaternion.identity);
+            activeWarningSign = PoolManager.Spawn(warningSignPrefab, warningPos, Quaternion.identity);
 
             yield return new WaitForSeconds(currentWarnDuration);
-            if (warning != null) PoolManager.Despawn(warning);
+            if (activeWarningSign != null) PoolManager.Despawn(activeWarningSign);
+            activeWarningSign = null;
         }
         else
         {
@@ -332,6 +354,95 @@ public class ObstacleManager : MonoBehaviour
         blockedLaneIndex = -1;
         lastTruckTime = Time.time;
         isTruckEventActive = false;
+        truckEventCoroutine = null;
+    }
+
+    // --- DRIFT BOOST: TRAFİK KİLİDİ ---
+
+    public void LockTraffic()
+    {
+        if (IsTrafficLocked) return;
+        IsTrafficLocked = true;
+        trafficLockStartTime = Time.time;
+
+        // Yarım kalan tır etkinliğini iptal et (uyarı işareti dahil); cooldown kilit bitince kaldığı yerden sayar
+        if (truckEventCoroutine != null)
+        {
+            StopCoroutine(truckEventCoroutine);
+            truckEventCoroutine = null;
+            lastTruckTime = Time.time;
+        }
+        if (activeWarningSign != null)
+        {
+            PoolManager.Despawn(activeWarningSign);
+            activeWarningSign = null;
+        }
+        blockedLaneIndex = -1;
+        isTruckEventActive = false;
+    }
+
+    public void UnlockTraffic()
+    {
+        if (!IsTrafficLocked) return;
+        IsTrafficLocked = false;
+
+        // Kilitli geçen süreyi zamana bağlı zorluk sayaçlarından düş, böylece kaldığı yerden devam eder
+        float lockedDuration = Time.time - trafficLockStartTime;
+        lastTruckTime += lockedDuration;
+        timer = 0f;
+    }
+
+    // Ekrandaki (ve ekranın hemen üstünde bekleyen) tüm trafik araçlarını kaldırır
+    public void ClearTraffic(GameObject clearEffectPrefab)
+    {
+        foreach (Obstacle obs in FindObjectsByType<Obstacle>(FindObjectsInactive.Exclude))
+            DespawnTraffic(obs.gameObject, clearEffectPrefab);
+
+        foreach (FastMover mover in FindObjectsByType<FastMover>(FindObjectsInactive.Exclude))
+            DespawnTraffic(mover.gameObject, clearEffectPrefab);
+    }
+
+    // Verilen Y'nin (örn. ekranın alt kenarı) üstünde hâlâ bir kısmı bulunan trafik aracı var mı?
+    // Ekranın üstünde henüz görünmeden bekleyen araçlar da sayılır.
+    public bool HasTrafficAbove(float worldY)
+    {
+        foreach (Obstacle obs in FindObjectsByType<Obstacle>(FindObjectsInactive.Exclude))
+            if (GetTopY(obs.gameObject) > worldY) return true;
+
+        foreach (FastMover mover in FindObjectsByType<FastMover>(FindObjectsInactive.Exclude))
+            if (GetTopY(mover.gameObject) > worldY) return true;
+
+        return false;
+    }
+
+    static float GetTopY(GameObject car)
+    {
+        Collider2D col = car.GetComponent<Collider2D>();
+        if (col != null) return col.bounds.max.y;
+
+        Renderer rend = car.GetComponentInChildren<Renderer>();
+        return rend != null ? rend.bounds.max.y : car.transform.position.y;
+    }
+
+    void DespawnTraffic(GameObject car, GameObject clearEffectPrefab)
+    {
+        // Aynı objede hem Obstacle hem FastMover olabilir; havuza iki kez iade edilmesin
+        if (!car.activeSelf) return;
+
+        if (clearEffectPrefab != null && IsOnScreen(car.transform.position))
+        {
+            GameObject fx = PoolManager.Spawn(clearEffectPrefab, car.transform.position, Quaternion.identity);
+            PoolManager.DespawnAfter(fx, 2f);
+        }
+        PoolManager.Despawn(car);
+    }
+
+    bool IsOnScreen(Vector3 worldPos)
+    {
+        Camera cam = Camera.main;
+        if (cam == null) return false;
+        Vector3 vp = cam.WorldToViewportPoint(worldPos);
+        return vp.x >= 0f && vp.x <= 1f && vp.y >= 0f && vp.y <= 1f;
     }
 
     public void ActivateSpeedReduction()
@@ -408,6 +519,9 @@ public class ObstacleManager : MonoBehaviour
         float fadeInTimer = 0f;
         while (fadeInTimer < effectFadeDuration)
         {
+            // Drift Boost hızı kilitliyken yavaşlatıcı da donar, kilit kalkınca kaldığı yerden devam eder
+            if (IsTrafficLocked) { yield return null; continue; }
+
             fadeInTimer += Time.deltaTime;
             currentReducerTimer -= Time.deltaTime; // 🔥 Zamanı Azalt
             float t = fadeInTimer / effectFadeDuration;
@@ -431,6 +545,8 @@ public class ObstacleManager : MonoBehaviour
         float waitT = 0f;
         while (waitT < waitTime)
         {
+            if (IsTrafficLocked) { yield return null; continue; }
+
             waitT += Time.deltaTime;
             currentReducerTimer -= Time.deltaTime; // 🔥 Zamanı Azalt
             yield return null;
@@ -439,6 +555,8 @@ public class ObstacleManager : MonoBehaviour
         float fadeOutTimer = 0f;
         while (fadeOutTimer < effectFadeDuration)
         {
+            if (IsTrafficLocked) { yield return null; continue; }
+
             fadeOutTimer += Time.deltaTime;
             currentReducerTimer -= Time.deltaTime; // 🔥 Zamanı Azalt
             float t = fadeOutTimer / effectFadeDuration;
@@ -484,6 +602,23 @@ public class ObstacleManager : MonoBehaviour
     {
         foreach (GameObject effect in activeEffects) { if (effect != null) PoolManager.Despawn(effect); }
         activeEffects.Clear();
+    }
+
+    bool CanSpawnDriftBoost()
+    {
+        if (driftBoostPrefab == null) return false;
+        if (totalTimeElapsed < driftBoostStartDelay) return false;
+        if (Time.time < lastDriftBoostSpawnTime + driftBoostCooldownTime) return false;
+
+        // Öfke Modu (boost) açıkken veya zaten bir Drift Boost sürerken çıkmasın
+        if (GameManager.instance != null && GameManager.instance.isBoosting) return false;
+        if (CarController2D.instance != null && CarController2D.instance.isBoostActive) return false;
+        if (DriftBoostManager.instance != null && DriftBoostManager.instance.IsBusy) return false;
+
+        // Eğitim sırasında çıkmasın
+        if (TutorialManager.instance != null && TutorialManager.instance.IsTutorialRunning) return false;
+
+        return true;
     }
 
     void SpawnObject()
@@ -577,7 +712,15 @@ public class ObstacleManager : MonoBehaviour
             }
         }
 
-        if (spawnReducer)
+        bool spawnDriftBoost = canSpawnAnyPowerUp && !spawnReducer && !spawnInvincibility && CanSpawnDriftBoost() && Random.value < driftBoostSpawnChance;
+
+        if (spawnDriftBoost)
+        {
+            PoolManager.Spawn(driftBoostPrefab, spawnPos, Quaternion.identity);
+            lastDriftBoostSpawnTime = Time.time;
+            lastPowerUpSpawnTime = Time.time;
+        }
+        else if (spawnReducer)
         {
             PoolManager.Spawn(speedReducerPrefab, spawnPos, Quaternion.identity);
             lastReducerSpawnTime = Time.time;

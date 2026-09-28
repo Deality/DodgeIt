@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8252210464651677098}
   - component: {fileID: 6179703248772412949}
   m_Layer: 0
-  m_Name: "I\u015F\u0131ldama"
+  m_Name: "Işıldama"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 0.63372195, g: 0.85342216, b: 0.9528302, a: 0.31764707}
+  m_Color: {r: 1, g: 0.6, b: 0.15, a: 0.31764707}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 6937038149007704750}
   - component: {fileID: 3518264097531846211}
   m_Layer: 0
-  m_Name: "\u0130nvicibility"
+  m_Name: Drift Boost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,8 +201,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2864d08220d62364e809da51768d0a2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!114 &6937038149007704750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,14 +212,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2802531104533460270}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d5ec726fbd71f146a45c9a104a4d6c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  duration: 5
+  m_Script: {fileID: 11500000, guid: 2b4d6f8a0c1e3a5c7e9b1d3f5a7c9e0b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DriftBoostPickup
   enableScaling: 1
   pulseSpeed: 3
   pulseAmount: 0.15
   collectEffectPrefab: {fileID: 0}
+  pickupSound: {fileID: 0}
 --- !u!114 &3518264097531846211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
   sourceGlow: {fileID: 6179703248772412949}
-  glowColor: {r: 0.2, g: 0.85, b: 1, a: 1}
+  glowColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   haloSize: 1.6
   haloMinAlpha: 0.45
   haloMaxAlpha: 0.9
@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 6009548640676417145}
   - component: {fileID: 5011805394225183437}
   m_Layer: 0
-  m_Name: Shield
+  m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -326,7 +326,7 @@ SpriteRenderer:
   m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 235a630cc080daf4faf4f08cf915eac8, type: 3}
-  m_Color: {r: 0, g: 0.9098039, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.55, b: 0.1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

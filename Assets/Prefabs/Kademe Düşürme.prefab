@@ -196,6 +196,7 @@ GameObject:
   - component: {fileID: 3648539132115425697}
   - component: {fileID: 1691101777788427764}
   - component: {fileID: 8601268507836674068}
+  - component: {fileID: 6624031957742180539}
   m_Layer: 0
   m_Name: "Kademe D\xFC\u015F\xFCrme"
   m_TagString: Untagged
@@ -246,6 +247,29 @@ MonoBehaviour:
   enableScaling: 1
   pulseSpeed: 3
   pulseAmount: 0.15
+--- !u!114 &6624031957742180539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8928820572909645852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f7c2a9d8e1b4c6a9b3d5e7f1a2c4b6d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
+  sourceGlow: {fileID: 5396536620137902120}
+  glowColor: {r: 1, g: 0.35, b: 0.3, a: 1}
+  haloSize: 1.4
+  haloMinAlpha: 0.45
+  haloMaxAlpha: 0.9
+  haloPulseSpeed: 4
+  haloPulseAmount: 0.12
+  enableRays: 1
+  raySize: 1.9
+  rayAlpha: 0.35
+  rayRotateSpeed: 40
 --- !u!50 &1691101777788427764
 Rigidbody2D:
   serializedVersion: 5

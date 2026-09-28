@@ -110,6 +110,9 @@ public class Collectable : MonoBehaviour
                 GameManager.instance.AddGems(earnedValue);
             }
 
+            // Drift Boost (COIN RUSH) altınıysa boost sonunda gösterilecek toplama ekle
+            DriftBoostManager.instance?.NotifyCoinCollected(gameObject, earnedValue);
+
             // YAZIYI GÜNCELLEME (+kaç ise onu yazdır)
             if (floatingTextPrefab != null)
             {

@@ -353,6 +353,9 @@ public class GameManager : MonoBehaviour
         isCrashPending = true;
         isGameActive = false;
 
+        // Drift Boost kazayla birlikte biter; reklamla devam edilse bile geri gelmez
+        DriftBoostManager.instance?.CancelBoost();
+
         if (crashEffectPrefab != null) Instantiate(crashEffectPrefab, pos, Quaternion.identity);
 
         if (AudioManager.instance != null && AudioManager.instance.crashSound != null)
@@ -378,6 +381,8 @@ public class GameManager : MonoBehaviour
         IsGameOver = true;
         isGameActive = false;
         isCrashPending = false;
+
+        DriftBoostManager.instance?.CancelBoost();
 
         if (isFirstRound)
         {
@@ -456,6 +461,9 @@ public class GameManager : MonoBehaviour
     {
         hasUsedRevive = true;
         isCrashPending = false;
+
+        // Güvenlik için: kaza anında zaten iptal edildi, ama devam ederken hiçbir boost durumu kalmamalı
+        DriftBoostManager.instance?.CancelBoost();
 
         if (pendingCrashObstacle != null)
         {

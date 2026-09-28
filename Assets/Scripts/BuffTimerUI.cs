@@ -8,7 +8,8 @@ public class BuffTimerUI : MonoBehaviour
     {
         Boost,          // Öfke Modu (Alev)
         Shield,         // Görünmezlik (Kalkan)
-        SpeedReducer    // Yavaşlatıcı
+        SpeedReducer,   // Yavaşlatıcı
+        DriftBoost      // Drift Boost (yeni değerler serileştirme sırası bozulmasın diye sona eklenmeli)
     }
 
     public enum TimerMode
@@ -158,8 +159,9 @@ public class BuffTimerUI : MonoBehaviour
                                 internalReducerTimer = ObstacleManager.instance.reductionDuration;
                             }
 
-                            // Sayacı azalt
-                            internalReducerTimer -= Time.deltaTime;
+                            // Sayacı azalt (Drift Boost hızı kilitliyken yavaşlatıcı da donuyor)
+                            if (!ObstacleManager.instance.IsTrafficLocked)
+                                internalReducerTimer -= Time.deltaTime;
 
                             // Oranı hesapla
                             ratio = internalReducerTimer / ObstacleManager.instance.reductionDuration;
@@ -178,6 +180,22 @@ public class BuffTimerUI : MonoBehaviour
                     }
 
                     wasReducerActiveLastFrame = isReducerActiveNow;
+                }
+                break;
+
+            case BuffType.DriftBoost:
+                if (DriftBoostManager.instance != null)
+                {
+                    if (timerMode == TimerMode.ActiveTime && DriftBoostManager.instance.IsActive)
+                    {
+                        targetAlpha = 1f;
+                        ratio = DriftBoostManager.instance.TimeRemaining / DriftBoostManager.instance.Duration;
+                    }
+                    else if (timerMode == TimerMode.CooldownTime)
+                    {
+                        targetAlpha = 1f;
+                        ratio = 1f;
+                    }
                 }
                 break;
         }

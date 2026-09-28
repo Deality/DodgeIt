@@ -73,6 +73,7 @@ public class TutorialManager : MonoBehaviour
     // Boost is real gameplay from the moment the "DOUBLE TAP" prompt shows onward - a
     // double tap earlier in the tutorial (swipe intro / near miss explain) must not
     // trigger it, since it would burn the one-shot tutorial boost before it's explained.
+    public bool IsTutorialRunning => IsMainActive;
     public bool CanUseBoost() => !IsMainActive || step == Step.DoubleTapPrompt || step == Step.BoostExplain;
 
     void Awake()
