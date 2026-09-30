@@ -2612,7 +2612,7 @@ MonoBehaviour:
   buttonClickSound: {fileID: 8300000, guid: f0a011f28dc58b9488cc705a8de97af1, type: 3}
   countdownBeep: {fileID: 8300000, guid: 471f7f629535f7148945bec65b67773b, type: 3}
   countdownGo: {fileID: 8300000, guid: aff0ba39c20430f4bb3ed9445bf95c5c, type: 3}
-  coinRushSound: {fileID: 0}
+  coinRushSound: {fileID: 8300000, guid: 114db6e04109fa24ab60d0e2034a27ec, type: 3}
   gameOverSound: {fileID: 0}
   newHighScoreSound: {fileID: 0}
   swipeSounds:
