@@ -793,8 +793,8 @@ MonoBehaviour:
   invincibilityPityRate: 0.009
   driftBoostPrefab: {fileID: 2802531104533460270, guid: 7c9e1a3b5d7f9b1d3e5a7c9b1d3f5e7a, type: 3}
   driftBoostSpawnChance: 0.03
-  driftBoostCooldownTime: 1
-  driftBoostStartDelay: 1
+  driftBoostCooldownTime: 35
+  driftBoostStartDelay: 20
 --- !u!4 &450009585
 Transform:
   m_ObjectHideFlags: 0
@@ -847,6 +847,7 @@ MonoBehaviour:
   resultHoldDuration: 0.6
   resultRiseDistance: 200
   resultRiseDuration: 0.7
+  resultTickInterval: 0.055
   coinPrefab: {fileID: 8833457522766607096, guid: e0bc05866f26dbf49b2683b26643c498, type: 3}
   coinSpacing: 15
   zigzagFollowFactor: 0.75
@@ -2597,6 +2598,11 @@ MonoBehaviour:
   uiGroup: {fileID: 1325621413784490773, guid: 051f8a256f5884f4997892a9a1d03549, type: 2}
   criticalGroup: {fileID: -3593402814221552002, guid: 051f8a256f5884f4997892a9a1d03549, type: 2}
   duckedVolumeDb: -14
+  eventDuckDb: -6
+  feedbackVolume: 0.7
+  feedbackDuckedByEvent: 0.5
+  lowerLayersDuckedByCritical: 0.2
+  sameClipMinInterval: 0.05
   duckTransitionDuration: 0.15
   backgroundMusic: {fileID: 0}
   engineLoop: {fileID: 8300000, guid: 7a1f71ad661be0f408eb8da8c25794f1, type: 3}
@@ -2613,6 +2619,8 @@ MonoBehaviour:
   countdownBeep: {fileID: 8300000, guid: 471f7f629535f7148945bec65b67773b, type: 3}
   countdownGo: {fileID: 8300000, guid: aff0ba39c20430f4bb3ed9445bf95c5c, type: 3}
   coinRushSound: {fileID: 8300000, guid: 114db6e04109fa24ab60d0e2034a27ec, type: 3}
+  coinRushCountTick: {fileID: 8300000, guid: 10052c27045bbc84699c4a341002aa2a, type: 3}
+  coinRushTotalSound: {fileID: 8300000, guid: 761cc80916591c84db90cafec4e01358, type: 3}
   gameOverSound: {fileID: 0}
   newHighScoreSound: {fileID: 0}
   swipeSounds:

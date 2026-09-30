@@ -134,7 +134,7 @@ public class Collectable : MonoBehaviour
             // SES EFEKTİ
             if (AudioManager.instance != null)
             {
-                AudioManager.instance.PlaySFX(AudioManager.instance.coinSound);
+                AudioManager.instance.PlayFeedback(AudioManager.instance.coinSound);
             }
 
             // PARÇACIK EFEKTİ

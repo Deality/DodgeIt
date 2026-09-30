@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8252210464651677098}
   - component: {fileID: 6179703248772412949}
   m_Layer: 0
-  m_Name: "Işıldama"
+  m_Name: "I\u015F\u0131ldama"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,8 +201,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2864d08220d62364e809da51768d0a2d, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6937038149007704750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b4d6f8a0c1e3a5c7e9b1d3f5a7c9e0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DriftBoostPickup
   enableScaling: 1
   pulseSpeed: 3
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f7c2a9d8e1b4c6a9b3d5e7f1a2c4b6d, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
   sourceGlow: {fileID: 6179703248772412949}
   glowColor: {r: 1, g: 0.6, b: 0.15, a: 1}
@@ -325,8 +325,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 235a630cc080daf4faf4f08cf915eac8, type: 3}
-  m_Color: {r: 1, g: 0.55, b: 0.1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 80ffaf2fa3654c5e869f0e69e2074e63, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

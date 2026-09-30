@@ -99,7 +99,7 @@ public class NearMissDetector : MonoBehaviour
             yield break;
 
         if (AudioManager.instance != null && AudioManager.instance.nearMissSound != null)
-            AudioManager.instance.PlaySFX(AudioManager.instance.nearMissSound);
+            AudioManager.instance.PlayFeedback(AudioManager.instance.nearMissSound);
     }
 
     void TriggerMessage()

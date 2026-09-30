@@ -56,7 +56,8 @@ public class DriftBoostManager : MonoBehaviour
     [Tooltip("Yazının kaybolurken ne kadar yukarı yükseleceği (UI birimi).")]
     [SerializeField] private float resultRiseDistance = 200f;
     [SerializeField] private float resultRiseDuration = 0.7f;
-
+    [Tooltip("Sayı yükselirken çalan sayaç tıkları arasındaki en kısa süre (saniye).")]
+    [SerializeField] private float resultTickInterval = 0.055f;
     [Header("Zikzak Altınlar")]
     [Tooltip("Boş bırakılırsa ObstacleManager'daki normal coin prefabı kullanılır.")]
     [SerializeField] private GameObject coinPrefab;
@@ -480,8 +481,9 @@ public class DriftBoostManager : MonoBehaviour
             yield return null;
         }
 
-        // 2) Sayı 0'dan toplanan miktara kadar yükselir; her artışta küçük bir "pat" büyümesi
+        // 2) Sayı 0'dan toplanan miktara kadar yükselir; her artışta küçük bir "pat" büyümesi ve sayaç tıkı
         int shown = 0;
+        float lastTickTime = -1f;
         t = 0f;
         while (t < resultCountUpDuration && total > 0)
         {
@@ -493,11 +495,19 @@ public class DriftBoostManager : MonoBehaviour
                 shown = value;
                 SetResultText(shown);
                 rt.localScale = Vector3.one * 1.12f;
+
+                // Sayı hızlı artarken her karede tık çalmasın; sayım yavaşladıkça tıklar da seyrekleşir
+                if (t - lastTickTime >= resultTickInterval && AudioManager.instance != null)
+                {
+                    lastTickTime = t;
+                    AudioManager.instance.PlayCoinRushCountTick();
+                }
             }
             rt.localScale = Vector3.Lerp(rt.localScale, Vector3.one, Time.deltaTime * 12f);
             yield return null;
         }
         SetResultText(total);
+        if (total > 0 && AudioManager.instance != null) AudioManager.instance.PlayCoinRushTotal();
 
         // 3) Son değerde kısa bir vurgu ve bekleme
         t = 0f;

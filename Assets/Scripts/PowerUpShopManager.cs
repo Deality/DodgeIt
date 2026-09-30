@@ -96,7 +96,7 @@ public class PowerUpShopManager : MonoBehaviour
             UpdateUI();
 
             if (AudioManager.instance != null && AudioManager.instance.coinSound != null)
-                AudioManager.instance.PlaySFX(AudioManager.instance.coinSound);
+                AudioManager.instance.PlayUI(AudioManager.instance.coinSound);
 
             Debug.Log($"✅ Başarılı! {currentSelectedQuantity}x Boost alındı.");
         }

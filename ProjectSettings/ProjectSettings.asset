@@ -523,7 +523,7 @@ PlayerSettings:
   m_BuildTargetDefaultTextureCompressionFormat:
   - serializedVersion: 3
     m_BuildTarget: Android
-    m_Formats: 01000000
+    m_Formats: 03000000
   playModeTestRunnerEnabled: 0
   runPlayModeTestAsEditModeTest: 0
   actionOnDotNetUnhandledException: 1
@@ -796,8 +796,10 @@ PlayerSettings:
   platformArchitecture: {}
   scriptingBackend:
     Android: 1
-  il2cppCompilerConfiguration: {}
-  il2cppCodeGeneration: {}
+  il2cppCompilerConfiguration:
+    Android: 1
+  il2cppCodeGeneration:
+    Android: 1
   il2cppStacktraceInformation: {}
   managedStrippingLevel:
     EmbeddedLinux: 1
