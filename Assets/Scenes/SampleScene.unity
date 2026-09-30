@@ -2604,7 +2604,7 @@ MonoBehaviour:
   coinSound: {fileID: 8300000, guid: 092ad8130fe1bdf43b295c66a9d1f820, type: 3}
   powerUpSound: {fileID: 8300000, guid: 08a9cd340cbac954a92e8663f6c537be, type: 3}
   shieldPickupSound: {fileID: 8300000, guid: 045f46507dcb57340a99223dc95db26a, type: 3}
-  shieldDestroySound: {fileID: 8300000, guid: ac3ce4fdc0074b04584d665509e1bae9, type: 3}
+  shieldDestroySound: {fileID: 8300000, guid: c049f732b54bc844e8f22cd72eb67ea9, type: 3}
   boostSound: {fileID: 8300000, guid: e0b573ada4532c44596b0b17a566c400, type: 3}
   boostDestroySound: {fileID: 8300000, guid: f1075db476e5a434a9d0e04835ed8bf2, type: 3}
   nearMissSound: {fileID: 8300000, guid: d4e522704bd247f48808eb9bf796370c, type: 3}
@@ -2613,10 +2613,10 @@ MonoBehaviour:
   countdownBeep: {fileID: 0}
   countdownGo: {fileID: 0}
   swipeSounds:
-  - {fileID: 8300000, guid: 9e151f881485d72488c5eadecbf7222d, type: 3}
-  - {fileID: 8300000, guid: 2f6a180512697014bab89f43ca1e226c, type: 3}
-  - {fileID: 8300000, guid: 93fb6abe75258f1469210da330fc680b, type: 3}
-  - {fileID: 8300000, guid: 6b44a7fee50233f49ae302bf27f6c542, type: 3}
+  - {fileID: 8300000, guid: 161feca8d83b674438e5ec8e5c761296, type: 3}
+  - {fileID: 8300000, guid: d0eb9eee0b883554e896e0f9c06a1f72, type: 3}
+  - {fileID: 8300000, guid: 8fa917e3fa5c6704cb337ecf91465c3a, type: 3}
+  - {fileID: 8300000, guid: a2179ae69b6a1cb43a17a8a6896819f4, type: 3}
   duckFadeSpeed: 6
 --- !u!4 &908215374
 Transform:
