@@ -10,7 +10,7 @@ public class DriftBoostPickup : MonoBehaviour
 
     [Header("Görsel Efektler")]
     [SerializeField] private GameObject collectEffectPrefab;
-    [Tooltip("Boş bırakılırsa AudioManager'daki powerUpSound çalınır.")]
+    [Tooltip("Boş bırakılırsa AudioManager'daki coinRushSound (o da boşsa powerUpSound) çalınır.")]
     [SerializeField] private AudioClip pickupSound;
 
     private Vector3 initialScale;
@@ -62,7 +62,9 @@ public class DriftBoostPickup : MonoBehaviour
         {
             if (AudioManager.instance != null)
             {
-                AudioClip clip = pickupSound != null ? pickupSound : AudioManager.instance.powerUpSound;
+                AudioClip clip = pickupSound != null ? pickupSound
+                    : AudioManager.instance.coinRushSound != null ? AudioManager.instance.coinRushSound
+                    : AudioManager.instance.powerUpSound;
                 if (clip != null) AudioManager.instance.PlaySFX(clip);
             }
 

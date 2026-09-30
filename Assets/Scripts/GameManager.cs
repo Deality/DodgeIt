@@ -552,6 +552,12 @@ public class GameManager : MonoBehaviour
             UpdateHighScoreUI();
             if (_isNewHighScore) StartCoroutine(AnimateHighScoreText());
 
+            if (AudioManager.instance != null)
+            {
+                AudioManager am = AudioManager.instance;
+                am.PlayUI(_isNewHighScore && am.newHighScoreSound != null ? am.newHighScoreSound : am.gameOverSound);
+            }
+
             gameOverPanel.SetActive(true);
             gameOverPanel.transform.localScale = originalPanelScale;
 

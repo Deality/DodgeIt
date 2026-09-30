@@ -49,8 +49,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip nearMissSound; // Near miss geçiş sesi
     public AudioClip truckHornSound; // Kamyon kornası
     public AudioClip buttonClickSound; // Buton tıklama sesi
-    public AudioClip countdownBeep;
-    public AudioClip countdownGo;
+    public AudioClip countdownBeep; // Devam ederken 3-2-1
+    public AudioClip countdownGo;   // "GO!"
+    public AudioClip coinRushSound;     // Drift Boost (Coin Rush) toplama
+    public AudioClip gameOverSound;     // Game Over paneli açılırken
+    public AudioClip newHighScoreSound; // Yeni rekorda Game Over sesi yerine çalar (boşsa Game Over sesi çalar)
 
     [Header("Şerit Değiştirme (Swipe) Sesleri")]
     [Tooltip("Şerit değiştirirken rastgele seçilip çalınacak swipe sesleri (aynı temada birkaç varyasyon).")]
@@ -232,6 +235,12 @@ public class AudioManager : MonoBehaviour
     public void PlayButtonSound()
     {
         PlayUI(buttonClickSound);
+    }
+
+    // Geri sayım oyun duraklatılmışken çalışır; UI bus ducking'den etkilenmez.
+    public void PlayCountdown(bool isGo)
+    {
+        PlayUI(isGo ? countdownGo : countdownBeep);
     }
 
     // --- BUS'A GÖRE OYNATMA & DUCKING ---

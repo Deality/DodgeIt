@@ -226,6 +226,7 @@ public class UIManager : MonoBehaviour
     IEnumerator AnimateCountdownStep(string text, float duration)
     {
         countdownText.text = text;
+        if (AudioManager.instance != null) AudioManager.instance.PlayCountdown(text == "GO!");
         float timer = 0f;
 
         while (timer < duration)
