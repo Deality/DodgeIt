@@ -84,14 +84,14 @@ public class CarController2D : MonoBehaviour
     [Tooltip("Boş bırakılırsa arabanın egzoz dumanı materyali kullanılır.")]
     [SerializeField] private Material driftSmokeMaterial;
     [Tooltip("Tam yan kayarken tekerlek başına saniyede çıkan duman bulutu sayısı.")]
-    [SerializeField] private float driftSmokeRate = 30f;
+    [SerializeField] private float driftSmokeRate = 45f;
     [Tooltip("Duman bulutlarının başlangıç boyutu (dünya birimi).")]
     [SerializeField] private float driftSmokeSize = 4f;
     [Tooltip("Bir duman bulutunun ekranda kalma süresi (saniye).")]
     [SerializeField] private float driftSmokeLifetime = 0.7f;
     [Tooltip("Dumanın yanlara savrulma hızı.")]
     [SerializeField] private float driftSmokeSpread = 3f;
-    [SerializeField] private Color driftSmokeColor = new Color(0.92f, 0.92f, 0.92f, 0.55f);
+    [SerializeField] private Color driftSmokeColor = new Color(0.8f, 0.8f, 0.8f, 0.6f);
     [Tooltip("Duman arabanın altında, lastik izinin üstünde kalsın diye.")]
     [SerializeField] private int driftSmokeSortingOrder = 1;
 
@@ -913,6 +913,10 @@ public class CarController2D : MonoBehaviour
             rightDriftMark = null;
         }
         UpdateDriftSmoke(isSliding);
+
+        // Lastik sesi de dumanla aynı koşulda: yalnızca basılı tutup kayarken. Çağrı kesilince ses kendiliğinden söner.
+        if (isSliding && AudioManager.instance != null)
+            AudioManager.instance.SetDriftSound(Mathf.Max(0.4f, Mathf.Abs(driftVelocity) / Mathf.Max(driftSpeed, 0.01f)));
     }
 
     void GetRearWheelPositions(out Vector3 leftWheel, out Vector3 rightWheel)

@@ -21,6 +21,10 @@ public class AudioManager : MonoBehaviour
     public AudioSource criticalSource; // 5) Kaza gibi öncelikli sesler (-> Critical bus)
     public AudioSource uiSource;       // Buton/menü sesleri (-> UI bus)
     private AudioSource feedbackSource; // 3) Swipe/coin/near miss - Awake'te oluşturulur (-> Action bus)
+    private AudioSource driftSource;    // 3) Drift lastik sesi (loop) - Awake'te oluşturulur (-> Action bus)
+    private float driftTarget;          // 0..1, araba kayarken her karede yeniler
+    private float driftLevel;           // yumuşatılmış seviye
+    private float lastDriftRequestTime = -10f;
 
     [Header("Audio Mixer (Bus Yönlendirme & Ducking)")]
     [Tooltip("Assets/Audio klasöründeki AudioMixer asset'i. Bkz. AudioManager üstündeki kurulum notu.")]
@@ -87,6 +91,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip coinRushCountTick;
     [Tooltip("Coin Rush sonunda '+N' sayısı son değere ulaşınca çalar.")]
     public AudioClip coinRushTotalSound;
+    [Tooltip("Coin Rush'ta oyuncu basılı tutup kayarken dönen lastik cıyaklaması (loop).")]
+    public AudioClip driftLoopSound;
+    [Range(0f, 1f)] public float driftLoopVolume = 0.55f;
     public AudioClip gameOverSound;     // Game Over paneli açılırken
     public AudioClip newHighScoreSound; // Yeni rekorda Game Over sesi yerine çalar (boşsa Game Over sesi çalar)
 
@@ -129,6 +136,11 @@ public class AudioManager : MonoBehaviour
         feedbackSource.loop = false;
         feedbackSource.volume = feedbackVolume;
 
+        driftSource = gameObject.AddComponent<AudioSource>();
+        driftSource.playOnAwake = false;
+        driftSource.loop = true;
+        driftSource.volume = 0f;
+
         RouteMixerGroups();
         LoadSettings();
         ApplyMuteStates();
@@ -143,6 +155,7 @@ public class AudioManager : MonoBehaviour
         if (engineSource != null && gameplayLoopGroup != null) engineSource.outputAudioMixerGroup = gameplayLoopGroup;
         if (sfxSource != null && actionGroup != null) sfxSource.outputAudioMixerGroup = actionGroup;
         if (feedbackSource != null && actionGroup != null) feedbackSource.outputAudioMixerGroup = actionGroup;
+        if (driftSource != null && actionGroup != null) driftSource.outputAudioMixerGroup = actionGroup;
         if (criticalSource != null && criticalGroup != null) criticalSource.outputAudioMixerGroup = criticalGroup;
         if (uiSource != null && uiGroup != null) uiSource.outputAudioMixerGroup = uiGroup;
     }
@@ -152,6 +165,7 @@ public class AudioManager : MonoBehaviour
         if (musicSource != null) musicSource.mute = !isMusicOn;
         if (sfxSource != null) sfxSource.mute = !isSfxOn;
         if (feedbackSource != null) feedbackSource.mute = !isSfxOn;
+        if (driftSource != null) driftSource.mute = !isSfxOn;
         if (engineSource != null) engineSource.mute = !isSfxOn;
         if (criticalSource != null) criticalSource.mute = !isSfxOn;
         if (uiSource != null) uiSource.mute = !isSfxOn;
@@ -229,6 +243,43 @@ public class AudioManager : MonoBehaviour
         }
 
         UpdateLayerDucking();
+        UpdateDriftLoop(shouldDuck);
+    }
+
+    // Araba, oyuncu basılı tutup kayarken HER KAREDE çağırır (intensity: 0..1 kayma şiddeti).
+    // Çağrı kesilince (parmak kalktı, drift bitti, araba yok oldu) ses kendiliğinden söner.
+    public void SetDriftSound(float intensity)
+    {
+        driftTarget = Mathf.Clamp01(intensity);
+        lastDriftRequestTime = Time.unscaledTime;
+    }
+
+    private void UpdateDriftLoop(bool gamePausedOrOver)
+    {
+        if (driftSource == null || driftLoopSound == null) return;
+
+        bool requested = Time.unscaledTime - lastDriftRequestTime < 0.1f && !gamePausedOrOver;
+        float target = requested ? driftTarget : 0f;
+        // hızlı aç (~0.08 sn), biraz daha yumuşak kapat (~0.15 sn)
+        float speed = target > driftLevel ? 12f : 7f;
+        driftLevel = Mathf.MoveTowards(driftLevel, target, speed * Time.unscaledDeltaTime);
+
+        if (driftLevel > 0.001f)
+        {
+            if (!driftSource.isPlaying)
+            {
+                driftSource.clip = driftLoopSound;
+                driftSource.time = Random.Range(0f, driftLoopSound.length); // her kaymada aynı yerden başlamasın
+                driftSource.Play();
+            }
+            // geri bildirim katmanıyla birlikte kısılır (olay/kritik ses çalarken geri çekilir)
+            driftSource.volume = driftLoopVolume * driftLevel * currentFeedbackMul;
+            driftSource.pitch = Mathf.Lerp(0.94f, 1.06f, driftLevel);
+        }
+        else if (driftSource.isPlaying)
+        {
+            driftSource.Stop();
+        }
     }
 
     // --- MÜZİK ---
@@ -407,6 +458,7 @@ public class AudioManager : MonoBehaviour
         if (musicSource != null) musicSource.mute = !isMusicOn;
         if (sfxSource != null) sfxSource.mute = !isSfxOn;
         if (feedbackSource != null) feedbackSource.mute = !isSfxOn;
+        if (driftSource != null) driftSource.mute = !isSfxOn;
         if (engineSource != null) engineSource.mute = !isSfxOn;
         if (criticalSource != null) criticalSource.mute = !isSfxOn;
         if (uiSource != null) uiSource.mute = !isSfxOn;

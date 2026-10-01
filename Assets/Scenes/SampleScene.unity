@@ -2621,6 +2621,8 @@ MonoBehaviour:
   coinRushSound: {fileID: 8300000, guid: 114db6e04109fa24ab60d0e2034a27ec, type: 3}
   coinRushCountTick: {fileID: 8300000, guid: 10052c27045bbc84699c4a341002aa2a, type: 3}
   coinRushTotalSound: {fileID: 8300000, guid: 761cc80916591c84db90cafec4e01358, type: 3}
+  driftLoopSound: {fileID: 8300000, guid: 6864523206dd82645b88b4c1106483b8, type: 3}
+  driftLoopVolume: 0.55
   gameOverSound: {fileID: 0}
   newHighScoreSound: {fileID: 0}
   swipeSounds:
