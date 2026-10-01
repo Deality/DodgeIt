@@ -26,10 +26,6 @@ public class AudioManager : MonoBehaviour
     private float driftTarget;          // 0..1, araba kayarken her karede yeniler
     private float driftLevel;           // yumuşatılmış seviye
     private float lastDriftRequestTime = -10f;
-    private AudioSource sirenSource;    // Menüdeki polis sireni (loop) - Awake'te oluşturulur (-> Action bus)
-    private float sirenTarget;
-    private float sirenLevel;
-    private float lastSirenRequestTime = -10f;
 
     [Header("Audio Mixer (Bus Yönlendirme & Ducking)")]
     [Tooltip("Assets/Audio klasöründeki AudioMixer asset'i. Bkz. AudioManager üstündeki kurulum notu.")]
@@ -89,6 +85,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip nearMissSound; // Near miss geçiş sesi
     public AudioClip truckHornSound; // Kamyon kornası
     public AudioClip buttonClickSound; // Buton tıklama sesi
+    public AudioClip purchaseSound;    // Marketten araba / yol satın alınınca
     public AudioClip countdownBeep; // Devam ederken 3-2-1
     public AudioClip countdownGo;   // "GO!"
     public AudioClip coinRushSound;     // Drift Boost (Coin Rush) toplama
@@ -105,15 +102,10 @@ public class AudioManager : MonoBehaviour
     public AudioClip introEngineSound;
 
     [Header("Müzik (sahneye göre)")]
-    [Tooltip("Ana menü ve yükleme ekranında çalan müzik. Boş bırakılırsa menüde de backgroundMusic çalar (sahne değişirken kesilmeden devam eder).")]
+    [Tooltip("Ana menü ve yükleme ekranında çalan müzik. Boş bırakılırsa menüde müzik çalmaz.")]
     public AudioClip menuMusic;
     [Tooltip("Bu sahnede backgroundMusic, diğer sahnelerde menuMusic çalar.")]
     public string gameSceneName = "SampleScene";
-
-    [Header("Ana Menü Ortam Sesleri")]
-    [Tooltip("Menüde geçen polis arabasının sireni (loop). Araba ekrana yaklaştıkça açılır.")]
-    public AudioClip policeSirenLoop;
-    [Range(0f, 1f)] public float policeSirenVolume = 0.35f;
 
     [Header("Şerit Değiştirme (Swipe) Sesleri")]
     [Tooltip("Şerit değiştirirken rastgele seçilip çalınacak swipe sesleri (aynı temada birkaç varyasyon).")]
@@ -159,11 +151,6 @@ public class AudioManager : MonoBehaviour
         driftSource.loop = true;
         driftSource.volume = 0f;
 
-        sirenSource = gameObject.AddComponent<AudioSource>();
-        sirenSource.playOnAwake = false;
-        sirenSource.loop = true;
-        sirenSource.volume = 0f;
-
         RouteMixerGroups();
         LoadSettings();
         ApplyMuteStates();
@@ -192,7 +179,6 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null && actionGroup != null) sfxSource.outputAudioMixerGroup = actionGroup;
         if (feedbackSource != null && actionGroup != null) feedbackSource.outputAudioMixerGroup = actionGroup;
         if (driftSource != null && actionGroup != null) driftSource.outputAudioMixerGroup = actionGroup;
-        if (sirenSource != null && actionGroup != null) sirenSource.outputAudioMixerGroup = actionGroup;
         if (criticalSource != null && criticalGroup != null) criticalSource.outputAudioMixerGroup = criticalGroup;
         if (uiSource != null && uiGroup != null) uiSource.outputAudioMixerGroup = uiGroup;
     }
@@ -203,7 +189,6 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null) sfxSource.mute = !isSfxOn;
         if (feedbackSource != null) feedbackSource.mute = !isSfxOn;
         if (driftSource != null) driftSource.mute = !isSfxOn;
-        if (sirenSource != null) sirenSource.mute = !isSfxOn;
         if (engineSource != null) engineSource.mute = !isSfxOn;
         if (criticalSource != null) criticalSource.mute = !isSfxOn;
         if (uiSource != null) uiSource.mute = !isSfxOn;
@@ -282,40 +267,15 @@ public class AudioManager : MonoBehaviour
 
         UpdateLayerDucking();
         UpdateDriftLoop(shouldDuck);
-        UpdateSirenLoop();
-    }
-
-    // Menüdeki polis arabası HER KAREDE çağırır (level: 0..1, ekrana yakınlık). Çağrı kesilince siren söner.
-    public void SetSirenLevel(float level)
-    {
-        sirenTarget = Mathf.Clamp01(level);
-        lastSirenRequestTime = Time.unscaledTime;
-    }
-
-    private void UpdateSirenLoop()
-    {
-        if (sirenSource == null || policeSirenLoop == null) return;
-
-        float target = Time.unscaledTime - lastSirenRequestTime < 0.1f ? sirenTarget : 0f;
-        sirenLevel = Mathf.MoveTowards(sirenLevel, target, 2.5f * Time.unscaledDeltaTime);
-
-        if (sirenLevel > 0.001f)
-        {
-            if (!sirenSource.isPlaying)
-            {
-                sirenSource.clip = policeSirenLoop;
-                sirenSource.Play();
-            }
-            sirenSource.volume = policeSirenVolume * sirenLevel;
-        }
-        else if (sirenSource.isPlaying)
-        {
-            sirenSource.Stop();
-        }
     }
 
     // Oyun başında araba sahneye girerken
-    public void PlayIntroEngine() => PlayAction(introEngineSound);
+    public void PlayIntroEngine()
+    {
+        // Ana menü de seçili arabayı PlayerSpawner ile oluşturuyor; motor sesi yalnızca oyun sahnesinde çalsın
+        if (SceneManager.GetActiveScene().name != gameSceneName) return;
+        PlayAction(introEngineSound);
+    }
 
     // Araba, oyuncu basılı tutup kayarken HER KAREDE çağırır (intensity: 0..1 kayma şiddeti).
     // Çağrı kesilince (parmak kalktı, drift bitti, araba yok oldu) ses kendiliğinden söner.
@@ -356,12 +316,14 @@ public class AudioManager : MonoBehaviour
     // --- MÜZİK ---
     public void PlayMusic()
     {
-        // Oyun sahnesinde oyun müziği, diğer sahnelerde (menü, yükleme) menü müziği; biri atanmadıysa diğeri çalar
+        // Oyun sahnesinde oyun müziği, diğer sahnelerde (menü, yükleme) menü müziği.
+        // menuMusic boşsa menüde müzik çalmaz.
         bool inGame = SceneManager.GetActiveScene().name == gameSceneName;
         AudioClip clip = inGame ? backgroundMusic : menuMusic;
-        if (clip == null) clip = backgroundMusic != null ? backgroundMusic : menuMusic;
 
-        if (musicSource == null || clip == null || !isMusicOn) return;
+        if (musicSource == null) return;
+        if (clip == null) { musicSource.Stop(); return; } // bu sahnenin müziği yok: öncekini sustur
+        if (!isMusicOn) return;
         if (musicSource.isPlaying && musicSource.clip == clip) return; // Zaten bu müzik çalıyorsa tekrar başlatma
 
         musicSource.clip = clip;
@@ -405,6 +367,11 @@ public class AudioManager : MonoBehaviour
     public void PlayButtonSound()
     {
         PlayUI(buttonClickSound);
+    }
+
+    public void PlayPurchaseSound()
+    {
+        PlayUI(purchaseSound);
     }
 
     public void PlayCoinRushCountTick() => PlayFeedback(coinRushCountTick);
@@ -534,7 +501,6 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null) sfxSource.mute = !isSfxOn;
         if (feedbackSource != null) feedbackSource.mute = !isSfxOn;
         if (driftSource != null) driftSource.mute = !isSfxOn;
-        if (sirenSource != null) sirenSource.mute = !isSfxOn;
         if (engineSource != null) engineSource.mute = !isSfxOn;
         if (criticalSource != null) criticalSource.mute = !isSfxOn;
         if (uiSource != null) uiSource.mute = !isSfxOn;

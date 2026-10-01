@@ -552,6 +552,11 @@ MonoBehaviour:
   takeButton: {fileID: 143584337}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 143584338}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -567,6 +572,82 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &27833051
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 27833052}
+  - component: {fileID: 27833054}
+  - component: {fileID: 27833053}
+  m_Layer: 5
+  m_Name: RewardCar_Centered
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &27833052
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27833051}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.04377956, y: 0.04377956, z: 0.04377956}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1327115693}
+  m_Father: {fileID: 916499321}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 285.92468, y: -12}
+  m_SizeDelta: {x: 2565.9128, y: 2564.048}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &27833053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27833051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: b0a2462f9a91356408b0c0c6c1aaf596, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &27833054
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27833051}
+  m_CullTransparentMesh: 1
 --- !u!1 &28209709
 GameObject:
   m_ObjectHideFlags: 0
@@ -1076,7 +1157,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 3
-  price: 4000
+  price: 18000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1927791797}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -1357,7 +1442,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 3
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -1858,7 +1943,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 36000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -1885,7 +1970,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 33.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1937,6 +2022,143 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 71033546}
+  m_CullTransparentMesh: 1
+--- !u!1 &71094264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 71094265}
+  - component: {fileID: 71094267}
+  - component: {fileID: 71094266}
+  m_Layer: 5
+  m_Name: SecretMark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &71094265
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71094264}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 413951353}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 803.5248, y: 1282.024}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &71094266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71094264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: '?'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 999.6
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 2000
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 0
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &71094267
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71094264}
   m_CullTransparentMesh: 1
 --- !u!1 &78838178
 GameObject:
@@ -2037,6 +2259,11 @@ MonoBehaviour:
   takeButton: {fileID: 544550653}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 544550654}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -2258,7 +2485,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 1
-  price: 500
+  price: 1500
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 859385774}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -2555,6 +2786,11 @@ MonoBehaviour:
   takeButton: {fileID: 1710818990}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1710818991}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -2865,7 +3101,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5
+  m_text: 3
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -3124,7 +3360,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2
+  m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -3261,7 +3497,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5000
+  m_text: 3.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -3288,7 +3524,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.3
+  m_fontSize: 28.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4509,6 +4745,11 @@ MonoBehaviour:
   takeButton: {fileID: 1466130720}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1466130721}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -5477,7 +5718,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 9
-  price: 4500
+  price: 16000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1376413988}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -5708,7 +5953,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 16
-  price: 8000
+  price: 36000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 71033548}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -5852,7 +6101,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: Locked
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -5879,7 +6128,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 27.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6268,6 +6517,11 @@ MonoBehaviour:
   takeButton: {fileID: 1172693065}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1172693066}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -6340,7 +6594,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 500
+  m_text: 300
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -6732,7 +6986,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 8
-  price: 4000
+  price: 14000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1566544394}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -6876,7 +7134,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 30000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -6903,7 +7161,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 33.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7407,7 +7665,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5
+  m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -8177,6 +8435,11 @@ MonoBehaviour:
   takeButton: {fileID: 1468290735}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1468290736}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -8386,7 +8649,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 18000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -8413,7 +8676,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 34.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8660,7 +8923,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5000
+  m_text: 2.500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -8687,7 +8950,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.3
+  m_fontSize: 28.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10350,7 +10613,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1500
+  m_text: 4500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -10377,7 +10640,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.7
+  m_fontSize: 43
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10860,6 +11123,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 413707448}
   m_CullTransparentMesh: 1
+--- !u!1 &413951352
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 413951353}
+  - component: {fileID: 413951355}
+  - component: {fileID: 413951354}
+  m_Layer: 5
+  m_Name: RewardCar_Centered
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &413951353
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413951352}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.04377956, y: 0.04377956, z: 0.04377956}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 71094265}
+  m_Father: {fileID: 1194422793}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 285.92468, y: -12}
+  m_SizeDelta: {x: 2565.9128, y: 2564.048}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &413951354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413951352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 5774b7f869eb9974d988c7682136c1db, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &413951355
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413951352}
+  m_CullTransparentMesh: 1
 --- !u!1 &417443166
 GameObject:
   m_ObjectHideFlags: 0
@@ -11086,6 +11425,143 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 442840541}
+  m_CullTransparentMesh: 1
+--- !u!1 &445288092
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 445288093}
+  - component: {fileID: 445288095}
+  - component: {fileID: 445288094}
+  m_Layer: 5
+  m_Name: Text (TMP) (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &445288093
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445288092}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 916499321}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 292.5, y: 9.6}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &445288094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445288092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 14
+  m_fontSizeMax: 36
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 78.741455, y: 0, z: 17.810608, w: -50.805916}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &445288095
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445288092}
   m_CullTransparentMesh: 1
 --- !u!1 &455686728
 GameObject:
@@ -11717,7 +12193,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 18
-  price: 9000
+  price: 0
+  achievementOnly: 1
+  lockedHint: '? ? ?'
+  silhouetteImage: {fileID: 1524589961}
+  secretMark: {fileID: 1590503745}
   priceText: {fileID: 190560648}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -12306,7 +12786,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2000
+  m_text: 9000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -12459,6 +12939,11 @@ MonoBehaviour:
   takeButton: {fileID: 586057028}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 586057029}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -12863,6 +13348,11 @@ MonoBehaviour:
   takeButton: {fileID: 981904340}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 981904341}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -13004,92 +13494,92 @@ MonoBehaviour:
     carPrefab: {fileID: 8550575661317424263, guid: 240dece8323800641aed0212320e3cd8, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 1"
-    price: 2000
+    price: 1500
     icon: {fileID: 0}
     carPrefab: {fileID: 6678359701187052960, guid: c81dd34efe7ab01439c8b41c77b4b4e1, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 2"
-    price: 4000
+    price: 3000
     icon: {fileID: 0}
     carPrefab: {fileID: 6007361995883915365, guid: d9d48f185c72e6643841c38160ceb007, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 3"
-    price: 6500
+    price: 4500
     icon: {fileID: 0}
     carPrefab: {fileID: 4703575138632839999, guid: 36e4c249ead4d4742bb4bc7a2474b8c5, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 4"
-    price: 10000
+    price: 6000
     icon: {fileID: 0}
     carPrefab: {fileID: 2569972223908750670, guid: 9a5d240a585408a48b6ed36ea0320bfa, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 5"
-    price: 15000
+    price: 8000
     icon: {fileID: 0}
     carPrefab: {fileID: 5999518319238611163, guid: 70644f74b648c7e4d959b63b232f6eef, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 6"
-    price: 25000
+    price: 10000
     icon: {fileID: 0}
     carPrefab: {fileID: 2351441637734710661, guid: 1dd92f439670fdb4c87a21b169068f96, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 7 "
-    price: 40000
+    price: 12000
     icon: {fileID: 0}
     carPrefab: {fileID: 9175502914220267318, guid: 6dd9bde8ef14ee0449d4b761f77265d1, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 8"
-    price: 50000
+    price: 14000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 8988575b1000eac41acec261530a0756, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 9"
-    price: 4500
+    price: 16000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 663651b1452c72b4ea0d1e1dd854890d, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 10"
-    price: 5000
+    price: 18000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 037d1a4e60fb8e4438b187f020498389, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 11"
-    price: 5500
+    price: 20000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: fb2aeddfda9b20740af494ae58b6a7cb, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 12"
-    price: 6000
+    price: 21000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 067d69355bf5a76489e65a3c5e527831, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 13"
-    price: 6500
+    price: 23000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 0e05c7d9d21f80a4e9a9b4e3bd2cd562, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 14"
-    price: 7000
+    price: 26000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 6ddb5de0c0db2e64b8b2fcb463e85d86, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 15"
-    price: 7500
+    price: 30000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 6aac409f2638fa54eb97a509e0147af2, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 16"
-    price: 8000
+    price: 36000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: d4359b699c5610d4bac69e86ca8b87a0, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 17"
-    price: 8500
+    price: 0
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: e7154d42d83f4674983e31171836c631, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 18"
-    price: 9000
+    price: 0
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 7a8d742dc1d7f1144a357b934efb7d5b, type: 3}
     roadSprite: {fileID: 0}
@@ -13100,22 +13590,22 @@ MonoBehaviour:
     carPrefab: {fileID: 0}
     roadSprite: {fileID: -1539432581291487184, guid: 4c76feebf447de141b911902c3ef203c, type: 3}
   - itemName: Yol 1
-    price: 5000
+    price: 4000
     icon: {fileID: 0}
     carPrefab: {fileID: 0}
     roadSprite: {fileID: -2257040666945723329, guid: 1d4d647bc690b494b9c187449ca3a5b9, type: 3}
   - itemName: Yol 2
-    price: 8000
+    price: 9000
     icon: {fileID: 0}
     carPrefab: {fileID: 0}
     roadSprite: {fileID: -7810406811712437204, guid: a1028cd3b40e9df46bce612c305b6e7c, type: 3}
   - itemName: Yol 3
-    price: 15000
+    price: 18000
     icon: {fileID: 0}
     carPrefab: {fileID: 0}
     roadSprite: {fileID: 9117949984361769621, guid: 99ef7d98b31e3794b9f81b439e211b63, type: 3}
   - itemName: Yol 4
-    price: 30000
+    price: 32000
     icon: {fileID: 0}
     carPrefab: {fileID: 0}
     roadSprite: {fileID: 6469620723914929386, guid: deb457bc091998541a5ddce1fc2420e2, type: 3}
@@ -13705,7 +14195,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5
+  m_text: 3
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -13968,7 +14458,8 @@ MonoBehaviour:
     targetValue: 1
     currentValue: 0
     rewardType: 0
-    rewardAmount: 500
+    rewardAmount: 300
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_a_nearmiss
@@ -13977,7 +14468,8 @@ MonoBehaviour:
     targetValue: 1
     currentValue: 0
     rewardType: 0
-    rewardAmount: 500
+    rewardAmount: 300
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_a_speedreducer
@@ -13986,7 +14478,8 @@ MonoBehaviour:
     targetValue: 1
     currentValue: 0
     rewardType: 1
-    rewardAmount: 5
+    rewardAmount: 1
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_a_shield
@@ -13995,7 +14488,8 @@ MonoBehaviour:
     targetValue: 1
     currentValue: 0
     rewardType: 1
-    rewardAmount: 2
+    rewardAmount: 1
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_a_car
@@ -14004,7 +14498,8 @@ MonoBehaviour:
     targetValue: 1
     currentValue: 0
     rewardType: 1
-    rewardAmount: 10
+    rewardAmount: 2
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_a_road
@@ -14013,7 +14508,8 @@ MonoBehaviour:
     targetValue: 1
     currentValue: 0
     rewardType: 1
-    rewardAmount: 10
+    rewardAmount: 2
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_10.000
@@ -14022,7 +14518,8 @@ MonoBehaviour:
     targetValue: 10000
     currentValue: 0
     rewardType: 0
-    rewardAmount: 1000
+    rewardAmount: 300
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_30.000
@@ -14031,7 +14528,8 @@ MonoBehaviour:
     targetValue: 30000
     currentValue: 0
     rewardType: 0
-    rewardAmount: 1500
+    rewardAmount: 500
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_75.000
@@ -14040,7 +14538,8 @@ MonoBehaviour:
     targetValue: 75000
     currentValue: 0
     rewardType: 0
-    rewardAmount: 5000
+    rewardAmount: 1000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_150.000
@@ -14049,7 +14548,8 @@ MonoBehaviour:
     targetValue: 150000
     currentValue: 0
     rewardType: 0
-    rewardAmount: 15000
+    rewardAmount: 2000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_500.000
@@ -14058,7 +14558,8 @@ MonoBehaviour:
     targetValue: 500000
     currentValue: 0
     rewardType: 0
-    rewardAmount: 50000
+    rewardAmount: 5000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_800.000
@@ -14067,7 +14568,8 @@ MonoBehaviour:
     targetValue: 800000
     currentValue: 0
     rewardType: 0
-    rewardAmount: 100000
+    rewardAmount: 10000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_1.500.000
@@ -14076,7 +14578,8 @@ MonoBehaviour:
     targetValue: 1500000
     currentValue: 0
     rewardType: 0
-    rewardAmount: 250000
+    rewardAmount: 25000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_10_shields
@@ -14085,7 +14588,8 @@ MonoBehaviour:
     targetValue: 10
     currentValue: 0
     rewardType: 0
-    rewardAmount: 1000
+    rewardAmount: 500
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_30_shields
@@ -14094,7 +14598,8 @@ MonoBehaviour:
     targetValue: 30
     currentValue: 0
     rewardType: 1
-    rewardAmount: 5
+    rewardAmount: 3
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_75_shields
@@ -14103,7 +14608,8 @@ MonoBehaviour:
     targetValue: 75
     currentValue: 0
     rewardType: 0
-    rewardAmount: 2500
+    rewardAmount: 2000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_150_shields
@@ -14112,7 +14618,8 @@ MonoBehaviour:
     targetValue: 150
     currentValue: 0
     rewardType: 0
-    rewardAmount: 5000
+    rewardAmount: 4000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_5_speedreducers
@@ -14121,7 +14628,8 @@ MonoBehaviour:
     targetValue: 5
     currentValue: 0
     rewardType: 0
-    rewardAmount: 1500
+    rewardAmount: 500
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_20_speedreducers
@@ -14130,7 +14638,8 @@ MonoBehaviour:
     targetValue: 20
     currentValue: 0
     rewardType: 1
-    rewardAmount: 10
+    rewardAmount: 3
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_50_speedreducers
@@ -14139,7 +14648,8 @@ MonoBehaviour:
     targetValue: 50
     currentValue: 0
     rewardType: 0
-    rewardAmount: 5000
+    rewardAmount: 2500
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Use_boost_5_times
@@ -14148,7 +14658,8 @@ MonoBehaviour:
     targetValue: 5
     currentValue: 0
     rewardType: 0
-    rewardAmount: 2000
+    rewardAmount: 500
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Use_boost_20_times
@@ -14158,6 +14669,7 @@ MonoBehaviour:
     currentValue: 0
     rewardType: 1
     rewardAmount: 5
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Use_boost_50_times
@@ -14166,7 +14678,8 @@ MonoBehaviour:
     targetValue: 50
     currentValue: 0
     rewardType: 0
-    rewardAmount: 5000
+    rewardAmount: 3000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Use_boost_100_times
@@ -14175,7 +14688,8 @@ MonoBehaviour:
     targetValue: 100
     currentValue: 0
     rewardType: 0
-    rewardAmount: 7500
+    rewardAmount: 6000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_5_nearmisses
@@ -14184,7 +14698,8 @@ MonoBehaviour:
     targetValue: 5
     currentValue: 0
     rewardType: 1
-    rewardAmount: 2
+    rewardAmount: 1
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_20_nearmisses
@@ -14193,7 +14708,8 @@ MonoBehaviour:
     targetValue: 20
     currentValue: 0
     rewardType: 0
-    rewardAmount: 1000
+    rewardAmount: 500
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_50_nearmisses
@@ -14202,7 +14718,8 @@ MonoBehaviour:
     targetValue: 50
     currentValue: 0
     rewardType: 0
-    rewardAmount: 2500
+    rewardAmount: 1000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_100_nearmisses
@@ -14211,7 +14728,8 @@ MonoBehaviour:
     targetValue: 100
     currentValue: 0
     rewardType: 0
-    rewardAmount: 5000
+    rewardAmount: 2000
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_all_roads
@@ -14220,7 +14738,8 @@ MonoBehaviour:
     targetValue: 4
     currentValue: 0
     rewardType: 1
-    rewardAmount: 20
+    rewardAmount: 10
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_3_cars
@@ -14229,16 +14748,38 @@ MonoBehaviour:
     targetValue: 3
     currentValue: 0
     rewardType: 1
-    rewardAmount: 5
+    rewardAmount: 3
+    isSecret: 0
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_all_cars
     description: 
     missionType: 4
-    targetValue: 8
+    targetValue: 16
     currentValue: 0
     rewardType: 1
-    rewardAmount: 20
+    rewardAmount: 10
+    isSecret: 0
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Secret_coin_rush_no_drift
+    description: Finish a Coin Rush without drifting
+    missionType: 7
+    targetValue: 1
+    currentValue: 0
+    rewardType: 3
+    rewardAmount: 18
+    isSecret: 1
+    isCompleted: 0
+    isClaimed: 0
+  - missionID: Secret_police_near_miss
+    description: Near miss 3 police cars in one run
+    missionType: 8
+    targetValue: 1
+    currentValue: 0
+    rewardType: 3
+    rewardAmount: 17
+    isSecret: 1
     isCompleted: 0
     isClaimed: 0
 --- !u!1 &567632721
@@ -14298,7 +14839,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3500
+  m_text: 12000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -14325,7 +14866,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.35
+  m_fontSize: 34.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -15392,7 +15933,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 13
-  price: 6500
+  price: 23000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1820960622}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -15673,7 +16218,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1500
+  m_text: 500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -15700,7 +16245,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.5
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -15973,7 +16518,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 12
-  price: 6000
+  price: 21000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 724096556}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -16471,6 +17020,143 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683671700}
   m_CullTransparentMesh: 1
+--- !u!1 &684299392
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 684299393}
+  - component: {fileID: 684299395}
+  - component: {fileID: 684299394}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &684299393
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684299392}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 916499321}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -256, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &684299394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684299392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: '? ? ?'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: -40.31009, y: -84.56758, z: -23.934113, w: -75.7082}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &684299395
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684299392}
+  m_CullTransparentMesh: 1
 --- !u!1 &691771721
 GameObject:
   m_ObjectHideFlags: 0
@@ -16740,6 +17426,143 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704338200}
+  m_CullTransparentMesh: 1
+--- !u!1 &706274084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 706274085}
+  - component: {fileID: 706274087}
+  - component: {fileID: 706274086}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &706274085
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706274084}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1194422793}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -256, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &706274086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706274084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: '? ? ?'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: -40.31009, y: -84.56758, z: -23.934113, w: -75.7082}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &706274087
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706274084}
   m_CullTransparentMesh: 1
 --- !u!1 &714879531
 GameObject:
@@ -17084,7 +17907,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 21000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -17111,7 +17934,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 34.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -17218,7 +18041,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 6
-  price: 3000
+  price: 10000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1495246372}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -17378,6 +18205,11 @@ MonoBehaviour:
   takeButton: {fileID: 1625514391}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1625514392}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -17610,7 +18442,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 14
-  price: 7000
+  price: 26000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 788567043}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -17891,7 +18727,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 500
+  m_text: 300
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -18335,7 +19171,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 26000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -18362,7 +19198,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 33.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -18609,7 +19445,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1200
+  m_text: 32.500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -18636,7 +19472,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 53
+  m_fontSize: 38.3
   m_fontSizeBase: 46
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -18746,7 +19582,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2500
+  m_text: 2.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -18773,7 +19609,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.3
+  m_fontSize: 28.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -18956,7 +19792,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 3
-  price: 1500
+  price: 4500
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 406950393}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -19042,6 +19882,126 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 804622511}
+  m_CullTransparentMesh: 1
+--- !u!1 &812662821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 812662822}
+  - component: {fileID: 812662825}
+  - component: {fileID: 812662824}
+  - component: {fileID: 812662823}
+  m_Layer: 5
+  m_Name: Button
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &812662822
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812662821}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 916499321}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 26.1, y: 0}
+  m_SizeDelta: {x: 178, y: 105}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &812662823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812662821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 812662824}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &812662824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812662821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 2440753386508575221, guid: d97ddd891a6482f4680b9d563efa1b83, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &812662825
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812662821}
   m_CullTransparentMesh: 1
 --- !u!1 &813588247
 GameObject:
@@ -20093,7 +21053,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5000
+  m_text: 1.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -20120,7 +21080,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.3
+  m_fontSize: 29.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -20230,9 +21190,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '500
-
-'
+  m_text: 1500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -20259,7 +21217,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 57.3
+  m_fontSize: 44.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -20460,6 +21418,11 @@ MonoBehaviour:
   takeButton: {fileID: 1255999633}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1255999634}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -20691,7 +21654,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 50.000
+  m_text: 5.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -20718,7 +21681,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22.8
+  m_fontSize: 28.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -20900,7 +21863,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 2
-  price: 2000
+  price: 9000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 525010336}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -20986,6 +21953,125 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 910384413}
+  m_CullTransparentMesh: 1
+--- !u!1 &916499320
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 916499321}
+  - component: {fileID: 916499325}
+  - component: {fileID: 916499324}
+  - component: {fileID: 916499323}
+  - component: {fileID: 916499322}
+  m_Layer: 5
+  m_Name: AchievementRow_Secret_Police
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &916499321
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916499320}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 684299393}
+  - {fileID: 445288093}
+  - {fileID: 27833052}
+  - {fileID: 812662822}
+  m_Father: {fileID: 1024248147}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 874, y: 314}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &916499322
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916499320}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &916499323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916499320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6bdf785c76f6004d9138014d78a2080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissionRowView
+  descriptionText: {fileID: 684299394}
+  rewardText: {fileID: 445288094}
+  progressText: {fileID: 0}
+  takeButton: {fileID: 812662823}
+  takeButtonText: {fileID: 0}
+  takeButtonImage: {fileID: 812662824}
+  rewardIcon: {fileID: 27833053}
+  secretMark: {fileID: 1327115692}
+  secretDescription: '? ? ?'
+  secretReward: 
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
+  readyColor: {r: 0, g: 1, b: 0, a: 1}
+  notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  claimedColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &916499324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916499320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 3936615208540833839, guid: 6b8f58888413cab46911b3149b29ca9e, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &916499325
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916499320}
   m_CullTransparentMesh: 1
 --- !u!1 &924849448
 GameObject:
@@ -21623,6 +22709,11 @@ MonoBehaviour:
   takeButton: {fileID: 916820}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 916821}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -21796,7 +22887,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -21929,7 +23020,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: 0}
+  m_AnchoredPosition: {x: -0.00012207031, y: -0.00024414062}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &979218417
@@ -22542,12 +23633,14 @@ RectTransform:
   - {fileID: 1453654276}
   - {fileID: 871193381}
   - {fileID: 1711984506}
+  - {fileID: 1194422793}
+  - {fileID: 916499321}
   m_Father: {fileID: 388402363}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 590.39954}
-  m_SizeDelta: {x: 0, y: 10158.262}
+  m_AnchoredPosition: {x: 0, y: 0.0009765625}
+  m_SizeDelta: {x: 0, y: 10806.262}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1024248148
 MonoBehaviour:
@@ -22797,6 +23890,11 @@ MonoBehaviour:
   takeButton: {fileID: 2082992542}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 2082992543}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -22895,7 +23993,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 7500
+  m_text: 6.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -22922,7 +24020,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.9
+  m_fontSize: 28.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -23150,6 +24248,11 @@ MonoBehaviour:
   takeButton: {fileID: 1069731758}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1069731759}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -23361,7 +24464,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5000
+  m_text: 4.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -23388,7 +24491,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.3
+  m_fontSize: 28.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -23651,7 +24754,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3000
+  m_text: 75.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -23678,7 +24781,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 51.85
+  m_fontSize: 39.5
   m_fontSizeBase: 46
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -24053,6 +25156,11 @@ MonoBehaviour:
   takeButton: {fileID: 290905290}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 290905291}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -24306,6 +25414,10 @@ MonoBehaviour:
   itemType: 1
   itemIndex: 0
   price: 0
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 366096294}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -24442,7 +25554,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2500
+  m_text: 1.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -24469,7 +25581,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.3
+  m_fontSize: 29.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -25243,7 +26355,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1000
+  m_text: 300
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -25270,7 +26382,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.5
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -25497,6 +26609,11 @@ MonoBehaviour:
   takeButton: {fileID: 1173509692}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1173509693}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -25689,7 +26806,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1000
+  m_text: 500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -25716,7 +26833,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.5
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -26330,6 +27447,125 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1193206292}
   m_CullTransparentMesh: 1
+--- !u!1 &1194422792
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1194422793}
+  - component: {fileID: 1194422797}
+  - component: {fileID: 1194422796}
+  - component: {fileID: 1194422795}
+  - component: {fileID: 1194422794}
+  m_Layer: 5
+  m_Name: AchievementRow_Secret_CoinRush
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1194422793
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194422792}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 706274085}
+  - {fileID: 1543932189}
+  - {fileID: 413951353}
+  - {fileID: 1619114160}
+  m_Father: {fileID: 1024248147}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 874, y: 314}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &1194422794
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194422792}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1194422795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194422792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6bdf785c76f6004d9138014d78a2080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissionRowView
+  descriptionText: {fileID: 706274086}
+  rewardText: {fileID: 1543932190}
+  progressText: {fileID: 0}
+  takeButton: {fileID: 1619114161}
+  takeButtonText: {fileID: 0}
+  takeButtonImage: {fileID: 1619114162}
+  rewardIcon: {fileID: 413951354}
+  secretMark: {fileID: 71094264}
+  secretDescription: '? ? ?'
+  secretReward: 
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
+  readyColor: {r: 0, g: 1, b: 0, a: 1}
+  notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  claimedColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &1194422796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194422792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 3936615208540833839, guid: 6b8f58888413cab46911b3149b29ca9e, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1194422797
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194422792}
+  m_CullTransparentMesh: 1
 --- !u!1 &1195790780
 GameObject:
   m_ObjectHideFlags: 0
@@ -26384,7 +27620,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 7
-  price: 3500
+  price: 12000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 567632723}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -26605,7 +27845,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2000
+  m_text: 6000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -26784,6 +28024,11 @@ MonoBehaviour:
   takeButton: {fileID: 1337342533}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1337342534}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -26936,6 +28181,10 @@ MonoBehaviour:
   itemType: 0
   itemIndex: 0
   price: 0
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 56868746}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -28502,6 +29751,11 @@ MonoBehaviour:
   takeButton: {fileID: 280444892}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 280444893}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -28936,6 +30190,11 @@ MonoBehaviour:
   takeButton: {fileID: 1469130293}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1469130294}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -29034,7 +30293,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: 5.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -29061,7 +30320,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 68.25
+  m_fontSize: 44.95
   m_fontSizeBase: 46
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -29248,7 +30507,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 20
+  m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -29478,6 +30737,11 @@ MonoBehaviour:
   takeButton: {fileID: 1440135531}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1440135532}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -29518,6 +30782,143 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1325564586}
+  m_CullTransparentMesh: 1
+--- !u!1 &1327115692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1327115693}
+  - component: {fileID: 1327115695}
+  - component: {fileID: 1327115694}
+  m_Layer: 5
+  m_Name: SecretMark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1327115693
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327115692}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 27833052}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 803.5248, y: 1282.024}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1327115694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327115692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: '?'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 999.6
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 2000
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 0
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1327115695
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327115692}
   m_CullTransparentMesh: 1
 --- !u!1 &1337342531
 GameObject:
@@ -30448,7 +31849,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 16000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -30475,7 +31876,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 34.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -30664,7 +32065,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 500
+  m_text: 17.500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -30691,7 +32092,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 66.3
+  m_fontSize: 39
   m_fontSizeBase: 46
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -31423,7 +32824,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 20
+  m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -31800,7 +33201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5000
+  m_text: 2.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -31827,7 +33228,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.3
+  m_fontSize: 28.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -32090,6 +33491,11 @@ MonoBehaviour:
   takeButton: {fileID: 1965464636}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1965464637}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -33096,7 +34502,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 8000
+  m_text: 32000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -33123,7 +34529,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 41.5
+  m_fontSize: 33.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -33230,7 +34636,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 5
-  price: 2500
+  price: 8000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1975964270}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -33748,7 +35158,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3000
+  m_text: 10000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -33775,7 +35185,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.3
+  m_fontSize: 34.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -34006,7 +35416,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 20000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -34033,7 +35443,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 33.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -34115,7 +35525,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1918564640}
   m_Father: {fileID: 37544030}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -34136,7 +35547,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -34190,7 +35601,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1590503748}
   m_Father: {fileID: 144311376}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -34211,7 +35623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -34335,6 +35747,11 @@ MonoBehaviour:
   takeButton: {fileID: 1804772956}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1804772957}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -34423,6 +35840,11 @@ MonoBehaviour:
   takeButton: {fileID: 1277074718}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1277074719}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -34463,6 +35885,143 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1536564373}
+  m_CullTransparentMesh: 1
+--- !u!1 &1543932188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1543932189}
+  - component: {fileID: 1543932191}
+  - component: {fileID: 1543932190}
+  m_Layer: 5
+  m_Name: Text (TMP) (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1543932189
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543932188}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1194422793}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 292.5, y: 9.6}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1543932190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543932188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 14
+  m_fontSizeMax: 36
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 78.741455, y: 0, z: 17.810608, w: -50.805916}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1543932191
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543932188}
   m_CullTransparentMesh: 1
 --- !u!1 &1544826377
 GameObject:
@@ -34674,6 +36233,11 @@ MonoBehaviour:
   takeButton: {fileID: 179245500}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 179245501}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -34847,7 +36411,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1000
+  m_text: 3000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -34874,7 +36438,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.5
+  m_fontSize: 42.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -35133,7 +36697,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 14000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -35160,7 +36724,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 34.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -35270,7 +36834,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2000
+  m_text: 500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -35297,7 +36861,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.3
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -35556,7 +37120,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 4
-  price: 8000
+  price: 32000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1476119643}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -35700,7 +37268,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: Locked
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -35727,7 +37295,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 27.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -35834,7 +37402,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 2
-  price: 1000
+  price: 3000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1561244454}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -36048,6 +37620,143 @@ Transform:
   - {fileID: 1477488629}
   m_Father: {fileID: 227927209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1590503745
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1590503748}
+  - component: {fileID: 1590503747}
+  - component: {fileID: 1590503746}
+  m_Layer: 5
+  m_Name: SecretMark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1590503746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590503745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: '?'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 112.85
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 2000
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 0
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1590503747
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590503745}
+  m_CullTransparentMesh: 1
+--- !u!224 &1590503748
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590503745}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1524589960}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 90.72, y: 142.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1590651242
 GameObject:
   m_ObjectHideFlags: 0
@@ -36300,7 +38009,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1000
+  m_text: 4000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -36327,7 +38036,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.9
+  m_fontSize: 41.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -36528,6 +38237,126 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1614716896}
+  m_CullTransparentMesh: 1
+--- !u!1 &1619114159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1619114160}
+  - component: {fileID: 1619114163}
+  - component: {fileID: 1619114162}
+  - component: {fileID: 1619114161}
+  m_Layer: 5
+  m_Name: Button
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1619114160
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1619114159}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1194422793}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 26.1, y: 0}
+  m_SizeDelta: {x: 178, y: 105}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1619114161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1619114159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 1619114162}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1619114162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1619114159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 2440753386508575221, guid: d97ddd891a6482f4680b9d563efa1b83, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1619114163
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1619114159}
   m_CullTransparentMesh: 1
 --- !u!1 &1622329034
 GameObject:
@@ -37092,7 +38921,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1000
+  m_text: 500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -37119,7 +38948,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.5
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -37570,7 +39399,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 10
-  price: 5000
+  price: 18000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 322734222}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -38214,6 +40047,11 @@ MonoBehaviour:
   takeButton: {fileID: 1104527053}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1104527054}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -39556,7 +41394,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 11
-  price: 5500
+  price: 20000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1515457634}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -39910,7 +41752,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 23000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -39937,7 +41779,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
+  m_fontSize: 33.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -40301,6 +42143,11 @@ MonoBehaviour:
   takeButton: {fileID: 1590936466}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1590936467}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -41203,7 +43050,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -41473,6 +43320,11 @@ MonoBehaviour:
   takeButton: {fileID: 1454024979}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1454024980}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -41700,6 +43552,143 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1916929815}
   m_CullTransparentMesh: 1
+--- !u!1 &1918564637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1918564640}
+  - component: {fileID: 1918564639}
+  - component: {fileID: 1918564638}
+  m_Layer: 5
+  m_Name: SecretMark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1918564638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918564637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: '?'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 112.85
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 2000
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 0
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1918564639
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918564637}
+  m_CullTransparentMesh: 1
+--- !u!224 &1918564640
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918564637}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1515994918}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 90.72, y: 142.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1925594338
 GameObject:
   m_ObjectHideFlags: 0
@@ -41773,6 +43762,11 @@ MonoBehaviour:
   takeButton: {fileID: 699701277}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 699701278}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -41871,7 +43865,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4000
+  m_text: 18000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -41898,7 +43892,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 41.7
+  m_fontSize: 34.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -42005,7 +43999,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 15
-  price: 7500
+  price: 30000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 243134706}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -42283,7 +44281,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 1
-  price: 1000
+  price: 4000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1602136861}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -42383,7 +44385,6 @@ GameObject:
   - component: {fileID: 1939669739}
   - component: {fileID: 1939669740}
   - component: {fileID: 1939669741}
-  - component: {fileID: 1939669742}
   m_Layer: 0
   m_Name: "\xE7akarl\u0131-polis-arac\u0131-2d-Kurtar\u0131ld\u0131"
   m_TagString: Untagged
@@ -42534,22 +44535,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1939669742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1939669736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d976128344eb274e97074a3ba824356, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MenuCarAmbience
-  sirenFadeDistance: 1400
-  playEngineRevs: 1
-  minRevInterval: 6
-  maxRevInterval: 12
 --- !u!1 &1942229160
 GameObject:
   m_ObjectHideFlags: 0
@@ -42893,7 +44878,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 15.000
+  m_text: 2.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -42920,7 +44905,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23.45
+  m_fontSize: 28.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -43150,7 +45135,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100.000
+  m_text: 10.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -43177,7 +45162,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.65
+  m_fontSize: 23.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -43287,7 +45272,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2500
+  m_text: 8000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -43844,6 +45829,11 @@ MonoBehaviour:
   takeButton: {fileID: 1438332778}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1438332779}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -43916,7 +45906,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2
+  m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -44324,6 +46314,11 @@ MonoBehaviour:
   takeButton: {fileID: 1133977736}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 1133977737}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -44757,6 +46752,11 @@ MonoBehaviour:
   takeButton: {fileID: 314275589}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 314275590}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -44855,7 +46855,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 250.000
+  m_text: 25.000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -44882,7 +46882,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.15
+  m_fontSize: 22.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -45139,7 +47139,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 4
-  price: 2000
+  price: 6000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1201366489}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -45325,6 +47329,11 @@ MonoBehaviour:
   takeButton: {fileID: 832267383}
   takeButtonText: {fileID: 0}
   takeButtonImage: {fileID: 832267384}
+  rewardIcon: {fileID: 0}
+  secretMark: {fileID: 0}
+  secretDescription: '? ? ?'
+  secretReward: '?'
+  secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   claimedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -45606,7 +47615,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 17
-  price: 8500
+  price: 0
+  achievementOnly: 1
+  lockedHint: '? ? ?'
+  silhouetteImage: {fileID: 1515994919}
+  secretMark: {fileID: 1918564637}
   priceText: {fileID: 1583029077}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -46500,7 +48513,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1500
+  m_text: 500
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
@@ -46527,7 +48540,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.5
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

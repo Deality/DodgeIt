@@ -13,14 +13,17 @@ public enum MissionType
     CollectShield,
     BuyCar,
     BuyRoad,
-    ReachScore
+    ReachScore,
+    FinishCoinRushWithoutDrifting, // Coin Rush'ı hiç yön vermeden (ekrana dokunmadan) bitir - sona eklendi, mevcut kayıtlı değerler kaymasın
+    NearMissPoliceCar              // Oyun içindeki polis arabasına near miss yap
 }
 
 public enum RewardType
 {
     Coin,
     Boost,
-    Shield
+    Shield,
+    Car     // rewardAmount = markette kilidi açılacak arabanın indeksi (sadece başarımla açılan arabalar)
 }
 
 public enum MissionCategory
@@ -43,6 +46,10 @@ public class Mission
     [Header("Ödüller")]
     public RewardType rewardType;
     public int rewardAmount;          // Ödül miktarı
+
+    [Header("Gizli Görev")]
+    [Tooltip("İşaretliyse görev tamamlanana kadar açıklaması ve ödülü gizli görünür (??? ve silüet).")]
+    public bool isSecret;
 
     [Header("Durum")]
     public bool isCompleted;          // Görev tamamlandı mı?
@@ -460,6 +467,15 @@ public class MissionsManager : MonoBehaviour
                     break;
                 case RewardType.Shield: Debug.Log($"🛡️ {mission.rewardAmount} Kalkan ödülü!"); break;
             }
+        }
+
+        // Araba ödülü: markette "sadece başarımla açılır" olarak kilitli duran arabanın kilidini açar.
+        // Satın alma sayılmaz (BuyCar görevlerini ilerletmez). GameManager'a bağlı değil.
+        if (mission.rewardType == RewardType.Car)
+        {
+            PlayerPrefs.SetInt(MarketItemType.Car.ToString() + "_Purchased_" + mission.rewardAmount, 1);
+            PlayerPrefs.Save();
+            if (MarketManager.instance != null) MarketManager.instance.RefreshAllButtons();
         }
 
         RefreshAndSortUI();

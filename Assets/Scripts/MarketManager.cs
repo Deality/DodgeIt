@@ -233,6 +233,8 @@ public class MarketManager : MonoBehaviour
         RefreshAllButtons();
         SelectItem(item.itemIndex, item.itemType);
 
+        if (AudioManager.instance != null) AudioManager.instance.PlayPurchaseSound();
+
         Debug.Log("Satın Alma Başarılı!");
     }
 
@@ -258,6 +260,8 @@ public class MarketManager : MonoBehaviour
         UpdateUI();
         GenerateAllItems();
         SelectItem(index, type);
+
+        if (AudioManager.instance != null) AudioManager.instance.PlayPurchaseSound();
     }
 
     void SelectItem(int index, MarketItemType type)

@@ -8,6 +8,14 @@ public class ShopItem : MonoBehaviour
     public MarketItemType itemType; // Araba mı Yol mu?
     public int itemIndex;     // Bu kaçıncı araba?
     public int price;         // Fiyatı kaç?
+    [Tooltip("İşaretliyse coin ile satın alınamaz; markette kilitli görünür ve yalnızca bir başarım ödülüyle açılır.")]
+    public bool achievementOnly;
+    [Tooltip("Kilitli başarım arabasına tıklanınca kısa süre gösterilen yazı (gizli görev arabası için örn. \"? ? ?\").")]
+    public string lockedHint = "Achievement";
+    [Tooltip("Atanırsa (gizli görev arabası): araba kilitliyken bu görsel siyah silüet olarak gösterilir, kilit açılınca gerçek renklerine döner.")]
+    public Image silhouetteImage;
+    [Tooltip("Silüetin üstündeki soru işareti. Araba kilitliyken görünür.")]
+    public GameObject secretMark;
 
     [Header("UI Bağlantıları (İçine Sürükle)")]
     public TextMeshProUGUI priceText;
@@ -44,11 +52,17 @@ public class ShopItem : MonoBehaviour
 
         if (lockIcon != null) lockIcon.SetActive(!isPurchased);
 
+        // Gizli araba: kilitliyken siyah silüet
+        bool showSilhouette = achievementOnly && !isPurchased;
+        if (silhouetteImage != null) silhouetteImage.color = showSilhouette ? Color.black : Color.white;
+        if (secretMark != null) secretMark.SetActive(showSilhouette);
+
         // 🔥 METİNLER İNGİLİZCE YAPILDI
         if (priceText != null)
         {
             if (isSelected) priceText.text = "Selected ";
             else if (isPurchased) priceText.text = "Use";
+            else if (achievementOnly) priceText.text = "Locked";
             else priceText.text = price.ToString();
         }
 
@@ -62,9 +76,26 @@ public class ShopItem : MonoBehaviour
 
     void OnClicked()
     {
+        // Başarımla açılan araba henüz kilitliyse satın alma akışına girmez; nereden açılacağını gösterir
+        bool isPurchased = PlayerPrefs.GetInt(itemType.ToString() + "_Purchased_" + itemIndex, 0) == 1 || itemIndex == 0;
+        if (achievementOnly && !isPurchased)
+        {
+            StopAllCoroutines();
+            StartCoroutine(ShowAchievementHint());
+            return;
+        }
+
         if (MarketManager.instance != null)
         {
             MarketManager.instance.ProcessClick(this);
         }
+    }
+
+    // Kilitli başarım arabasına tıklanınca kısa süreliğine nereden açılacağını yazar
+    System.Collections.IEnumerator ShowAchievementHint()
+    {
+        if (priceText != null) priceText.text = lockedHint;
+        yield return new WaitForSecondsRealtime(1.5f);
+        UpdateItemUI();
     }
 }

@@ -12,6 +12,15 @@ public class MissionRowView : MonoBehaviour
     public Button takeButton;
     public TextMeshProUGUI takeButtonText;
     public Image takeButtonImage;
+    [Tooltip("Ödül ikonu. Sadece gizli görev satırında gerekir: görev tamamlanana kadar siyah silüet olarak gösterilir.")]
+    public Image rewardIcon;
+    [Tooltip("Silüetin üstündeki soru işareti. Görev gizliyken görünür, tamamlanınca kaybolur.")]
+    public GameObject secretMark;
+
+    [Header("Gizli Görev Görünümü")]
+    public string secretDescription = "? ? ?";
+    public string secretReward = "?";
+    public Color secretIconColor = Color.black;
 
     [Header("Renkler (Buton Durumları)")]
     public Color readyColor = Color.green;
@@ -73,26 +82,16 @@ public class MissionRowView : MonoBehaviour
 
         gameObject.SetActive(true);
 
+        ApplyTexts(mission);
+
         if (mission.isClaimed)
         {
-            if (descriptionText != null) descriptionText.text = mission.description;
-            if (rewardText != null) rewardText.text = $"+{mission.rewardAmount} {mission.rewardType}";
-            if (progressText != null) progressText.text = $"{mission.currentValue} / {mission.targetValue}";
             canvasGroup.alpha = 0.4f;
             takeButton.interactable = false;
             takeButton.onClick.RemoveAllListeners();
             if (takeButtonText != null) takeButtonText.text = "DONE";
             return;
         }
-
-        // Metinleri Doldur
-        if (descriptionText != null) descriptionText.text = mission.description;
-
-        // Ödülü yazdır
-        if (rewardText != null) rewardText.text = $"+{mission.rewardAmount} {mission.rewardType}";
-
-        // İlerlemeyi göster
-        if (progressText != null) progressText.text = $"{mission.currentValue} / {mission.targetValue}";
 
         // Buton Durumunu Ayarla
         takeButton.onClick.RemoveAllListeners();
@@ -121,6 +120,28 @@ public class MissionRowView : MonoBehaviour
         }
 
         takeButton.colors = buttonColors;
+    }
+
+    // Açıklama / ödül / ilerleme yazıları. Gizli görev tamamlanana kadar "? ? ?" ve siyah silüet gösterir;
+    // tamamlanınca (TAKE'e hazır ya da alınmış) gerçek açıklama ve ödül ortaya çıkar.
+    void ApplyTexts(Mission mission)
+    {
+        bool hidden = mission.isSecret && !mission.isCompleted && !mission.isClaimed;
+
+        if (descriptionText != null) descriptionText.text = hidden ? secretDescription : mission.description;
+
+        if (rewardText != null)
+        {
+            if (hidden) rewardText.text = secretReward;
+            // Araba ödülünde ikon (arabanın kendisi) kutuyu dolduruyorsa ayrıca yazı gösterme
+            else if (mission.rewardType == RewardType.Car) rewardText.text = rewardIcon != null ? "" : "CAR";
+            else rewardText.text = $"+{mission.rewardAmount} {mission.rewardType}";
+        }
+
+        if (progressText != null) progressText.text = $"{mission.currentValue} / {mission.targetValue}";
+
+        if (rewardIcon != null) rewardIcon.color = hidden ? secretIconColor : Color.white;
+        if (secretMark != null) secretMark.SetActive(hidden);
     }
 
     void OnTakeClicked()

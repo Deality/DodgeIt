@@ -99,6 +99,8 @@ public class CarController2D : MonoBehaviour
     private ParticleSystem rightDriftSmoke;
 
     public bool IsDrifting { get; private set; } = false;
+    // Son (ya da süren) drift boyunca oyuncu ekrana basıp yön verdiyse true; BeginDrift'te sıfırlanır
+    public bool SteeredDuringDrift { get; private set; } = false;
     public float DriftSpeed => driftSpeed;
     private float driftVelocity = 0f;
     private float driftSteerDirection = 0f;
@@ -429,6 +431,7 @@ public class CarController2D : MonoBehaviour
         IsDrifting = true;
         driftVelocity = 0f;
         driftSteerDirection = 0f;
+        SteeredDuringDrift = false;
 
         // Kısa şerit değiştirme izleri hâlâ çiziliyorsa yarıda bırak; drift izi devralıyor
         if (leftTireMarkRoutine != null) { StopCoroutine(leftTireMarkRoutine); leftTireMarkRoutine = null; }
@@ -540,6 +543,9 @@ public class CarController2D : MonoBehaviour
         driftSteerDirection = Mathf.Clamp(steer, -1f, 1f);
         float targetVelocity = driftSteerDirection * driftSpeed;
         driftVelocity = Mathf.MoveTowards(driftVelocity, targetVelocity, driftAcceleration * Time.deltaTime);
+
+        // Gizli başarım için: bu drift boyunca oyuncu bir kez bile yön verdi mi?
+        if (driftSteerDirection != 0f) SteeredDuringDrift = true;
     }
 
     void HandleBoostLogic()

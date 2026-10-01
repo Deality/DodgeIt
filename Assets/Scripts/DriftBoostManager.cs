@@ -257,6 +257,11 @@ public class DriftBoostManager : MonoBehaviour
         phase = Phase.None;
         TimeRemaining = 0f;
 
+        // Gizli başarım: Coin Rush süresi, oyuncu hiç drift yapmadan (ekrana dokunmadan) doldu.
+        // Yalnızca süre doğal olarak bitince sayılır; kaza/iptal (CancelBoost) buraya gelmez.
+        if (CarController2D.instance != null && !CarController2D.instance.SteeredDuringDrift)
+            MissionsManager.AddGameplayProgress(MissionType.FinishCoinRushWithoutDrifting, 1);
+
         if (CarController2D.instance != null) CarController2D.instance.EndDrift();
         ClearBoostCoins();
 
