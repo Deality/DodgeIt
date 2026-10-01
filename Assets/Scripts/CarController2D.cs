@@ -81,17 +81,17 @@ public class CarController2D : MonoBehaviour
     [SerializeField] private int driftMarkMaxPoints = 60;
 
     [Header("Drift Dumanı")]
-    [Tooltip("Boş bırakılırsa arabanın egzoz dumanı materyali kullanılır.")]
+    [Tooltip("Boş bırakılırsa Resources/Materials/DriftSmoke (beyaz bulut) kullanılır.")]
     [SerializeField] private Material driftSmokeMaterial;
     [Tooltip("Tam yan kayarken tekerlek başına saniyede çıkan duman bulutu sayısı.")]
-    [SerializeField] private float driftSmokeRate = 45f;
+    [SerializeField] private float driftSmokeRate = 55f;
     [Tooltip("Duman bulutlarının başlangıç boyutu (dünya birimi).")]
     [SerializeField] private float driftSmokeSize = 4f;
     [Tooltip("Bir duman bulutunun ekranda kalma süresi (saniye).")]
     [SerializeField] private float driftSmokeLifetime = 0.7f;
     [Tooltip("Dumanın yanlara savrulma hızı.")]
     [SerializeField] private float driftSmokeSpread = 3f;
-    [SerializeField] private Color driftSmokeColor = new Color(0.8f, 0.8f, 0.8f, 0.6f);
+    [SerializeField] private Color driftSmokeColor = new Color(0.86f, 0.86f, 0.88f, 0.65f);
     [Tooltip("Duman arabanın altında, lastik izinin üstünde kalsın diye.")]
     [SerializeField] private int driftSmokeSortingOrder = 1;
 
@@ -972,7 +972,12 @@ public class CarController2D : MonoBehaviour
     {
         if (driftSmokeMaterial != null) return driftSmokeMaterial;
 
-        // Atanmadıysa arabanın kendi egzoz dumanının materyalini kullan (aynı görünüm)
+        // Beyaz bulut materyali: egzoz materyalinin görseli alev renkli (kırmızı-sarı) olduğu için
+        // onunla duman kahverengi/toprak gibi görünüyordu; bu materyalde renk tamamen driftSmokeColor'dan gelir.
+        driftSmokeMaterial = Resources.Load<Material>("Materials/DriftSmoke");
+        if (driftSmokeMaterial != null) return driftSmokeMaterial;
+
+        // O da yoksa arabanın kendi egzoz dumanının materyaline düş
         foreach (var r in GetComponentsInChildren<ParticleSystemRenderer>(true))
         {
             if (r.sharedMaterial != null && r.gameObject.name.Contains("Egzoz"))
@@ -1001,7 +1006,7 @@ public class CarController2D : MonoBehaviour
         main.startColor = driftSmokeColor;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
         main.scalingMode = ParticleSystemScalingMode.Local;
-        main.maxParticles = 100;
+        main.maxParticles = 150;
 
         var emission = ps.emission;
         emission.rateOverTime = 0f;
