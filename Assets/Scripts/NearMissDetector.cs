@@ -34,11 +34,6 @@ public class NearMissDetector : MonoBehaviour
 
     private HashSet<GameObject> processedObstacles = new HashSet<GameObject>();
 
-    [Header("Gizli Görev (Polis Arabası)")]
-    [Tooltip("Gizli görevin tamamlanması için tek oyunda kaç polis arabasına near miss yapılmalı?")]
-    public int policeNearMissesForSecret = 3;
-    private int policeNearMissesThisRun = 0;
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (GameManager.instance != null && !GameManager.instance.isGameActive) return;
@@ -74,15 +69,9 @@ public class NearMissDetector : MonoBehaviour
                 StartCoroutine(PlayNearMissSoundWithDelay());
 
                 MissionsManager.AddGameplayProgress(MissionType.TriggerNearmiss, 1);
-                // Gizli görev: TEK oyunda policeNearMissesForSecret kadar polis arabasına near miss.
-                // Sayaç bu bileşenle (oyuncu arabasıyla) birlikte her oyunda sıfırdan başlar; görev tam eşiğe
-                // ulaşıldığı anda bir kez bildirilir.
-                if (other.GetComponentInParent<PoliceCar>() != null)
-                {
-                    policeNearMissesThisRun++;
-                    if (policeNearMissesThisRun == policeNearMissesForSecret)
-                        MissionsManager.AddGameplayProgress(MissionType.NearMissPoliceCar, 1);
-                }
+                // Gizli görev: tıra near miss
+                if (other.GetComponentInParent<BigTruck>() != null)
+                    MissionsManager.AddGameplayProgress(MissionType.NearMissTruck, 1);
                 StartCoroutine(TriggerStreakWithDelay());
             }
         }

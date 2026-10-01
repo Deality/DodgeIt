@@ -67,7 +67,7 @@ MonoBehaviour:
   lowerLayersDuckedByCritical: 0.2
   sameClipMinInterval: 0.05
   duckTransitionDuration: 0.15
-  backgroundMusic: {fileID: 8300000, guid: f41e5d2d7c7c74b42a5bc1fe15237950, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: c10ccf3e7cf654341ac743f246f5e469, type: 3}
   engineLoop: {fileID: 8300000, guid: 7a1f71ad661be0f408eb8da8c25794f1, type: 3}
   crashSound: {fileID: 8300000, guid: 274591366f09da54d88b3b8bfb7e0cfc, type: 3}
   coinSound: {fileID: 8300000, guid: 092ad8130fe1bdf43b295c66a9d1f820, type: 3}
@@ -90,7 +90,7 @@ MonoBehaviour:
   gameOverSound: {fileID: 0}
   newHighScoreSound: {fileID: 0}
   introEngineSound: {fileID: 8300000, guid: 024ac71be9699484f826c9f45e22944e, type: 3}
-  menuMusic: {fileID: 8300000, guid: f41e5d2d7c7c74b42a5bc1fe15237950, type: 3}
+  menuMusic: {fileID: 8300000, guid: c10ccf3e7cf654341ac743f246f5e469, type: 3}
   gameSceneName: SampleScene
   swipeSounds:
   - {fileID: 8300000, guid: 161feca8d83b674438e5ec8e5c761296, type: 3}

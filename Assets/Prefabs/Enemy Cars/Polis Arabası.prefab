@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5250499435099747954}
   - component: {fileID: 4035321830041392765}
   - component: {fileID: 3492713460801658516}
-  - component: {fileID: 8697317796338093568}
   m_Layer: 3
   m_Name: "Polis Arabas\u0131"
   m_TagString: Obstacle
@@ -140,18 +139,6 @@ PolygonCollider2D:
       - {x: 4.748596, y: 0.030958176}
       - {x: 4.1256933, y: 8.828703}
   m_UseDelaunayMesh: 0
---- !u!114 &8697317796338093568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2512403122223633191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a583ebecd359ef47a95561a461ac2ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PoliceCar
 --- !u!1 &2858968766425044535
 GameObject:
   m_ObjectHideFlags: 0

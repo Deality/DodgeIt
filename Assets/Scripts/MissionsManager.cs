@@ -15,7 +15,7 @@ public enum MissionType
     BuyRoad,
     ReachScore,
     FinishCoinRushWithoutDrifting, // Coin Rush'ı hiç yön vermeden (ekrana dokunmadan) bitir - sona eklendi, mevcut kayıtlı değerler kaymasın
-    NearMissPoliceCar              // Oyun içindeki polis arabasına near miss yap
+    NearMissTruck                  // Oyun içindeki tıra near miss yap (enum sırası değişmedi: sahnedeki kayıtlı değer aynı)
 }
 
 public enum RewardType
