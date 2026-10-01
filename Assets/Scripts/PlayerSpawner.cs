@@ -35,8 +35,9 @@ public class PlayerSpawner : MonoBehaviour
                 newPlayer.tag = "Player";
                 newPlayer.name = "Player";
 
-                // Not: Eğer araba prefabında Animator varsa, 
+                // Not: Eğer araba prefabında Animator varsa,
                 // Instantiate edildiği anda otomatik olarak Intro animasyonunu oynatacaktır.
+                if (AudioManager.instance != null) AudioManager.instance.PlayIntroEngine();
             }
             else
             {

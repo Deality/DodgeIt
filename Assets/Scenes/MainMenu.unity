@@ -42383,6 +42383,7 @@ GameObject:
   - component: {fileID: 1939669739}
   - component: {fileID: 1939669740}
   - component: {fileID: 1939669741}
+  - component: {fileID: 1939669742}
   m_Layer: 0
   m_Name: "\xE7akarl\u0131-polis-arac\u0131-2d-Kurtar\u0131ld\u0131"
   m_TagString: Untagged
@@ -42533,6 +42534,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1939669742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939669736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d976128344eb274e97074a3ba824356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuCarAmbience
+  sirenFadeDistance: 1400
+  playEngineRevs: 1
+  minRevInterval: 6
+  maxRevInterval: 12
 --- !u!1 &1942229160
 GameObject:
   m_ObjectHideFlags: 0
