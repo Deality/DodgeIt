@@ -66,6 +66,11 @@ public class BuffTimerUI : MonoBehaviour
     [Range(0f, 1f)] public float readyPulseAlpha = 0.22f;
     public float readyPulseSpeed = 4f;
 
+    [Tooltip("Sadece bar tam doluyken görünen desen (ör. ok işaretleri). Dolarken gizlidir, böylece bar esniyormuş gibi görünmez.")]
+    public Image readyOverlay;
+    [Tooltip("Desenin belirme süresi (saniye).")]
+    public float readyOverlayFadeDuration = 0.25f;
+
     private float flashTimer = 0f;
 
     private CanvasGroup canvasGroup;
@@ -229,6 +234,14 @@ public class BuffTimerUI : MonoBehaviour
             flashTimer = readyFlashDuration;
         }
         wasFull = isFullNow;
+
+        if (readyOverlay != null)
+        {
+            Color oc = readyOverlay.color;
+            // Dolunca yumuşakça belirir; bar boşalmaya/dolmaya başladığı anda hemen kaybolur
+            oc.a = isFullNow ? Mathf.MoveTowards(oc.a, 1f, Time.unscaledDeltaTime / Mathf.Max(readyOverlayFadeDuration, 0.01f)) : 0f;
+            readyOverlay.color = oc;
+        }
 
         if (flashImage != null)
         {

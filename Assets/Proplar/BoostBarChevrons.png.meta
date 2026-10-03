@@ -1,0 +1,1105 @@
+fileFormatVersion: 2
+guid: 53aac0e19acfa5045a0f2b668f42a763
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3780069494260548564
+    second: BoostBarChevrons_0
+  - first:
+      213: 7383509490923277652
+    second: BoostBarChevrons_1
+  - first:
+      213: 1923752268503015813
+    second: BoostBarChevrons_2
+  - first:
+      213: 1079434952284120839
+    second: BoostBarChevrons_3
+  - first:
+      213: -6698739106371580131
+    second: BoostBarChevrons_4
+  - first:
+      213: 637137161108332879
+    second: BoostBarChevrons_5
+  - first:
+      213: -147197172141961810
+    second: BoostBarChevrons_6
+  - first:
+      213: 6598159381031639701
+    second: BoostBarChevrons_7
+  - first:
+      213: -4402981126249929732
+    second: BoostBarChevrons_8
+  - first:
+      213: -956818352917148314
+    second: BoostBarChevrons_9
+  - first:
+      213: -2026629971406988
+    second: BoostBarChevrons_10
+  - first:
+      213: 6785897624133583630
+    second: BoostBarChevrons_11
+  - first:
+      213: 4711815334201515881
+    second: BoostBarChevrons_12
+  - first:
+      213: -6832495754238400098
+    second: BoostBarChevrons_13
+  - first:
+      213: 1875630646887434475
+    second: BoostBarChevrons_14
+  - first:
+      213: 7665775277135932395
+    second: BoostBarChevrons_15
+  - first:
+      213: -2909108538866974238
+    second: BoostBarChevrons_16
+  - first:
+      213: -5947721149456353621
+    second: BoostBarChevrons_17
+  - first:
+      213: 7482568143052633794
+    second: BoostBarChevrons_18
+  - first:
+      213: -1936202294258176420
+    second: BoostBarChevrons_19
+  - first:
+      213: 6898349300120759106
+    second: BoostBarChevrons_20
+  - first:
+      213: 1465622822792640117
+    second: BoostBarChevrons_21
+  - first:
+      213: 3355863842601116381
+    second: BoostBarChevrons_22
+  - first:
+      213: 3647974118404907669
+    second: BoostBarChevrons_23
+  - first:
+      213: -2483446409104573004
+    second: BoostBarChevrons_24
+  - first:
+      213: -5947691116399374362
+    second: BoostBarChevrons_25
+  - first:
+      213: 2526067615370484895
+    second: BoostBarChevrons_26
+  - first:
+      213: -413549286726041004
+    second: BoostBarChevrons_27
+  - first:
+      213: 1883256503158769160
+    second: BoostBarChevrons_28
+  - first:
+      213: 7033550957901329954
+    second: BoostBarChevrons_29
+  - first:
+      213: 210914565459272556
+    second: BoostBarChevrons_30
+  - first:
+      213: 5081791622260099694
+    second: BoostBarChevrons_31
+  - first:
+      213: 3808048387554106868
+    second: BoostBarChevrons_32
+  - first:
+      213: -3808738834258277079
+    second: BoostBarChevrons_33
+  - first:
+      213: -705964398638032201
+    second: BoostBarChevrons_34
+  - first:
+      213: -1421263508766727410
+    second: BoostBarChevrons_35
+  - first:
+      213: -6686904593403287662
+    second: BoostBarChevrons_36
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BoostBarChevrons_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 38
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2c3f4892de7a8bc0800000000000000
+      internalID: -3780069494260548564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_1
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45d053233ce777660800000000000000
+      internalID: 7383509490923277652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_2
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58169f7ee7a82ba10800000000000000
+      internalID: 1923752268503015813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_3
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7072909be5ceafe00800000000000000
+      internalID: 1079434952284120839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_4
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1f44b1364c4903a0800000000000000
+      internalID: -6698739106371580131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_5
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4120115fd097d800800000000000000
+      internalID: 637137161108332879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_6
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ead498aa3fc05fdf0800000000000000
+      internalID: -147197172141961810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_7
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59a5dcd9ffe519b50800000000000000
+      internalID: 6598159381031639701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_8
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf3af116ef775e2c0800000000000000
+      internalID: -4402981126249929732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_9
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66d8cc707c2b8b2f0800000000000000
+      internalID: -956818352917148314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_10
+      rect:
+        serializedVersion: 2
+        x: 609
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47f86707accc8fff0800000000000000
+      internalID: -2026629971406988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_11
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0346a89fe95c2e50800000000000000
+      internalID: 6785897624133583630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_12
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96fd15a051bb36140800000000000000
+      internalID: 4711815334201515881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_13
+      rect:
+        serializedVersion: 2
+        x: 801
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e996147cf491e21a0800000000000000
+      internalID: -6832495754238400098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_14
+      rect:
+        serializedVersion: 2
+        x: 865
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be8cf85c224970a10800000000000000
+      internalID: 1875630646887434475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_15
+      rect:
+        serializedVersion: 2
+        x: 929
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: beba8a1effd426a60800000000000000
+      internalID: 7665775277135932395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_16
+      rect:
+        serializedVersion: 2
+        x: 993
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e147cf6235c0a7d0800000000000000
+      internalID: -2909108538866974238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_17
+      rect:
+        serializedVersion: 2
+        x: 1057
+        y: 10
+        width: 40
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba6739f7023757da0800000000000000
+      internalID: -5947721149456353621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_18
+      rect:
+        serializedVersion: 2
+        x: 1109
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c67e4ee41c67d760800000000000000
+      internalID: 7482568143052633794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_19
+      rect:
+        serializedVersion: 2
+        x: 1173
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5ee175954a3125e0800000000000000
+      internalID: -1936202294258176420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_20
+      rect:
+        serializedVersion: 2
+        x: 1237
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24b2342b32cdbbf50800000000000000
+      internalID: 6898349300120759106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_21
+      rect:
+        serializedVersion: 2
+        x: 1301
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 576b24f2130f65410800000000000000
+      internalID: 1465622822792640117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_22
+      rect:
+        serializedVersion: 2
+        x: 1365
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd221dc726c629e20800000000000000
+      internalID: 3355863842601116381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_23
+      rect:
+        serializedVersion: 2
+        x: 1429
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 592e755022530a230800000000000000
+      internalID: 3647974118404907669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_24
+      rect:
+        serializedVersion: 2
+        x: 1493
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bd3a9616a6098dd0800000000000000
+      internalID: -2483446409104573004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_25
+      rect:
+        serializedVersion: 2
+        x: 1557
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6efc44d117e857da0800000000000000
+      internalID: -5947691116399374362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_26
+      rect:
+        serializedVersion: 2
+        x: 1621
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9c96cccc156e0320800000000000000
+      internalID: 2526067615370484895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_27
+      rect:
+        serializedVersion: 2
+        x: 1685
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45204936d17c24af0800000000000000
+      internalID: -413549286726041004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_28
+      rect:
+        serializedVersion: 2
+        x: 1749
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80609bbcfcba22a10800000000000000
+      internalID: 1883256503158769160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_29
+      rect:
+        serializedVersion: 2
+        x: 1813
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2263153b4513c9160800000000000000
+      internalID: 7033550957901329954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_30
+      rect:
+        serializedVersion: 2
+        x: 1877
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c63e7280ea15de200800000000000000
+      internalID: 210914565459272556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_31
+      rect:
+        serializedVersion: 2
+        x: 1941
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6a8e535e86268640800000000000000
+      internalID: 5081791622260099694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_32
+      rect:
+        serializedVersion: 2
+        x: 2005
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fd59a325d7e8d430800000000000000
+      internalID: 3808048387554106868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_33
+      rect:
+        serializedVersion: 2
+        x: 2069
+        y: 0
+        width: 52
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92dccc5b534a42bc0800000000000000
+      internalID: -3808738834258277079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_34
+      rect:
+        serializedVersion: 2
+        x: 2133
+        y: 38
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ba9b1bae19e336f0800000000000000
+      internalID: -705964398638032201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_35
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e03ebb37e58a64ce0800000000000000
+      internalID: -1421263508766727410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoostBarChevrons_36
+      rect:
+        serializedVersion: 2
+        x: 2133
+        y: 0
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 297e44773b75333a0800000000000000
+      internalID: -6686904593403287662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BoostBarChevrons_0: -3780069494260548564
+      BoostBarChevrons_1: 7383509490923277652
+      BoostBarChevrons_10: -2026629971406988
+      BoostBarChevrons_11: 6785897624133583630
+      BoostBarChevrons_12: 4711815334201515881
+      BoostBarChevrons_13: -6832495754238400098
+      BoostBarChevrons_14: 1875630646887434475
+      BoostBarChevrons_15: 7665775277135932395
+      BoostBarChevrons_16: -2909108538866974238
+      BoostBarChevrons_17: -5947721149456353621
+      BoostBarChevrons_18: 7482568143052633794
+      BoostBarChevrons_19: -1936202294258176420
+      BoostBarChevrons_2: 1923752268503015813
+      BoostBarChevrons_20: 6898349300120759106
+      BoostBarChevrons_21: 1465622822792640117
+      BoostBarChevrons_22: 3355863842601116381
+      BoostBarChevrons_23: 3647974118404907669
+      BoostBarChevrons_24: -2483446409104573004
+      BoostBarChevrons_25: -5947691116399374362
+      BoostBarChevrons_26: 2526067615370484895
+      BoostBarChevrons_27: -413549286726041004
+      BoostBarChevrons_28: 1883256503158769160
+      BoostBarChevrons_29: 7033550957901329954
+      BoostBarChevrons_3: 1079434952284120839
+      BoostBarChevrons_30: 210914565459272556
+      BoostBarChevrons_31: 5081791622260099694
+      BoostBarChevrons_32: 3808048387554106868
+      BoostBarChevrons_33: -3808738834258277079
+      BoostBarChevrons_34: -705964398638032201
+      BoostBarChevrons_35: -1421263508766727410
+      BoostBarChevrons_36: -6686904593403287662
+      BoostBarChevrons_4: -6698739106371580131
+      BoostBarChevrons_5: 637137161108332879
+      BoostBarChevrons_6: -147197172141961810
+      BoostBarChevrons_7: 6598159381031639701
+      BoostBarChevrons_8: -4402981126249929732
+      BoostBarChevrons_9: -956818352917148314
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
