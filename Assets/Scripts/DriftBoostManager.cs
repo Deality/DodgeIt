@@ -41,6 +41,16 @@ public class DriftBoostManager : MonoBehaviour
     [SerializeField] private float coinRushHoldDuration = 1.2f;
     [SerializeField] private float coinRushFadeOutDuration = 0.4f;
 
+    [Header("Kontrol İpucu (COIN RUSH Yazısının Altında)")]
+    [Tooltip("Boş bırakılırsa oyun sırasında skor yazısının fontuyla otomatik oluşturulur.")]
+    [SerializeField] private TextMeshProUGUI hintText;
+    [SerializeField] private string hintLabel = "HOLD AND SWIPE";
+    [SerializeField] private Color hintColor = Color.white;
+    [SerializeField] private float hintFontSize = 64f;
+    [Tooltip("COIN RUSH yazısının ne kadar altında duracağı (UI birimi).")]
+    [SerializeField] private float hintOffsetBelowTitle = 120f;
+    [SerializeField] private float hintFadeDuration = 0.2f;
+
     [Header("Sonuç Yazısı (Boost Sonunda Toplanan Altın)")]
     [Tooltip("Boş bırakılırsa oyun sırasında skor yazısının fontuyla otomatik oluşturulur.")]
     [SerializeField] private TextMeshProUGUI resultText;
@@ -87,6 +97,7 @@ public class DriftBoostManager : MonoBehaviour
     private Coroutine resumeTrafficCoroutine;
     private Coroutine coinRushTextCoroutine;
     private Coroutine resultTextCoroutine;
+    private Coroutine hintTextCoroutine;
 
     private int collectedValue;
     private int collectedCount;
@@ -229,6 +240,9 @@ public class DriftBoostManager : MonoBehaviour
         collectedCount = 0;
 
         SpawnPendingCoins();
+
+        // Yol boşaldı, drift kontrolü açıldı: oyuncu ekrana basana kadar nasıl oynanacağını göster
+        ShowHintText();
     }
 
     // Engellerin spawn olduğu yükseklik: kameranın üst kenarı + ObstacleManager.spawnYOffset
@@ -296,6 +310,7 @@ public class DriftBoostManager : MonoBehaviour
         TimeRemaining = 0f;
         ClearBoostCoins();
         HideCoinRushText();
+        HideHintText();
         HideResultText();
 
         if (ObstacleManager.instance != null) ObstacleManager.instance.UnlockTraffic();
@@ -422,6 +437,57 @@ public class DriftBoostManager : MonoBehaviour
         Color c = coinRushText.color;
         c.a = a;
         coinRushText.color = c;
+    }
+
+    // --- KONTROL İPUCU: "HOLD AND SWIPE" ---
+
+    void ShowHintText()
+    {
+        if (hintText == null) hintText = CreateOverlayText("CoinRushHintText", coinRushPositionY - hintOffsetBelowTitle, hintFontSize, hintColor, 120f);
+        if (hintText == null) return;
+
+        if (hintTextCoroutine != null) StopCoroutine(hintTextCoroutine);
+        hintTextCoroutine = StartCoroutine(HintTextRoutine());
+    }
+
+    void HideHintText()
+    {
+        if (hintTextCoroutine != null)
+        {
+            StopCoroutine(hintTextCoroutine);
+            hintTextCoroutine = null;
+        }
+        if (hintText != null) hintText.gameObject.SetActive(false);
+    }
+
+    IEnumerator HintTextRoutine()
+    {
+        Transform tr = hintText.transform;
+        hintText.text = hintLabel;
+        hintText.gameObject.SetActive(true);
+        tr.SetAsLastSibling();
+
+        // Oyuncu ekrana basana (ya da boost bitene) kadar hafifçe nabız atarak durur
+        float t = 0f;
+        float alpha = 0f;
+        while (phase == Phase.Drifting && CarController2D.instance != null && !CarController2D.instance.SteeredDuringDrift)
+        {
+            t += Time.deltaTime;
+            alpha = Mathf.MoveTowards(alpha, 1f, Time.deltaTime / Mathf.Max(hintFadeDuration, 0.01f));
+            tr.localScale = Vector3.one * (1f + Mathf.Sin(t * 6f) * 0.05f);
+            SetAlpha(hintText, alpha);
+            yield return null;
+        }
+
+        while (alpha > 0f)
+        {
+            alpha = Mathf.MoveTowards(alpha, 0f, Time.deltaTime / Mathf.Max(hintFadeDuration, 0.01f));
+            SetAlpha(hintText, alpha);
+            yield return null;
+        }
+
+        hintText.gameObject.SetActive(false);
+        hintTextCoroutine = null;
     }
 
     static float EaseOutBack(float p)
