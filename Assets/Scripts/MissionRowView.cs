@@ -27,6 +27,16 @@ public class MissionRowView : MonoBehaviour
     public Color notReadyColor = Color.gray;
     public Color claimedColor = Color.black;
 
+    [Header("Tamamlanan Görev Vurgusu")]
+    [Tooltip("Görev tamamlanıp ödül alınmayı beklerken yanıp sönen çerçeve. Boşsa satırın kendi Image'ı kullanılır.")]
+    public Image frameImage;
+    public Color completedBlinkColor = new Color(1f, 0.84f, 0.1f, 1f);
+    public float completedBlinkSpeed = 5f;
+
+    private bool isBlinking = false;
+    private Color frameBaseColor = Color.white;
+    private bool frameBaseColorSaved = false;
+
     private Mission currentMission;
     private bool isClaiming = false; // Çift tıklama kilidi
     private float originalHeight = -1f; // Animasyon sonrası boyut kurtarma için hafıza
@@ -83,6 +93,9 @@ public class MissionRowView : MonoBehaviour
         gameObject.SetActive(true);
 
         ApplyTexts(mission);
+
+        // Tamamlanmış ama ödülü alınmamış görev: çerçeve yanıp söner
+        SetBlinking(mission.isCompleted && !mission.isClaimed);
 
         if (mission.isClaimed)
         {
@@ -144,10 +157,34 @@ public class MissionRowView : MonoBehaviour
         if (secretMark != null) secretMark.SetActive(hidden);
     }
 
+    void SetBlinking(bool blink)
+    {
+        if (frameImage == null) frameImage = GetComponent<Image>();
+        if (frameImage == null) { isBlinking = false; return; }
+
+        if (!frameBaseColorSaved)
+        {
+            frameBaseColor = frameImage.color;
+            frameBaseColorSaved = true;
+        }
+
+        isBlinking = blink;
+        if (!blink) frameImage.color = frameBaseColor;
+    }
+
+    void Update()
+    {
+        if (!isBlinking) return;
+        // unscaledTime: menüde timeScale ne olursa olsun yanıp sönsün
+        float p = (Mathf.Sin(Time.unscaledTime * completedBlinkSpeed) + 1f) * 0.5f;
+        frameImage.color = Color.Lerp(frameBaseColor, completedBlinkColor, p);
+    }
+
     void OnTakeClicked()
     {
         if (isClaiming) return;
         isClaiming = true;
+        SetBlinking(false);
 
         // Tıklamayı engelle ve animasyonu başlat!
         if (takeButton != null) takeButton.interactable = false;
