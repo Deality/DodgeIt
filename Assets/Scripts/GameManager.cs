@@ -530,7 +530,14 @@ public class GameManager : MonoBehaviour
     public bool UseBoostItem()
     {
         int currentBoosts = PlayerPrefs.GetInt(BoostKey, 0);
-        if (currentBoosts > 0) { currentBoosts--; PlayerPrefs.SetInt(BoostKey, currentBoosts); PlayerPrefs.Save(); return true; }
+        if (currentBoosts > 0)
+        {
+            currentBoosts--;
+            PlayerPrefs.SetInt(BoostKey, currentBoosts);
+            PlayerPrefs.Save();
+            currentBoostAmount = currentBoosts; // alt bar stoğu buradan okur
+            return true;
+        }
         return false;
     }
 

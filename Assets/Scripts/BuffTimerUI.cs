@@ -54,6 +54,20 @@ public class BuffTimerUI : MonoBehaviour
     [Tooltip("Pop efektinin toplam süresi (saniye).")]
     public float readyPunchDuration = 0.2f;
 
+    [Header("Dolunca Yanıp Sönme (Flash)")]
+    [Tooltip("Barın üstünü kaplayan beyaz görsel. Bar dolduğu anda birkaç kez parlar, sonra hazır olduğu sürece hafifçe nabız atar. Boşsa efekt yok.")]
+    public Image flashImage;
+    [Tooltip("Bar dolduğu anda kaç kez yanıp sönsün?")]
+    public int readyFlashCount = 3;
+    [Tooltip("Bu yanıp sönmelerin toplam süresi (saniye).")]
+    public float readyFlashDuration = 0.9f;
+    [Range(0f, 1f)] public float readyFlashAlpha = 0.75f;
+    [Tooltip("Bar hazır beklerken süren hafif nabzın en yüksek parlaklığı (0 = kapalı).")]
+    [Range(0f, 1f)] public float readyPulseAlpha = 0.22f;
+    public float readyPulseSpeed = 4f;
+
+    private float flashTimer = 0f;
+
     private CanvasGroup canvasGroup;
     private CarController2D playerCar;
 
@@ -110,7 +124,10 @@ public class BuffTimerUI : MonoBehaviour
                     {
                         targetAlpha = 1f;
 
-                        if (playerCar.isBoostActive)
+                        // Stokta boost kalmadıysa bar dolmaz (dolu bar "kullanabilirsin" demek)
+                        bool hasStock = GameManager.instance == null || GameManager.instance.currentBoostAmount > 0;
+
+                        if (playerCar.isBoostActive || !hasStock)
                         {
                             ratio = 0f;
                         }
@@ -206,8 +223,35 @@ public class BuffTimerUI : MonoBehaviour
 
         // --- DOLUNCA PARLAMA (Yetenek kullanıma hazır olduğunu vurgular) ---
         bool isFullNow = timerMode == TimerMode.CooldownTime && targetAlpha > 0f && ratio >= 0.999f;
-        if (isFullNow && !wasFull) punchTimer = readyPunchDuration;
+        if (isFullNow && !wasFull)
+        {
+            punchTimer = readyPunchDuration;
+            flashTimer = readyFlashDuration;
+        }
         wasFull = isFullNow;
+
+        if (flashImage != null)
+        {
+            float flashAlpha = 0f;
+            if (isFullNow)
+            {
+                if (flashTimer > 0f && readyFlashDuration > 0f)
+                {
+                    flashTimer -= Time.unscaledDeltaTime;
+                    float phase = (1f - Mathf.Clamp01(flashTimer / readyFlashDuration)) * Mathf.Max(readyFlashCount, 1);
+                    flashAlpha = Mathf.Sin(Mathf.Repeat(phase, 1f) * Mathf.PI) * readyFlashAlpha;
+                }
+                else
+                {
+                    flashAlpha = (Mathf.Sin(Time.unscaledTime * readyPulseSpeed) + 1f) * 0.5f * readyPulseAlpha;
+                }
+            }
+            else flashTimer = 0f;
+
+            Color fc = flashImage.color;
+            fc.a = flashAlpha;
+            flashImage.color = fc;
+        }
 
         float punchMultiplier = 1f;
         if (punchTimer > 0f)
