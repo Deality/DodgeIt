@@ -5953,7 +5953,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 16
-  price: 26000
+  price: 36000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -12193,7 +12193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 18
-  price: 36000
+  price: 23000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -13544,12 +13544,12 @@ MonoBehaviour:
     carPrefab: {fileID: 1692546701658414956, guid: 037d1a4e60fb8e4438b187f020498389, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 11"
-    price: 18000
+    price: 20000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: fb2aeddfda9b20740af494ae58b6a7cb, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 12"
-    price: 20000
+    price: 21000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 067d69355bf5a76489e65a3c5e527831, type: 3}
     roadSprite: {fileID: 0}
@@ -13559,27 +13559,27 @@ MonoBehaviour:
     carPrefab: {fileID: 1692546701658414956, guid: 0e05c7d9d21f80a4e9a9b4e3bd2cd562, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 14"
-    price: 21000
+    price: 26000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 6ddb5de0c0db2e64b8b2fcb463e85d86, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 15"
-    price: 23000
+    price: 30000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 6aac409f2638fa54eb97a509e0147af2, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 16"
-    price: 26000
+    price: 36000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: d4359b699c5610d4bac69e86ca8b87a0, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 17"
-    price: 30000
+    price: 18000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: e7154d42d83f4674983e31171836c631, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 18"
-    price: 36000
+    price: 23000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 7a8d742dc1d7f1144a357b934efb7d5b, type: 3}
     roadSprite: {fileID: 0}
@@ -16518,7 +16518,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 12
-  price: 20000
+  price: 21000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -18442,7 +18442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 14
-  price: 21000
+  price: 26000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -23007,15 +23007,15 @@ RectTransform:
   - {fileID: 1398446324}
   - {fileID: 3899021}
   - {fileID: 1886199013}
-  - {fileID: 621149671}
+  - {fileID: 37544030}
   - {fileID: 1769057999}
   - {fileID: 924849449}
-  - {fileID: 171680455}
+  - {fileID: 144311376}
   - {fileID: 1199739650}
   - {fileID: 1318782803}
   - {fileID: 1426814250}
-  - {fileID: 37544030}
-  - {fileID: 144311376}
+  - {fileID: 621149671}
+  - {fileID: 171680455}
   m_Father: {fileID: 1346804108}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -41394,7 +41394,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 11
-  price: 18000
+  price: 20000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -43999,7 +43999,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 15
-  price: 23000
+  price: 30000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -47615,7 +47615,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 17
-  price: 30000
+  price: 18000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
