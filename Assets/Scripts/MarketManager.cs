@@ -47,6 +47,20 @@ public class MarketManager : MonoBehaviour
     public List<MarketItemData> carItems;
     public List<MarketItemData> roadItems;
 
+    [Header("Yeni Açılan Gizli Araba")]
+    [Tooltip("Ana menüdeki Shop butonunun kenarında duran \"?\" uyarı simgesi. Başarımla bir gizli araba açılınca görünür.")]
+    public GameObject newSecretCarBadge;
+    [Tooltip("Araba listesinin ScrollRect'i. Uyarı varken market açılınca liste kendiliğinden en alta kayar.")]
+    public ScrollRect carScrollRect;
+    [Tooltip("Market paneli kayarak gelirken beklenen süre (saniye).")]
+    public float revealDelay = 0.45f;
+    [Tooltip("Listenin en alta kayma süresi (saniye).")]
+    public float revealScrollDuration = 1.3f;
+
+    public const string NewSecretCarKey = "NewSecretCarPending";
+    private Coroutine revealRoutine;
+    private bool revealRestoreVertical;
+
     // Geçici Hafıza
     private int pendingIndex;
     private MarketItemType pendingType;
@@ -69,6 +83,72 @@ public class MarketManager : MonoBehaviour
         // Başlangıçta panelleri kapat
         if (marketPanel != null) marketPanel.SetActive(false);
         ClosePopups();
+        UpdateNewSecretCarBadge();
+    }
+
+    // --- YENİ AÇILAN GİZLİ ARABA ---
+
+    // Görevlerden bir gizli araba alındığında çağrılır: Shop butonundaki "?" uyarısını açar
+    public static void MarkNewSecretCar()
+    {
+        PlayerPrefs.SetInt(NewSecretCarKey, 1);
+        PlayerPrefs.Save();
+        if (instance != null) instance.UpdateNewSecretCarBadge();
+    }
+
+    public void UpdateNewSecretCarBadge()
+    {
+        if (newSecretCarBadge != null) newSecretCarBadge.SetActive(PlayerPrefs.GetInt(NewSecretCarKey, 0) == 1);
+    }
+
+    // Market paneli açıldığında (UIManager.OpenMarket) çağrılır. Bekleyen bir gizli araba varsa uyarıyı kapatır
+    // ve araba listesini oyuncunun kontrolü dışında en alta (gizli arabaların olduğu yere) kaydırır.
+    public void OnMarketOpened()
+    {
+        RefreshAllButtons(); // panel kapalıyken açılan arabanın kartı güncel olsun
+
+        if (PlayerPrefs.GetInt(NewSecretCarKey, 0) != 1) return;
+        PlayerPrefs.DeleteKey(NewSecretCarKey);
+        PlayerPrefs.Save();
+        UpdateNewSecretCarBadge();
+
+        if (carScrollRect == null) return;
+        StopReveal();
+        revealRoutine = StartCoroutine(RevealSecretCarRoutine());
+    }
+
+    System.Collections.IEnumerator RevealSecretCarRoutine()
+    {
+        // Kaydırma sırasında oyuncu listeyi sürükleyemesin
+        revealRestoreVertical = carScrollRect.vertical;
+        carScrollRect.StopMovement();
+        carScrollRect.vertical = false;
+        carScrollRect.verticalNormalizedPosition = 1f;
+
+        yield return new WaitForSecondsRealtime(revealDelay);
+
+        float t = 0f;
+        float duration = Mathf.Max(revealScrollDuration, 0.01f);
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / duration;
+            float p = Mathf.Clamp01(t);
+            carScrollRect.verticalNormalizedPosition = 1f - p * p * (3f - 2f * p); // smooth step
+            yield return null;
+        }
+        carScrollRect.verticalNormalizedPosition = 0f;
+
+        carScrollRect.StopMovement();
+        carScrollRect.vertical = revealRestoreVertical;
+        revealRoutine = null;
+    }
+
+    void StopReveal()
+    {
+        if (revealRoutine == null) return;
+        StopCoroutine(revealRoutine);
+        revealRoutine = null;
+        if (carScrollRect != null) carScrollRect.vertical = revealRestoreVertical;
     }
 
     // --- MARKET AÇ / KAPA ---
@@ -88,6 +168,7 @@ public class MarketManager : MonoBehaviour
 
     public void CloseMarket()
     {
+        StopReveal();
         if (marketPanel != null) marketPanel.SetActive(false);
         ClosePopups();
     }

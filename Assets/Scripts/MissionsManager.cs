@@ -476,6 +476,7 @@ public class MissionsManager : MonoBehaviour
             PlayerPrefs.SetInt(MarketItemType.Car.ToString() + "_Purchased_" + mission.rewardAmount, 1);
             PlayerPrefs.Save();
             if (MarketManager.instance != null) MarketManager.instance.RefreshAllButtons();
+            MarketManager.MarkNewSecretCar(); // Shop butonunda "?" uyarısı çıkar
         }
 
         RefreshAndSortUI();

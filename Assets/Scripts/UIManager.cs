@@ -412,7 +412,11 @@ public class UIManager : MonoBehaviour
         if (marketPanel != null)
         {
             StartCoroutine(SlidePanelInRoutine(marketPanel, marketSlideDirection));
-            if (MarketManager.instance != null) MarketManager.instance.UpdateUI();
+            if (MarketManager.instance != null)
+            {
+                MarketManager.instance.UpdateUI();
+                MarketManager.instance.OnMarketOpened();
+            }
         }
     }
     public void CloseMarket()
