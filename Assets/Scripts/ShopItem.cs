@@ -23,6 +23,17 @@ public class ShopItem : MonoBehaviour
     public Button myButton;
     public Image backgroundImage;
 
+    [Header("Yeni Açılan Gizli Araba Vurgusu")]
+    [Tooltip("Gizli araba başarımla açıldıktan sonra, ilk kez seçilene kadar butonun yanıp söneceği renk.")]
+    public Color unlockedGlowColor = new Color(1f, 0.84f, 0.1f, 1f);
+    public float unlockedGlowSpeed = 5f;
+
+    private bool glowActive;
+    private Graphic glowGraphic;
+    private Color glowBaseColor = Color.white;
+
+    private string UsedKey => itemType.ToString() + "_Used_" + itemIndex;
+
     void Start()
     {
         if (myButton != null)
@@ -72,6 +83,46 @@ public class ShopItem : MonoBehaviour
             else if (isPurchased) backgroundImage.color = Color.white;
             else backgroundImage.color = Color.gray;
         }
+
+        // Başarımla açılan gizli araba: oyuncu ilk kez seçene kadar "Use" butonu yanıp söner
+        if (achievementOnly && isSelected && PlayerPrefs.GetInt(UsedKey, 0) == 0)
+        {
+            PlayerPrefs.SetInt(UsedKey, 1);
+            PlayerPrefs.Save();
+        }
+
+        bool shouldGlow = achievementOnly && isPurchased && !isSelected && PlayerPrefs.GetInt(UsedKey, 0) == 0;
+        if (shouldGlow && !glowActive)
+        {
+            if (glowGraphic == null)
+            {
+                if (backgroundImage != null) glowGraphic = backgroundImage;
+                else if (myButton != null && myButton.targetGraphic != null) glowGraphic = myButton.targetGraphic;
+                else glowGraphic = GetComponent<Graphic>();
+            }
+            if (glowGraphic != null) glowBaseColor = glowGraphic.color;
+        }
+        else if (!shouldGlow && glowActive)
+        {
+            transform.localScale = Vector3.one;
+            // backgroundImage ise rengi yukarıda zaten ayarlandı
+            if (glowGraphic != null && glowGraphic != backgroundImage) glowGraphic.color = glowBaseColor;
+        }
+        glowActive = shouldGlow && glowGraphic != null;
+    }
+
+    void Update()
+    {
+        if (!glowActive) return;
+        // unscaledTime: menüde timeScale ne olursa olsun yanıp sönsün
+        float p = (Mathf.Sin(Time.unscaledTime * unlockedGlowSpeed) + 1f) * 0.5f;
+        glowGraphic.color = Color.Lerp(glowBaseColor, unlockedGlowColor, p);
+        transform.localScale = Vector3.one * (1f + 0.04f * p);
+    }
+
+    void OnDisable()
+    {
+        if (glowActive) transform.localScale = Vector3.one;
     }
 
     void OnClicked()

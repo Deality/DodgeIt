@@ -75,6 +75,8 @@ public class DriftBoostManager : MonoBehaviour
     [SerializeField] private float coinSpacing = 12f;
     [Tooltip("Zikzağın eğimi, arabanın en yüksek drift hızının bu oranına göre ayarlanır. 1'e yakın = daha dik ve zor, düşük = daha yatık ve kolay.")]
     [SerializeField, Range(0.3f, 1f)] private float zigzagFollowFactor = 0.75f;
+    [Tooltip("Her Coin Rush'ta eğim bu değer ile yukarıdaki değer arasında rastgele seçilir (farklı açılar).")]
+    [SerializeField, Range(0.2f, 1f)] private float minFollowFactor = 0.4f;
     [Tooltip("Boost bitmeden en az bu kadar saniye önce arabaya ulaşamayacak altınlar spawn edilmez.")]
     [SerializeField] private float coinArrivalMargin = 0.2f;
 
@@ -113,8 +115,17 @@ public class DriftBoostManager : MonoBehaviour
     private float maxX;
     private float nextCoinX;
     private float nextCoinY;
-    private int zigzagDirection;
     private bool coinsFinished;
+
+    // Her Coin Rush'ta altın dizisi farklı bir desenle gelir
+    private enum CoinPattern { Zigzag, ShortZigzag, Wave, Mixed }
+    private CoinPattern pattern;
+    private int lastPattern = -1;
+    private float patternFollow;     // bu boost'ta kullanılan eğim oranı
+    private float patternSlope;      // -1..1: bir sonraki altının yatay adımı (xStep ile çarpılır)
+    private int segmentCoinsLeft;    // ShortZigzag / Mixed: yön değişene kadar kalan altın
+    private float waveTheta;
+    private float waveAmplitude;
 
     void Awake()
     {
@@ -229,11 +240,11 @@ public class DriftBoostManager : MonoBehaviour
         TimeRemaining = Duration;
 
         // Altınlar engellerle aynı yerden, ekranın üstündeki spawn çizgisinden gelir (ekranın ortasında belirmez).
-        // Zikzak arabanın şeridinden başlar, önce sağa (basılı tutma yönü) gider.
+        // Dizi arabanın şeridinden başlar; deseni, eğimi ve ilk yönü her seferinde rastgele seçilir.
         nextCoinX = Mathf.Clamp(car.transform.position.x, minX, maxX);
         nextCoinY = GetSpawnY();
-        zigzagDirection = nextCoinX < maxX - 0.01f ? 1 : -1;
         coinsFinished = false;
+        ChoosePattern();
 
         // Bu boost'ta toplananların sayımı sıfırdan başlar
         collectedValue = 0;
@@ -335,7 +346,7 @@ public class DriftBoostManager : MonoBehaviour
         // Zikzak eğimi: araba bu eğimi en yüksek drift hızının zigzagFollowFactor kadarıyla takip edebilir.
         // Hıza göre hesaplandığı için kilitlenen hız ne olursa olsun dizi takip edilebilir kalır.
         float carDriftSpeed = CarController2D.instance.DriftSpeed;
-        float xStep = carDriftSpeed * zigzagFollowFactor * coinSpacing / speed;
+        float xStep = carDriftSpeed * patternFollow * coinSpacing / speed;
 
         while (nextCoinY <= spawnY)
         {
@@ -351,13 +362,75 @@ public class DriftBoostManager : MonoBehaviour
             if (coin != null) boostCoins.Add(coin);
 
             nextCoinY += coinSpacing;
-            nextCoinX += zigzagDirection * xStep;
-
-            // Yol sınırında sekerek yön değiştir
-            if (nextCoinX > maxX) { nextCoinX = 2f * maxX - nextCoinX; zigzagDirection = -1; }
-            else if (nextCoinX < minX) { nextCoinX = 2f * minX - nextCoinX; zigzagDirection = 1; }
-            nextCoinX = Mathf.Clamp(nextCoinX, minX, maxX);
+            AdvancePattern(xStep);
         }
+    }
+
+    // Bu boost'un desenini seçer: aynı desen art arda iki kez gelmez, eğim ve ilk yön de rastgeledir
+    void ChoosePattern()
+    {
+        int count = System.Enum.GetValues(typeof(CoinPattern)).Length;
+        int pick = Random.Range(0, count);
+        if (pick == lastPattern) pick = (pick + 1 + Random.Range(0, count - 1)) % count;
+        lastPattern = pick;
+        pattern = (CoinPattern)pick;
+
+        patternFollow = Random.Range(Mathf.Min(minFollowFactor, zigzagFollowFactor), zigzagFollowFactor);
+
+        // İlk yön rastgele; araba yol kenarındaysa içeri doğru
+        float dir = Random.value < 0.5f ? -1f : 1f;
+        if (nextCoinX >= maxX - 0.01f) dir = -1f;
+        else if (nextCoinX <= minX + 0.01f) dir = 1f;
+        patternSlope = dir;
+        segmentCoinsLeft = Random.Range(3, 8);
+
+        if (pattern == CoinPattern.Wave)
+        {
+            float mid = (minX + maxX) * 0.5f;
+            float half = (maxX - minX) * 0.5f;
+            waveAmplitude = Mathf.Max(half * Random.Range(0.6f, 1f), Mathf.Abs(nextCoinX - mid));
+            if (waveAmplitude < 0.05f) { pattern = CoinPattern.Zigzag; return; }
+
+            // Dalga arabanın bulunduğu x'ten, seçilen yöne doğru başlar
+            float a = Mathf.Asin(Mathf.Clamp((nextCoinX - mid) / waveAmplitude, -1f, 1f));
+            waveTheta = dir > 0f ? a : Mathf.PI - a;
+        }
+    }
+
+    // Bir sonraki altının x konumunu desene göre ilerletir. Hiçbir desende adım xStep'i aşmaz,
+    // yani araba her deseni takip edebilir.
+    void AdvancePattern(float xStep)
+    {
+        if (pattern == CoinPattern.Wave)
+        {
+            waveTheta += xStep / waveAmplitude;
+            nextCoinX = Mathf.Clamp((minX + maxX) * 0.5f + waveAmplitude * Mathf.Sin(waveTheta), minX, maxX);
+            return;
+        }
+
+        if (pattern == CoinPattern.ShortZigzag || pattern == CoinPattern.Mixed)
+        {
+            if (--segmentCoinsLeft <= 0)
+            {
+                segmentCoinsLeft = Random.Range(3, 8);
+                if (pattern == CoinPattern.ShortZigzag) patternSlope = -patternSlope;
+                else
+                {
+                    // Karışık: dik, yatık ya da kısa düz parçalar; arka arkaya iki düz parça gelmez
+                    float sign = patternSlope != 0f ? -Mathf.Sign(patternSlope) : (Random.value < 0.5f ? -1f : 1f);
+                    float[] steepness = patternSlope == 0f ? new[] { 0.5f, 1f } : new[] { 0f, 0.5f, 1f };
+                    patternSlope = sign * steepness[Random.Range(0, steepness.Length)];
+                    if (patternSlope == 0f) segmentCoinsLeft = Random.Range(2, 4);
+                }
+            }
+        }
+
+        nextCoinX += patternSlope * xStep;
+
+        // Yol sınırında sekerek yön değiştir
+        if (nextCoinX > maxX) { nextCoinX = 2f * maxX - nextCoinX; patternSlope = -Mathf.Abs(patternSlope); }
+        else if (nextCoinX < minX) { nextCoinX = 2f * minX - nextCoinX; patternSlope = Mathf.Abs(patternSlope); }
+        nextCoinX = Mathf.Clamp(nextCoinX, minX, maxX);
     }
 
     void ClearBoostCoins()
