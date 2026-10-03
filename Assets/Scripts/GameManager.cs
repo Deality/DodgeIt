@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
     [Header("Reklam İzleyerek Devam Etme (Revive)")]
     public GameObject revivePanel;
     public RectTransform reviveCountdownFill;
-    public float reviveDecisionDuration = 5f;
+    public float reviveDecisionDuration = 3.5f;
     public float reviveInvincibilityDuration = 5f;
     private bool hasUsedRevive = false;
     private bool isCrashPending = false;
