@@ -122,6 +122,11 @@ public class CarController2D : MonoBehaviour
     private readonly HashSet<int> driftIgnoredFingers = new HashSet<int>();
     private readonly List<int> pressedFingerIds = new List<int>();
     private bool driftMouseStartedOverUI = false;
+    // Drift yönü parmağın ekrandaki yerine değil, ilk bastığı noktaya göre ne kadar kaydığına bağlı
+    private readonly Dictionary<int, float> driftAnchorX = new Dictionary<int, float>(); // parmak id -> merkez kabul edilen x
+    private float driftMouseAnchorX = 0f;
+    [SerializeField, Range(0f, 0.1f)] private float driftDeadZone = 0.012f;      // ekran genişliğine oran: bu kadar kaymadan yön verilmez
+    [SerializeField, Range(0.02f, 0.3f)] private float driftFullSteer = 0.06f;   // ekran genişliğine oran: tam hızda drift için gereken kayma
 
     private int currentLane = 1;
     private float targetX;
@@ -441,6 +446,7 @@ public class CarController2D : MonoBehaviour
         touchStartPositions.Clear();
         isMouseDragging = false;
         driftHoldFingers.Clear();
+        driftAnchorX.Clear();
         driftIgnoredFingers.Clear();
         driftMouseStartedOverUI = false;
     }
@@ -467,6 +473,7 @@ public class CarController2D : MonoBehaviour
         touchStartPositions.Clear();
         isMouseDragging = false;
         driftHoldFingers.Clear();
+        driftAnchorX.Clear();
         driftIgnoredFingers.Clear();
 
         var touchscreen = Touchscreen.current;
@@ -477,11 +484,13 @@ public class CarController2D : MonoBehaviour
         }
     }
 
-    // Ekranın SAĞ yarısına basılı tut = sağa drift, SOL yarısına basılı tut = sola drift,
-    // dokunma yok = araba düzelip dümdüz gider. Birden fazla parmak varsa en son basılan yönetir.
+    // Parmağın bastığı nokta merkez sayılır; oradan SAĞA kaydır = sağa drift, SOLA kaydır = sola drift.
+    // Kaydırmadan basılı tutmak ya da hiç dokunmamak = araba düzelip dümdüz gider.
+    // Birden fazla parmak varsa en son basılan yönetir.
     void HandleDriftInput()
     {
         float steer = 0f;
+        bool touching = false;
 
         var kb = Keyboard.current;
         if (kb != null)
@@ -495,6 +504,7 @@ public class CarController2D : MonoBehaviour
         {
             pressedFingerIds.Clear();
             int newestOrder = -1;
+            int newestFinger = -1;
             float newestX = 0f;
 
             foreach (var touch in touchscreen.touches)
@@ -508,23 +518,34 @@ public class CarController2D : MonoBehaviour
                 if (!driftHoldFingers.ContainsKey(fingerId) && !driftIgnoredFingers.Contains(fingerId))
                 {
                     if (IsPointerOverUI(touch.startPosition.ReadValue())) driftIgnoredFingers.Add(fingerId);
-                    else driftHoldFingers[fingerId] = driftFingerCounter++;
+                    else
+                    {
+                        driftHoldFingers[fingerId] = driftFingerCounter++;
+                        driftAnchorX[fingerId] = touch.position.ReadValue().x; // bastığı yer = merkez
+                    }
                 }
 
                 if (driftHoldFingers.TryGetValue(fingerId, out int order) && order > newestOrder)
                 {
                     newestOrder = order;
-                    newestX = touch.position.ReadValue().x; // parmak ekranın diğer yarısına kaydırılırsa yön de değişir
+                    newestFinger = fingerId;
+                    newestX = touch.position.ReadValue().x;
                 }
             }
 
-            if (newestOrder >= 0) steer = newestX >= Screen.width * 0.5f ? 1f : -1f;
+            if (newestOrder >= 0)
+            {
+                touching = true;
+                float anchor = driftAnchorX[newestFinger];
+                steer = DriftSteerFromAnchor(ref anchor, newestX);
+                driftAnchorX[newestFinger] = anchor;
+            }
 
             // Bırakılan parmakları unut (duraklatma sırasında kaçırılan "Ended" olayları dahil)
             releasedFingerIds.Clear();
             foreach (int id in driftHoldFingers.Keys)
                 if (!pressedFingerIds.Contains(id)) releasedFingerIds.Add(id);
-            foreach (int id in releasedFingerIds) driftHoldFingers.Remove(id);
+            foreach (int id in releasedFingerIds) { driftHoldFingers.Remove(id); driftAnchorX.Remove(id); }
             driftIgnoredFingers.RemoveWhere(id => !pressedFingerIds.Contains(id));
         }
         else
@@ -533,10 +554,16 @@ public class CarController2D : MonoBehaviour
             if (mouse != null)
             {
                 if (mouse.leftButton.wasPressedThisFrame)
+                {
                     driftMouseStartedOverUI = IsPointerOverUI(mouse.position.ReadValue());
+                    driftMouseAnchorX = mouse.position.ReadValue().x;
+                }
 
                 if (mouse.leftButton.isPressed && !driftMouseStartedOverUI)
-                    steer = mouse.position.ReadValue().x >= Screen.width * 0.5f ? 1f : -1f;
+                {
+                    touching = true;
+                    steer = DriftSteerFromAnchor(ref driftMouseAnchorX, mouse.position.ReadValue().x);
+                }
             }
         }
 
@@ -544,8 +571,24 @@ public class CarController2D : MonoBehaviour
         float targetVelocity = driftSteerDirection * driftSpeed;
         driftVelocity = Mathf.MoveTowards(driftVelocity, targetVelocity, driftAcceleration * Time.deltaTime);
 
-        // Gizli başarım için: bu drift boyunca oyuncu bir kez bile yön verdi mi?
-        if (driftSteerDirection != 0f) SteeredDuringDrift = true;
+        // Gizli başarım için: bu drift boyunca oyuncu bir kez bile ekrana dokundu / yön verdi mi?
+        if (touching || driftSteerDirection != 0f) SteeredDuringDrift = true;
+    }
+
+    // Merkeze (anchor) göre kaymayı -1..1 yön değerine çevirir. Parmak tam drift mesafesini aşarsa
+    // merkez de peşinden sürüklenir; böylece ters yöne dönmek için uzun yol geri gelmek gerekmez.
+    private float DriftSteerFromAnchor(ref float anchorX, float x)
+    {
+        float full = Screen.width * driftFullSteer;
+        float dead = Mathf.Min(Screen.width * driftDeadZone, full * 0.9f);
+
+        float dx = x - anchorX;
+        if (dx > full) { anchorX = x - full; dx = full; }
+        else if (dx < -full) { anchorX = x + full; dx = -full; }
+
+        float abs = Mathf.Abs(dx);
+        if (abs <= dead) return 0f;
+        return Mathf.Sign(dx) * Mathf.InverseLerp(dead, full, abs);
     }
 
     void HandleBoostLogic()

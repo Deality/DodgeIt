@@ -76,6 +76,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip backgroundMusic;
     public AudioClip engineLoop;
     public AudioClip crashSound;
+    [Range(0f, 1f)] public float crashVolume = 0.6f;
     public AudioClip coinSound;
     public AudioClip powerUpSound; // Hız düşürücü
     public AudioClip shieldPickupSound;  // Kalkan toplama sesi
@@ -405,7 +406,7 @@ public class AudioManager : MonoBehaviour
     public void PlayCritical(AudioClip clip)
     {
         if (criticalSource == null || !CanPlay(clip)) return;
-        criticalSource.PlayOneShot(clip);
+        criticalSource.PlayOneShot(clip, clip == crashSound ? crashVolume : 1f);
         RequestDuck(clip.length, duckedVolumeDb, lowerLayersDuckedByCritical, lowerLayersDuckedByCritical);
     }
 
