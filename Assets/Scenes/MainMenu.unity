@@ -630,7 +630,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1d2b2e4bbb0855646aceea502bd0c50a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e38ece4639dcbd14cbc6dc086edd95f8, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -5718,11 +5718,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 9
-  price: 16000
-  achievementOnly: 0
-  lockedHint: Achievement
-  silhouetteImage: {fileID: 0}
-  secretMark: {fileID: 0}
+  price: 0
+  achievementOnly: 1
+  lockedHint: '? ? ?'
+  silhouetteImage: {fileID: 2056070304}
+  secretMark: {fileID: 1918564637}
   priceText: {fileID: 1376413988}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -11181,7 +11181,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fffd77c002e4e9840852ea86b9dfde28, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 80097f9611f4a38448d192adfaef5ad5, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -13534,12 +13534,12 @@ MonoBehaviour:
     carPrefab: {fileID: 1692546701658414956, guid: 8988575b1000eac41acec261530a0756, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 9"
-    price: 16000
+    price: 0
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 663651b1452c72b4ea0d1e1dd854890d, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 10"
-    price: 0
+    price: 16000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 037d1a4e60fb8e4438b187f020498389, type: 3}
     roadSprite: {fileID: 0}
@@ -13549,12 +13549,12 @@ MonoBehaviour:
     carPrefab: {fileID: 1692546701658414956, guid: fb2aeddfda9b20740af494ae58b6a7cb, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 12"
-    price: 21000
+    price: 0
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 067d69355bf5a76489e65a3c5e527831, type: 3}
     roadSprite: {fileID: 0}
   - itemName: "O.Arabas\u0131 13"
-    price: 0
+    price: 21000
     icon: {fileID: 0}
     carPrefab: {fileID: 1692546701658414956, guid: 0e05c7d9d21f80a4e9a9b4e3bd2cd562, type: 3}
     roadSprite: {fileID: 0}
@@ -14768,7 +14768,7 @@ MonoBehaviour:
     targetValue: 1
     currentValue: 0
     rewardType: 3
-    rewardAmount: 13
+    rewardAmount: 12
     isSecret: 1
     isCompleted: 0
     isClaimed: 0
@@ -14778,7 +14778,7 @@ MonoBehaviour:
     targetValue: 1
     currentValue: 0
     rewardType: 3
-    rewardAmount: 10
+    rewardAmount: 9
     isSecret: 1
     isCompleted: 0
     isClaimed: 0
@@ -15933,11 +15933,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 13
-  price: 0
-  achievementOnly: 1
-  lockedHint: '? ? ?'
-  silhouetteImage: {fileID: 1500653684}
-  secretMark: {fileID: 1590503745}
+  price: 21000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 1820960622}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -16518,11 +16518,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 12
-  price: 21000
-  achievementOnly: 0
-  lockedHint: Achievement
-  silhouetteImage: {fileID: 0}
-  secretMark: {fileID: 0}
+  price: 0
+  achievementOnly: 1
+  lockedHint: '? ? ?'
+  silhouetteImage: {fileID: 1624946281}
+  secretMark: {fileID: 1590503745}
   priceText: {fileID: 724096556}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -23006,16 +23006,16 @@ RectTransform:
   - {fileID: 1363951826}
   - {fileID: 1398446324}
   - {fileID: 3899021}
-  - {fileID: 1886199013}
+  - {fileID: 621149671}
   - {fileID: 37544030}
   - {fileID: 1769057999}
-  - {fileID: 924849449}
+  - {fileID: 171680455}
   - {fileID: 144311376}
   - {fileID: 1199739650}
   - {fileID: 1318782803}
   - {fileID: 1426814250}
-  - {fileID: 621149671}
-  - {fileID: 171680455}
+  - {fileID: 1886199013}
+  - {fileID: 924849449}
   m_Father: {fileID: 1346804108}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -25451,8 +25451,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1918564640}
+  m_Children: []
   m_Father: {fileID: 621149671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -25473,7 +25472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -35268,8 +35267,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1590503748}
+  m_Children: []
   m_Father: {fileID: 171680455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -35290,7 +35288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -37750,7 +37748,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1500653683}
+  m_Father: {fileID: 1624946280}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -38462,7 +38460,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1590503748}
   m_Father: {fileID: 924849449}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -38483,7 +38482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -39399,11 +39398,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 10
-  price: 0
-  achievementOnly: 1
-  lockedHint: '? ? ?'
-  silhouetteImage: {fileID: 1097215196}
-  secretMark: {fileID: 1918564637}
+  price: 16000
+  achievementOnly: 0
+  lockedHint: Achievement
+  silhouetteImage: {fileID: 0}
+  secretMark: {fileID: 0}
   priceText: {fileID: 322734222}
   lockIcon: {fileID: 0}
   myButton: {fileID: 0}
@@ -43682,7 +43681,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1097215195}
+  m_Father: {fileID: 2056070303}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -47039,7 +47038,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1918564640}
   m_Father: {fileID: 1886199013}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -47060,7 +47060,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
