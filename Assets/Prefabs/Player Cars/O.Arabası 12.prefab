@@ -135,6 +135,22 @@ MonoBehaviour:
   isBoostActive: 0
   currentBoostTimer: 0
   swipeRange: 50
+  driftSpeed: 70
+  driftAcceleration: 350
+  driftMaxTilt: 25
+  driftTiltSmoothing: 10
+  driftBoundsPadding: 0
+  driftMarkPointSpacing: 1.5
+  driftMarkMaxPoints: 60
+  driftSmokeMaterial: {fileID: 0}
+  driftSmokeRate: 55
+  driftSmokeSize: 4
+  driftSmokeLifetime: 0.7
+  driftSmokeSpread: 3
+  driftSmokeColor: {r: 0.86, g: 0.86, b: 0.88, a: 0.65}
+  driftSmokeSortingOrder: 1
+  driftDeadZone: 0.012
+  driftFullSteer: 0.06
 --- !u!114 &759801811379435930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +228,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.1830137, y: 2.54}
+    oldSize: {x: 1.1783504, y: 2.54}
     newSize: {x: 1.36, y: 2.54}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -5352,7 +5368,7 @@ Transform:
   m_GameObject: {fileID: 4587593160156471515}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.311, y: -1.142, z: 0}
+  m_LocalPosition: {x: -0.237, y: -1.228, z: 0}
   m_LocalScale: {x: 0.75, y: 0.75000006, z: 0.75000006}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10208,7 +10224,7 @@ Transform:
   m_GameObject: {fileID: 7852351156049119947}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.336, y: -1.142, z: 0}
+  m_LocalPosition: {x: 0.229, y: -1.228, z: 0}
   m_LocalScale: {x: 0.75, y: 0.75000006, z: 0.75000006}
   m_ConstrainProportionsScale: 0
   m_Children: []
