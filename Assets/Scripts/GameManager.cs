@@ -73,6 +73,9 @@ public class GameManager : MonoBehaviour
     public float reviveInvincibilityDuration = 5f;
     private bool hasUsedRevive = false;
     private bool isCrashPending = false;
+    // Bu oyunda kaç kez kaza yapıldı (reklamla devam dahil). NearMissDetector, yanından geçilen araca
+    // sonradan çarpıldıysa o near miss'i saymamak için kullanır.
+    public int CrashCount { get; private set; } = 0;
     private GameObject pendingCrashObstacle;
     private Coroutine reviveOfferCoroutine;
 
@@ -351,6 +354,7 @@ public class GameManager : MonoBehaviour
     {
         if (IsGameOver || IsInvincible || isCrashPending) return;
         isCrashPending = true;
+        CrashCount++;
         isGameActive = false;
 
         // Drift Boost kazayla birlikte biter; reklamla devam edilse bile geri gelmez

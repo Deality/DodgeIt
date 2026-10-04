@@ -17,6 +17,12 @@ public class MissionRowView : MonoBehaviour
     [Tooltip("Silüetin üstündeki soru işareti. Görev gizliyken görünür, tamamlanınca kaybolur.")]
     public GameObject secretMark;
 
+    [Header("İlerleme Çubuğu (TAKE butonunun altında)")]
+    [Tooltip("Çubuğun tamamı. Gizli görev açığa çıkana kadar gizlenir.")]
+    public GameObject progressBarRoot;
+    [Tooltip("Dolan kısım. Sol kenara sabit, sağ kenarı ilerleme oranına göre açılır.")]
+    public RectTransform progressFill;
+
     [Header("Gizli Görev Görünümü")]
     public string secretDescription = "? ? ?";
     public string secretReward = "?";
@@ -151,7 +157,19 @@ public class MissionRowView : MonoBehaviour
             else rewardText.text = $"+{mission.rewardAmount} {mission.rewardType}";
         }
 
-        if (progressText != null) progressText.text = $"{mission.currentValue} / {mission.targetValue}";
+        int shownValue = Mathf.Clamp(mission.currentValue, 0, Mathf.Max(mission.targetValue, 0));
+        if (mission.isCompleted || mission.isClaimed) shownValue = mission.targetValue;
+        if (progressText != null) progressText.text = $"{shownValue} / {mission.targetValue}";
+
+        if (progressBarRoot != null) progressBarRoot.SetActive(!hidden); // gizli görevin hedefi belli olmasın
+        if (progressFill != null)
+        {
+            float ratio = mission.targetValue > 0 ? Mathf.Clamp01((float)shownValue / mission.targetValue) : 0f;
+            progressFill.anchorMin = new Vector2(0f, 0f);
+            progressFill.anchorMax = new Vector2(ratio, 1f);
+            progressFill.offsetMin = Vector2.zero;
+            progressFill.offsetMax = Vector2.zero;
+        }
 
         if (rewardIcon != null) rewardIcon.color = hidden ? secretIconColor : Color.white;
         if (secretMark != null) secretMark.SetActive(hidden);

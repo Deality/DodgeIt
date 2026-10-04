@@ -32,7 +32,14 @@ public class NearMissDetector : MonoBehaviour
     [Header("Gecikme Ayarı (Crash Önlemi)")]
     public float displayDelay = 0.2f;
 
-    private HashSet<GameObject> processedObstacles = new HashSet<GameObject>();
+    // Yanından geçilmekte olan araçlar. Near miss görev ilerlemesi araç sensörden ÇIKINCA (yani gerçekten
+    // sıyrılıp geçilince) yazılır; arada kaza olduysa hiç yazılmaz.
+    private struct PendingNearMiss
+    {
+        public int crashCountAtEnter;
+        public bool isTruck;
+    }
+    private Dictionary<GameObject, PendingNearMiss> processedObstacles = new Dictionary<GameObject, PendingNearMiss>();
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -60,18 +67,17 @@ public class NearMissDetector : MonoBehaviour
 
         if (isObstacle)
         {
-            if (!processedObstacles.Contains(other.gameObject))
+            if (!processedObstacles.ContainsKey(other.gameObject))
             {
                 TriggerMessage();
                 StartCoroutine(TriggerGhostEffectRoutine());
-                processedObstacles.Add(other.gameObject);
+                processedObstacles.Add(other.gameObject, new PendingNearMiss
+                {
+                    crashCountAtEnter = GameManager.instance != null ? GameManager.instance.CrashCount : 0,
+                    isTruck = other.GetComponentInParent<BigTruck>() != null
+                });
 
                 StartCoroutine(PlayNearMissSoundWithDelay());
-
-                MissionsManager.AddGameplayProgress(MissionType.TriggerNearmiss, 1);
-                // Gizli görev: tıra near miss
-                if (other.GetComponentInParent<BigTruck>() != null)
-                    MissionsManager.AddGameplayProgress(MissionType.NearMissTruck, 1);
                 StartCoroutine(TriggerStreakWithDelay());
             }
         }
@@ -79,16 +85,24 @@ public class NearMissDetector : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (processedObstacles.Contains(other.gameObject))
-        {
-            processedObstacles.Remove(other.gameObject);
-        }
+        if (!processedObstacles.TryGetValue(other.gameObject, out PendingNearMiss pending)) return;
+        processedObstacles.Remove(other.gameObject);
+
+        // Araç sensörden çıktı. Bu arada kaza olduysa (ya da oyun bittiyse) near miss haksız olurdu: sayma.
+        GameManager gm = GameManager.instance;
+        if (gm != null && (!gm.isGameActive || gm.IsGameOver || gm.CrashCount != pending.crashCountAtEnter)) return;
+
+        MissionsManager.AddGameplayProgress(MissionType.TriggerNearmiss, 1);
+        // Gizli görev: tıra near miss
+        if (pending.isTruck) MissionsManager.AddGameplayProgress(MissionType.NearMissTruck, 1);
     }
 
     IEnumerator TriggerStreakWithDelay()
     {
         yield return new WaitForSeconds(displayDelay);
-        if (GameManager.instance != null) GameManager.instance.TriggerNearMissStreak();
+        // Bu sürede kaza olduysa seri de sayılmaz
+        if (GameManager.instance != null && GameManager.instance.isGameActive && !GameManager.instance.IsGameOver)
+            GameManager.instance.TriggerNearMissStreak();
     }
 
     // 🔥 Near miss sesi hafifçe geciktirilir; eğer bu süre içinde oyuncu asıl çarpışmayı
