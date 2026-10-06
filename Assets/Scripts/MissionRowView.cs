@@ -203,6 +203,7 @@ public class MissionRowView : MonoBehaviour
         if (isClaiming) return;
         isClaiming = true;
         SetBlinking(false);
+        if (AudioManager.instance != null) AudioManager.instance.PlayMissionClaimSound();
 
         // Tıklamayı engelle ve animasyonu başlat!
         if (takeButton != null) takeButton.interactable = false;

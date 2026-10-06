@@ -87,6 +87,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip truckHornSound; // Kamyon kornası
     public AudioClip buttonClickSound; // Buton tıklama sesi
     public AudioClip purchaseSound;    // Marketten araba / yol satın alınınca
+    public AudioClip missionClaimSound; // Görev ödülü alınınca (TAKE)
+    public AudioClip boostReadySound;   // Boost barı yeniden dolunca
     public AudioClip countdownBeep; // Devam ederken 3-2-1
     public AudioClip countdownGo;   // "GO!"
     public AudioClip coinRushSound;     // Drift Boost (Coin Rush) toplama
@@ -374,6 +376,11 @@ public class AudioManager : MonoBehaviour
     {
         PlayUI(purchaseSound);
     }
+
+    public void PlayMissionClaimSound() => PlayUI(missionClaimSound);
+
+    // Geri bildirim katmanı: kaza / power-up seslerinin altında kalır, müziği kısmaz
+    public void PlayBoostReady() => PlayFeedback(boostReadySound);
 
     public void PlayCoinRushCountTick() => PlayFeedback(coinRushCountTick);
 

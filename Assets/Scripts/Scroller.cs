@@ -4,6 +4,9 @@ public class Scroller : MonoBehaviour
 {
     // Bu script, ObstacleManager'ın statik olarak tuttuğu hızı kullanır.
 
+    [Tooltip("Yol hızına eklenen fark (birim/sn). Negatif = yoldan yavaş akar. Hız göstergesinde 1 birim = 10 km/h, yani -0.75 = 7.5 km/h daha yavaş.")]
+    public float speedOffset = -0.75f;
+
     private Camera mainCam;
     // Rigidbody2D referansını artık hareket için kullanmıyoruz, sadece çarpışma için gerekli.
 
@@ -21,7 +24,7 @@ public class Scroller : MonoBehaviour
     void Update()
     {
         // Hızı kullanarak objeyi aşağı kaydır
-        float currentSpeed = ObstacleManager.scrollSpeed;
+        float currentSpeed = Mathf.Max(ObstacleManager.scrollSpeed + speedOffset, 0f);
 
         // Kinematic Rigidbody'nin bağlı olduğu Transform'u direkt hareket ettir.
         transform.Translate(Vector3.down * currentSpeed * Time.deltaTime, Space.World);

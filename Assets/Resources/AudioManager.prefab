@@ -70,6 +70,7 @@ MonoBehaviour:
   backgroundMusic: {fileID: 8300000, guid: c10ccf3e7cf654341ac743f246f5e469, type: 3}
   engineLoop: {fileID: 8300000, guid: 7a1f71ad661be0f408eb8da8c25794f1, type: 3}
   crashSound: {fileID: 8300000, guid: 274591366f09da54d88b3b8bfb7e0cfc, type: 3}
+  crashVolume: 0.6
   coinSound: {fileID: 8300000, guid: 092ad8130fe1bdf43b295c66a9d1f820, type: 3}
   powerUpSound: {fileID: 8300000, guid: 08a9cd340cbac954a92e8663f6c537be, type: 3}
   shieldPickupSound: {fileID: 8300000, guid: 045f46507dcb57340a99223dc95db26a, type: 3}
@@ -80,6 +81,8 @@ MonoBehaviour:
   truckHornSound: {fileID: 8300000, guid: 8dec1111c36263d49a4f565935d65ff2, type: 3}
   buttonClickSound: {fileID: 8300000, guid: f0a011f28dc58b9488cc705a8de97af1, type: 3}
   purchaseSound: {fileID: 8300000, guid: 1a78988ce57d0514fa71c611092bf15d, type: 3}
+  missionClaimSound: {fileID: 8300000, guid: 3365293a0fbc97240936c2b884a85fd3, type: 3}
+  boostReadySound: {fileID: 8300000, guid: 6d124ce2104a74b44bd4ab63e3fa6393, type: 3}
   countdownBeep: {fileID: 8300000, guid: 471f7f629535f7148945bec65b67773b, type: 3}
   countdownGo: {fileID: 8300000, guid: aff0ba39c20430f4bb3ed9445bf95c5c, type: 3}
   coinRushSound: {fileID: 8300000, guid: 114db6e04109fa24ab60d0e2034a27ec, type: 3}

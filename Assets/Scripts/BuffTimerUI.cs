@@ -72,6 +72,7 @@ public class BuffTimerUI : MonoBehaviour
     public float readyOverlayFadeDuration = 0.25f;
 
     private float flashTimer = 0f;
+    private bool hasBeenEmptied = false;
 
     private CanvasGroup canvasGroup;
     private CarController2D playerCar;
@@ -232,7 +233,13 @@ public class BuffTimerUI : MonoBehaviour
         {
             punchTimer = readyPunchDuration;
             flashTimer = readyFlashDuration;
+
+            // "Boost doldu" sesi: yalnızca bar oyun sırasında boşalıp yeniden dolduysa (oyun başındaki ilk dolu hal değil)
+            if (hasBeenEmptied && buffType == BuffType.Boost && AudioManager.instance != null
+                && GameManager.instance != null && GameManager.instance.isGameActive)
+                AudioManager.instance.PlayBoostReady();
         }
+        if (timerMode == TimerMode.CooldownTime && targetAlpha > 0f && !isFullNow) hasBeenEmptied = true;
         wasFull = isFullNow;
 
         if (readyOverlay != null)

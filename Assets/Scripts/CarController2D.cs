@@ -125,6 +125,10 @@ public class CarController2D : MonoBehaviour
     // Drift yönü parmağın ekrandaki yerine değil, ilk bastığı noktaya göre ne kadar kaydığına bağlı
     private readonly Dictionary<int, float> driftAnchorX = new Dictionary<int, float>(); // parmak id -> merkez kabul edilen x
     private float driftMouseAnchorX = 0f;
+    [Tooltip("Coin Rush bitince arabanın en yakın şeride yerleşme yumuşaklığı (saniye). Büyük = daha yavaş.")]
+    [SerializeField] private float driftSettleTime = 0.25f;
+    private bool isSettlingAfterDrift = false;
+    private float settleVelocity = 0f;
     [SerializeField, Range(0f, 0.1f)] private float driftDeadZone = 0.012f;      // ekran genişliğine oran: bu kadar kaymadan yön verilmez
     [SerializeField, Range(0.02f, 0.3f)] private float driftFullSteer = 0.06f;   // ekran genişliğine oran: tam hızda drift için gereken kayma
 
@@ -463,10 +467,12 @@ public class CarController2D : MonoBehaviour
         leftDriftMark = null;
         rightDriftMark = null;
 
-        // En yakın şeride otur; MoveCar arabayı normal şerit değiştirme hızıyla oraya taşır
+        // En yakın şeride otur; MoveCar arabayı oraya yavaşça (driftSettleTime) yerleştirir
         int nearestLane = Mathf.Clamp(Mathf.RoundToInt((logicalX - centerLaneX) / laneDistance) + 1, 0, 2);
         currentLane = nearestLane;
         targetX = centerLaneX + (currentLane - 1) * laneDistance;
+        isSettlingAfterDrift = true;
+        settleVelocity = 0f;
 
         // Drift sırasında basılı tutulan parmak, bırakılınca tap/swipe olarak algılanmasın:
         // hâlâ basılı olan parmakları "işlendi" say, kaldırılana kadar yok sayılsınlar
@@ -868,6 +874,7 @@ public class CarController2D : MonoBehaviour
         float fromX = logicalX;
         currentLane = laneIndex;
         targetX = centerLaneX + (currentLane - 1) * laneDistance;
+        isSettlingAfterDrift = false; // oyuncu şerit değiştirdi: normal hızla git
 
         TutorialManager.instance?.NotifyPlayerSwiped();
 
@@ -924,7 +931,16 @@ public class CarController2D : MonoBehaviour
         }
         else
         {
-            if (Mathf.Abs(logicalX - targetX) < 0.01f) logicalX = targetX;
+            if (Mathf.Abs(logicalX - targetX) < 0.01f)
+            {
+                logicalX = targetX;
+                isSettlingAfterDrift = false;
+            }
+            else if (isSettlingAfterDrift)
+            {
+                // Coin Rush bitti: şeride ışınlanmak yerine yumuşakça yerleş
+                logicalX = Mathf.SmoothDamp(logicalX, targetX, ref settleVelocity, driftSettleTime);
+            }
             else logicalX = Mathf.MoveTowards(logicalX, targetX, moveSpeed * Time.deltaTime);
         }
 
