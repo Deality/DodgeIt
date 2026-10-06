@@ -34,12 +34,27 @@ public class NearMissDetector : MonoBehaviour
 
     // Yanından geçilmekte olan araçlar. Near miss görev ilerlemesi araç sensörden ÇIKINCA (yani gerçekten
     // sıyrılıp geçilince) yazılır; arada kaza olduysa hiç yazılmaz.
-    private struct PendingNearMiss
+    private class PendingNearMiss
     {
         public int crashCountAtEnter;
         public bool isTruck;
+        public int collidersInside; // aracın birden fazla collider'ı olabilir; hepsi çıkınca "geçildi" sayılır
     }
+    // Anahtar: aracın kök objesi (Obstacle / FastMover script'inin olduğu obje)
     private Dictionary<GameObject, PendingNearMiss> processedObstacles = new Dictionary<GameObject, PendingNearMiss>();
+
+    [Tooltip("Araç geçildikten sonra near miss'in görevlere yazılması için kazasız geçmesi gereken süre (saniye). Kazadan hemen önceki near miss sayılmaz.")]
+    public float confirmDelay = 0.6f;
+
+    // Bir collider'dan aracın kök objesini bulur
+    private static GameObject ObstacleRoot(Collider2D other)
+    {
+        Obstacle o = other.GetComponentInParent<Obstacle>();
+        if (o != null) return o.gameObject;
+        FastMover f = other.GetComponentInParent<FastMover>();
+        if (f != null) return f.gameObject;
+        return other.gameObject;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -67,14 +82,20 @@ public class NearMissDetector : MonoBehaviour
 
         if (isObstacle)
         {
-            if (!processedObstacles.ContainsKey(other.gameObject))
+            GameObject root = ObstacleRoot(other);
+            if (processedObstacles.TryGetValue(root, out PendingNearMiss existing))
+            {
+                existing.collidersInside++; // aynı aracın başka bir collider'ı
+            }
+            else
             {
                 TriggerMessage();
                 StartCoroutine(TriggerGhostEffectRoutine());
-                processedObstacles.Add(other.gameObject, new PendingNearMiss
+                processedObstacles.Add(root, new PendingNearMiss
                 {
                     crashCountAtEnter = GameManager.instance != null ? GameManager.instance.CrashCount : 0,
-                    isTruck = other.GetComponentInParent<BigTruck>() != null
+                    isTruck = other.GetComponentInParent<BigTruck>() != null,
+                    collidersInside = 1
                 });
 
                 StartCoroutine(PlayNearMissSoundWithDelay());
@@ -85,12 +106,29 @@ public class NearMissDetector : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (!processedObstacles.TryGetValue(other.gameObject, out PendingNearMiss pending)) return;
-        processedObstacles.Remove(other.gameObject);
+        // Girişte sayılmayan collider'lar (engel olmayan alt parçalar) çıkışta da sayılmaz
+        bool isObstacle = other.CompareTag("Obstacle") ||
+                          other.GetComponent<Obstacle>() != null ||
+                          other.GetComponent<FastMover>() != null;
+        if (!isObstacle) return;
 
-        // Araç sensörden çıktı. Bu arada kaza olduysa (ya da oyun bittiyse) near miss haksız olurdu: sayma.
+        GameObject root = ObstacleRoot(other);
+        if (!processedObstacles.TryGetValue(root, out PendingNearMiss pending)) return;
+        if (--pending.collidersInside > 0) return; // aracın bir parçası hâlâ yanımızda
+        processedObstacles.Remove(root);
+
+        // Araç tamamen geçildi. Görevlere hemen yazmıyoruz: kısa bir süre daha kazasız geçmeli.
+        if (isActiveAndEnabled) StartCoroutine(ConfirmNearMissRoutine(pending));
+    }
+
+    // Near miss'i ancak araç geçildikten sonra confirmDelay boyunca kaza olmazsa görevlere yazar.
+    // Kaza anındaki ya da kazadan hemen önceki near miss böylece hiç sayılmaz.
+    IEnumerator ConfirmNearMissRoutine(PendingNearMiss pending)
+    {
+        yield return new WaitForSeconds(confirmDelay);
+
         GameManager gm = GameManager.instance;
-        if (gm != null && (!gm.isGameActive || gm.IsGameOver || gm.CrashCount != pending.crashCountAtEnter)) return;
+        if (gm != null && (!gm.isGameActive || gm.IsGameOver || gm.CrashCount != pending.crashCountAtEnter)) yield break;
 
         MissionsManager.AddGameplayProgress(MissionType.TriggerNearmiss, 1);
         // Gizli görev: tıra near miss
