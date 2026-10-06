@@ -73,22 +73,15 @@ public class DriftBoostManager : MonoBehaviour
     [SerializeField] private GameObject coinPrefab;
     [Tooltip("Dizideki iki altın arasındaki dikey mesafe.")]
     [SerializeField] private float coinSpacing = 12f;
-    [Tooltip("Hiçbir desen arabanın en yüksek drift hızının bu oranından daha hızlı yana kaymaz (takip edilebilirlik sınırı).")]
-    [SerializeField, Range(0.3f, 1f)] private float zigzagFollowFactor = 0.75f;
-
     [Header("Altın Desenleri (her Coin Rush'ta sırayla biri gelir)")]
-    [Tooltip("UZUN SÜPÜRME: yolun bir kenarından diğerine tek uzun drift. Bir geçişin süresi (saniye).")]
-    [SerializeField] private float longSweepTime = 1.5f;
-    [Tooltip("GENİŞ S: kenardan kenara yumuşak kıvrım. Bir kenardan diğerine geçiş süresi (saniye).")]
-    [SerializeField] private float waveSweepTime = 1.6f;
-    [Tooltip("KAYDIR-BEKLE: kenara hızlı drift, kenarda düz gidiş, sonra geri. Geçiş süresi (saniye).")]
-    [SerializeField] private float holdSweepTime = 1.0f;
-    [Tooltip("KAYDIR-BEKLE: kenarda düz gidilen süre (saniye).")]
+    [Tooltip("AÇI: altın çizgisinin yana kayma hızı, arabanın en yüksek drift hızına oranla. Yüksek = çizgi daha yatay, kenardan kenara daha kısa sürede tam drift. 1'e yaklaştıkça yetişmek zorlaşır.")]
+    [SerializeField, Range(0.4f, 1f)] private float sweepFollow = 0.85f;
+    [Tooltip("Her dönüşte kenarda düz gelen kısa parça (saniye). Arabanın yön değiştirip çizgiye yetişmesine zaman tanır.")]
+    [SerializeField] private float cornerHoldTime = 0.18f;
+    [Tooltip("KAYDIR-BEKLE: her geçişten sonra kenarda düz gidilen süre (saniye).")]
     [SerializeField] private float holdTime = 0.6f;
-    [Tooltip("BASAMAK: şerit şerit ilerler. Bir şerit geçişinin süresi (saniye).")]
-    [SerializeField] private float stairStepTime = 0.5f;
-    [Tooltip("BASAMAK: her şeritte düz gidilen süre (saniye).")]
-    [SerializeField] private float stairHoldTime = 0.45f;
+    [Tooltip("İKİLİ: art arda iki geçişten sonra kenarda düz gidilen süre (saniye).")]
+    [SerializeField] private float doubleHoldTime = 0.7f;
     [Tooltip("Boost bitmeden en az bu kadar saniye önce arabaya ulaşamayacak altınlar spawn edilmez.")]
     [SerializeField] private float coinArrivalMargin = 0.2f;
 
@@ -129,14 +122,15 @@ public class DriftBoostManager : MonoBehaviour
     private float nextCoinY;
     private bool coinsFinished;
 
-    // Belirli dört desen var; her Coin Rush'ta sıradaki gelir (sıra her turda karıştırılır, aynısı art arda gelmez)
-    private enum CoinPattern { LongSweep, Wave, SweepAndHold, Stairs }
+    // Belirli dört desen var; her Coin Rush'ta sıradaki gelir (sıra her turda karıştırılır, aynısı art arda gelmez).
+    // Hepsi kenardan kenara TAM drift ister; fark, dönüşlerin ritminde.
+    private enum CoinPattern { Zigzag, SweepAndHold, DoubleSweep, Wave }
     private CoinPattern pattern;
     private readonly List<CoinPattern> patternBag = new List<CoinPattern>();
     private int lastPattern = -1;
     private float patternDir;        // +1 sağa, -1 sola
-    private float holdLeft;          // SweepAndHold / Stairs: düz gidişte kalan süre
-    private float stairTargetX;      // Stairs: varılacak şeridin x'i
+    private float holdLeft;          // kenarda düz gidişte kalan süre
+    private int sweepsDone;          // DoubleSweep: son uzun beklemeden beri tamamlanan geçiş sayısı
     private float waveTheta;
     private float waveAmplitude;
     private bool lastStartedRight;   // araba ortadayken ilk yön her seferinde değişsin
@@ -360,7 +354,7 @@ public class DriftBoostManager : MonoBehaviour
         // Desenler süreyle tanımlı: iki altın arasındaki süre ve arabanın takip edebileceği en yüksek yan hız.
         // Hıza göre hesaplandığı için kilitlenen hız ne olursa olsun desen aynı şekli ve zorluğu korur.
         float coinInterval = coinSpacing / speed;
-        float maxLateral = CarController2D.instance.DriftSpeed * zigzagFollowFactor;
+        float maxLateral = CarController2D.instance.DriftSpeed * sweepFollow;
 
         while (nextCoinY <= spawnY)
         {
@@ -409,12 +403,12 @@ public class DriftBoostManager : MonoBehaviour
         else { lastStartedRight = !lastStartedRight; patternDir = lastStartedRight ? 1f : -1f; }
 
         holdLeft = 0f;
-        stairTargetX = Mathf.Clamp(nextCoinX + patternDir * half, minX, maxX);
+        sweepsDone = 0;
 
         if (pattern == CoinPattern.Wave)
         {
             waveAmplitude = half;
-            if (waveAmplitude < 0.05f) { pattern = CoinPattern.LongSweep; return; }
+            if (waveAmplitude < 0.05f) { pattern = CoinPattern.Zigzag; return; }
 
             // Dalga arabanın bulunduğu x'ten, seçilen yöne doğru başlar
             float a = Mathf.Asin(Mathf.Clamp((nextCoinX - mid) / waveAmplitude, -1f, 1f));
@@ -422,62 +416,42 @@ public class DriftBoostManager : MonoBehaviour
         }
     }
 
-    // Bir sonraki altının x konumunu desene göre ilerletir. dt: iki altın arasındaki süre.
-    // Hiçbir desende yan hız maxLateral'i aşmaz, yani araba her deseni takip edebilir.
-    void AdvancePattern(float dt, float maxLateral)
+    // Bir sonraki altının x konumunu desene göre ilerletir. dt: iki altın arasındaki süre,
+    // lateral: çizginin yana kayma hızı (arabanın drift hızının sweepFollow kadarı).
+    void AdvancePattern(float dt, float lateral)
     {
-        float width = maxX - minX;
+        if (pattern == CoinPattern.Wave)
+        {
+            // Yumuşak kıvrım: en dik yerinde (yolun ortasında) hız "lateral" olur, kenarlarda kendiliğinden yavaşlar
+            waveTheta += lateral / waveAmplitude * dt;
+            nextCoinX = Mathf.Clamp((minX + maxX) * 0.5f + waveAmplitude * Mathf.Sin(waveTheta), minX, maxX);
+            return;
+        }
+
+        if (holdLeft > 0f) { holdLeft -= dt; return; } // kenarda düz git
+
+        nextCoinX += patternDir * lateral * dt;
+
+        bool hitRight = nextCoinX >= maxX, hitLeft = nextCoinX <= minX;
+        if (!hitRight && !hitLeft) return;
+
+        // Kenara varıldı: çizgi kenarda kalır, yön döner, desene göre kısa ya da uzun düz parça gelir
+        nextCoinX = hitRight ? maxX : minX;
+        patternDir = hitRight ? -1f : 1f;
+        sweepsDone++;
 
         switch (pattern)
         {
-            case CoinPattern.Wave:
-            {
-                // Kenardan kenara waveSweepTime sürer; en dik yerinde bile takip edilebilir kalır
-                float omega = Mathf.Min(Mathf.PI / Mathf.Max(waveSweepTime, 0.1f), maxLateral / waveAmplitude);
-                waveTheta += omega * dt;
-                nextCoinX = Mathf.Clamp((minX + maxX) * 0.5f + waveAmplitude * Mathf.Sin(waveTheta), minX, maxX);
-                break;
-            }
-
-            case CoinPattern.LongSweep:
-            {
-                float v = Mathf.Min(width / Mathf.Max(longSweepTime, 0.1f), maxLateral);
-                nextCoinX += patternDir * v * dt;
-                // Yol sınırında sekerek yön değiştir
-                if (nextCoinX > maxX) { nextCoinX = 2f * maxX - nextCoinX; patternDir = -1f; }
-                else if (nextCoinX < minX) { nextCoinX = 2f * minX - nextCoinX; patternDir = 1f; }
-                break;
-            }
-
             case CoinPattern.SweepAndHold:
-            {
-                if (holdLeft > 0f) { holdLeft -= dt; break; } // kenarda düz git
-                float v = Mathf.Min(width / Mathf.Max(holdSweepTime, 0.1f), maxLateral);
-                nextCoinX += patternDir * v * dt;
-                if (nextCoinX >= maxX) { nextCoinX = maxX; patternDir = -1f; holdLeft = holdTime; }
-                else if (nextCoinX <= minX) { nextCoinX = minX; patternDir = 1f; holdLeft = holdTime; }
+                holdLeft = holdTime;
                 break;
-            }
-
-            case CoinPattern.Stairs:
-            {
-                if (holdLeft > 0f) { holdLeft -= dt; break; } // şeritte düz git
-                float laneWidth = width * 0.5f;
-                float v = Mathf.Min(laneWidth / Mathf.Max(stairStepTime, 0.1f), maxLateral);
-                nextCoinX += patternDir * v * dt;
-                if ((patternDir > 0f && nextCoinX >= stairTargetX) || (patternDir < 0f && nextCoinX <= stairTargetX))
-                {
-                    nextCoinX = stairTargetX;
-                    holdLeft = stairHoldTime;
-                    if (nextCoinX >= maxX - 0.01f) patternDir = -1f;
-                    else if (nextCoinX <= minX + 0.01f) patternDir = 1f;
-                    stairTargetX = Mathf.Clamp(nextCoinX + patternDir * laneWidth, minX, maxX);
-                }
+            case CoinPattern.DoubleSweep:
+                holdLeft = sweepsDone % 2 == 0 ? doubleHoldTime : cornerHoldTime;
                 break;
-            }
+            default: // Zigzag
+                holdLeft = cornerHoldTime;
+                break;
         }
-
-        nextCoinX = Mathf.Clamp(nextCoinX, minX, maxX);
     }
 
     void ClearBoostCoins()
