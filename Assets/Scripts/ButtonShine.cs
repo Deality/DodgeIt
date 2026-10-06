@@ -13,6 +13,10 @@ public class ButtonShine : MonoBehaviour
     public float duration = 0.7f;
     [Tooltip("Menü açıldıktan sonra ilk parlamaya kadar geçen süre (saniye).")]
     public float startDelay = 1.2f;
+    [Tooltip("Şeridin ilerleme yönü. (1,0) = soldan sağa, (1,-1) = sol üstten sağ alta.")]
+    public Vector2 direction = Vector2.right;
+    [Tooltip("Şerit eğik duruyorsa butonun dışına tamamen çıkması için eklenen pay.")]
+    public float extraTravel = 0f;
 
     private RectTransform rect;
 
@@ -30,15 +34,17 @@ public class ButtonShine : MonoBehaviour
 
         while (true)
         {
-            // Şerit eğik durduğu için butonun iki yanından biraz daha uzaktan başlayıp bitmeli
-            float travel = rect.rect.width * 0.5f + shine.rect.width + shine.rect.height * 0.25f;
+            // Şerit butonun tamamen dışından başlayıp tamamen dışında biter
+            Vector2 dir = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+            float travel = Mathf.Abs(dir.x) * rect.rect.width * 0.5f + Mathf.Abs(dir.y) * rect.rect.height * 0.5f
+                           + shine.rect.width + extraTravel;
             shine.gameObject.SetActive(true);
 
             float t = 0f;
             while (t < 1f)
             {
                 t += Time.unscaledDeltaTime / Mathf.Max(duration, 0.01f);
-                shine.anchoredPosition = new Vector2(Mathf.Lerp(-travel, travel, Mathf.Clamp01(t)), 0f);
+                shine.anchoredPosition = dir * Mathf.Lerp(-travel, travel, Mathf.Clamp01(t));
                 yield return null;
             }
 
