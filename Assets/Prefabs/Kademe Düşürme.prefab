@@ -195,8 +195,8 @@ GameObject:
   - component: {fileID: 7254270543855345353}
   - component: {fileID: 3648539132115425697}
   - component: {fileID: 1691101777788427764}
-  - component: {fileID: 8601268507836674068}
   - component: {fileID: 6624031957742180539}
+  - component: {fileID: 753905591039628160}
   m_Layer: 0
   m_Name: "Kademe D\xFC\u015F\xFCrme"
   m_TagString: Untagged
@@ -275,8 +275,31 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &8601268507836674068
-BoxCollider2D:
+--- !u!114 &6624031957742180539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8928820572909645852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f7c2a9d8e1b4c6a9b3d5e7f1a2c4b6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
+  sourceGlow: {fileID: 5396536620137902120}
+  glowColor: {r: 1, g: 0.35, b: 0.3, a: 1}
+  haloSize: 1.4
+  haloMinAlpha: 0.45
+  haloMaxAlpha: 0.9
+  haloPulseSpeed: 4
+  haloPulseAmount: 0.12
+  enableRays: 1
+  raySize: 1.9
+  rayAlpha: 0.35
+  rayRotateSpeed: 40
+--- !u!58 &753905591039628160
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -309,38 +332,5 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.097969055, y: -0.6858015}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 12.392715, y: 12.39271}
-  m_EdgeRadius: 0
---- !u!114 &6624031957742180539
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8928820572909645852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f7c2a9d8e1b4c6a9b3d5e7f1a2c4b6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
-  sourceGlow: {fileID: 5396536620137902120}
-  glowColor: {r: 1, g: 0.35, b: 0.3, a: 1}
-  haloSize: 1.4
-  haloMinAlpha: 0.45
-  haloMaxAlpha: 0.9
-  haloPulseSpeed: 4
-  haloPulseAmount: 0.12
-  enableRays: 1
-  raySize: 1.9
-  rayAlpha: 0.35
-  rayRotateSpeed: 40
+  m_Offset: {x: 0.067670405, y: -0.5976545}
+  m_Radius: 7.166497
