@@ -868,8 +868,8 @@ MonoBehaviour:
   invincibilityPityRate: 0.009
   driftBoostPrefab: {fileID: 2802531104533460270, guid: 7c9e1a3b5d7f9b1d3e5a7c9b1d3f5e7a, type: 3}
   driftBoostSpawnChance: 0.03
-  driftBoostCooldownTime: 35
-  driftBoostStartDelay: 20
+  driftBoostCooldownTime: 1
+  driftBoostStartDelay: 1
 --- !u!4 &450009585
 Transform:
   m_ObjectHideFlags: 0
@@ -931,8 +931,10 @@ MonoBehaviour:
   resultTickInterval: 0.055
   coinPrefab: {fileID: 8833457522766607096, guid: e0bc05866f26dbf49b2683b26643c498, type: 3}
   coinSpacing: 15
-  zigzagFollowFactor: 0.75
-  minFollowFactor: 0.4
+  sweepFollow: 0.85
+  cornerHoldTime: 0.18
+  holdTime: 0.6
+  doubleHoldTime: 0.7
   coinArrivalMargin: 0.2
   trafficClearEffectPrefab: {fileID: 0}
   activateSound: {fileID: 0}
