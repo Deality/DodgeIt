@@ -868,8 +868,8 @@ MonoBehaviour:
   invincibilityPityRate: 0.009
   driftBoostPrefab: {fileID: 2802531104533460270, guid: 7c9e1a3b5d7f9b1d3e5a7c9b1d3f5e7a, type: 3}
   driftBoostSpawnChance: 0.03
-  driftBoostCooldownTime: 1
-  driftBoostStartDelay: 1
+  driftBoostCooldownTime: 35
+  driftBoostStartDelay: 20
 --- !u!4 &450009585
 Transform:
   m_ObjectHideFlags: 0
@@ -6304,6 +6304,8 @@ MonoBehaviour:
   shieldExplainText: Shield makes you invincible for a few seconds - crash through
     anything safely!
   reducerExplainText: This slows down traffic for a while, giving you room to breathe.
+  coinRushExplainText: COIN RUSH! The road clears for a few seconds - hold and swipe
+    to drift side to side and grab every coin!
   swipePromptText: SWIPE LEFT OR RIGHT
   doubleTapPromptText: DOUBLE TAP
   delayBeforeBoostPrompt: 3
