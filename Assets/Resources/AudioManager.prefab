@@ -81,8 +81,8 @@ MonoBehaviour:
   truckHornSound: {fileID: 8300000, guid: 8dec1111c36263d49a4f565935d65ff2, type: 3}
   buttonClickSound: {fileID: 8300000, guid: f0a011f28dc58b9488cc705a8de97af1, type: 3}
   purchaseSound: {fileID: 8300000, guid: 1a78988ce57d0514fa71c611092bf15d, type: 3}
-  missionClaimSound: {fileID: 8300000, guid: 3365293a0fbc97240936c2b884a85fd3, type: 3}
-  boostReadySound: {fileID: 8300000, guid: 6d124ce2104a74b44bd4ab63e3fa6393, type: 3}
+  missionClaimSound: {fileID: 8300000, guid: 7311a3bddb06d9049aa6f6ca7b5748de, type: 3}
+  boostReadySound: {fileID: 8300000, guid: 1cae3dfc4eaafab46ab471dc2ca82889, type: 3}
   countdownBeep: {fileID: 8300000, guid: 471f7f629535f7148945bec65b67773b, type: 3}
   countdownGo: {fileID: 8300000, guid: aff0ba39c20430f4bb3ed9445bf95c5c, type: 3}
   coinRushSound: {fileID: 8300000, guid: 114db6e04109fa24ab60d0e2034a27ec, type: 3}
