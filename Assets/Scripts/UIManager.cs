@@ -483,15 +483,7 @@ public class UIManager : MonoBehaviour
     // --- LEADERBOARD KONTROLLERİ ---
     public void OpenLeaderboard()
     {
-#if UNITY_ANDROID
-        if (GooglePlayGamesManager.instance != null && !string.IsNullOrEmpty(GooglePlayGamesManager.instance.LeaderboardId))
-        {
-            GooglePlayGamesManager.instance.ShowLeaderboard();
-            return;
-        }
-#endif
-        // Fallback (Editor / other platforms / before the Play Console leaderboard is set up):
-        // shows the local "your best score" panel instead of the online friends leaderboard.
+        // Liderlik tablosu Unity Leaderboards üzerinden (Android ve iOS aynı tabloda); oyun içi panelde gösterilir.
         if (leaderboardPanel != null)
         {
             StartCoroutine(SlidePanelInRoutine(leaderboardPanel, leaderboardSlideDirection));
