@@ -118,7 +118,9 @@ public class NearMissDetector : MonoBehaviour
         processedObstacles.Remove(root);
 
         // Araç tamamen geçildi. Görevlere hemen yazmıyoruz: kısa bir süre daha kazasız geçmeli.
-        if (isActiveAndEnabled) StartCoroutine(ConfirmNearMissRoutine(pending));
+        // Sayaç GameManager üzerinde çalışır: sensör objesi kapanırken (ör. kaza anında araba gizlenirken)
+        // kendi üzerinde coroutine başlatılamaz.
+        if (GameManager.instance != null) GameManager.instance.StartCoroutine(ConfirmNearMissRoutine(pending));
     }
 
     // Near miss'i ancak araç geçildikten sonra confirmDelay boyunca kaza olmazsa görevlere yazar.

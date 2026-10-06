@@ -110,6 +110,17 @@ public class AudioManager : MonoBehaviour
     [Tooltip("Bu sahnede backgroundMusic, diğer sahnelerde menuMusic çalar.")]
     public string gameSceneName = "SampleScene";
 
+    [Header("Menüde Boğuk Müzik")]
+    [Tooltip("Menüdeyken müziğin kesim frekansı (Hz). Düşük = daha boğuk, \"su altında\" hissi. 22000 = efekt kapalı.")]
+    [Range(200f, 22000f)] public float menuMusicCutoff = 700f;
+    [Tooltip("Menü <-> oyun geçişinde boğukluğun açılıp kapanma süresi (saniye).")]
+    public float musicFilterFadeTime = 0.8f;
+
+    private const float openCutoff = 22000f;
+    private AudioLowPassFilter musicLowPass;
+    private float musicCutoff = 22000f;
+    private bool isInGameScene = false;
+
     [Header("Şerit Değiştirme (Swipe) Sesleri")]
     [Tooltip("Şerit değiştirirken rastgele seçilip çalınacak swipe sesleri (aynı temada birkaç varyasyon).")]
     public AudioClip[] swipeSounds;
@@ -138,6 +149,8 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        SetUpMusicFilter();
 
         if (engineSource != null) engineBaseVolume = engineSource.volume;
         if (musicSource != null) musicBaseVolume = musicSource.volume;
@@ -169,7 +182,53 @@ public class AudioManager : MonoBehaviour
     // Sahne değişince o sahnenin müziğine geç (menü <-> oyun)
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (mode == LoadSceneMode.Single) PlayMusic();
+        if (mode != LoadSceneMode.Single) return;
+        isInGameScene = scene.name == gameSceneName;
+        PlayMusic();
+    }
+
+    // Müziği kendi alt objesine taşır ve üstüne bir alçak geçiren filtre koyar. Filtre aynı objedeki TÜM
+    // kaynakları etkilediği için müzik ayrı objede olmalı; yoksa menüdeki buton sesleri de boğuklaşırdı.
+    private void SetUpMusicFilter()
+    {
+        if (musicSource == null) return;
+
+        var go = new GameObject("Music");
+        go.transform.SetParent(transform, false);
+        AudioSource src = go.AddComponent<AudioSource>();
+        src.clip = musicSource.clip;
+        src.volume = musicSource.volume;
+        src.pitch = musicSource.pitch;
+        src.loop = musicSource.loop;
+        src.priority = musicSource.priority;
+        src.spatialBlend = musicSource.spatialBlend;
+        src.outputAudioMixerGroup = musicSource.outputAudioMixerGroup;
+        src.playOnAwake = false;
+
+        musicSource.Stop();
+        musicSource.enabled = false;
+        musicSource = src;
+
+        musicLowPass = go.AddComponent<AudioLowPassFilter>();
+        musicLowPass.lowpassResonanceQ = 1f;
+        isInGameScene = SceneManager.GetActiveScene().name == gameSceneName;
+        musicCutoff = isInGameScene ? openCutoff : menuMusicCutoff;
+        musicLowPass.cutoffFrequency = musicCutoff;
+    }
+
+    // Menüde müzik boğuk ("su altında"), oyunda açık. Geçiş yumuşak: kesim frekansı kulağa düzgün
+    // gelsin diye logaritmik ilerler.
+    private void UpdateMusicFilter()
+    {
+        if (musicLowPass == null) return;
+        float target = isInGameScene ? openCutoff : menuMusicCutoff;
+        if (Mathf.Approximately(musicCutoff, target)) return;
+
+        float step = Time.unscaledDeltaTime / Mathf.Max(musicFilterFadeTime, 0.01f) * Mathf.Log(openCutoff / Mathf.Max(menuMusicCutoff, 20f));
+        float logNow = Mathf.MoveTowards(Mathf.Log(musicCutoff), Mathf.Log(target), step);
+        musicCutoff = Mathf.Exp(logNow);
+        if (Mathf.Abs(musicCutoff - target) < 1f) musicCutoff = target;
+        musicLowPass.cutoffFrequency = musicCutoff;
     }
 
     // Her AudioSource'u ilgili mixer grubuna bağlar - Inspector'da tek tek Output alanı
@@ -268,6 +327,7 @@ public class AudioManager : MonoBehaviour
             musicSource.volume = Mathf.MoveTowards(musicSource.volume, targetVolume, fadeStep);
         }
 
+        UpdateMusicFilter();
         UpdateLayerDucking();
         UpdateDriftLoop(shouldDuck);
     }
