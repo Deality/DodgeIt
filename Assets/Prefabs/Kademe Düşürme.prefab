@@ -173,7 +173,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -3131635699875658253, guid: 53149aff734cefa4b8da75a1acb48704, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c8c4354e53c7e5e448f130def4ef2111, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -232,6 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2864d08220d62364e809da51768d0a2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speedOffset: -0.75
 --- !u!114 &3648539132115425697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,29 +248,6 @@ MonoBehaviour:
   enableScaling: 1
   pulseSpeed: 3
   pulseAmount: 0.15
---- !u!114 &6624031957742180539
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8928820572909645852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f7c2a9d8e1b4c6a9b3d5e7f1a2c4b6d, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
-  sourceGlow: {fileID: 5396536620137902120}
-  glowColor: {r: 1, g: 0.35, b: 0.3, a: 1}
-  haloSize: 1.4
-  haloMinAlpha: 0.45
-  haloMaxAlpha: 0.9
-  haloPulseSpeed: 4
-  haloPulseAmount: 0.12
-  enableRays: 1
-  raySize: 1.9
-  rayAlpha: 0.35
-  rayRotateSpeed: 40
 --- !u!50 &1691101777788427764
 Rigidbody2D:
   serializedVersion: 5
@@ -343,3 +321,26 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 12.392715, y: 12.39271}
   m_EdgeRadius: 0
+--- !u!114 &6624031957742180539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8928820572909645852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f7c2a9d8e1b4c6a9b3d5e7f1a2c4b6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
+  sourceGlow: {fileID: 5396536620137902120}
+  glowColor: {r: 1, g: 0.35, b: 0.3, a: 1}
+  haloSize: 1.4
+  haloMinAlpha: 0.45
+  haloMaxAlpha: 0.9
+  haloPulseSpeed: 4
+  haloPulseAmount: 0.12
+  enableRays: 1
+  raySize: 1.9
+  rayAlpha: 0.35
+  rayRotateSpeed: 40
