@@ -1,11 +1,11 @@
-# DodgeIt!!! – Google Play mağaza sayfası metinleri (taslak)
+# DodgeIt!! – Google Play mağaza sayfası metinleri (taslak)
 
 Paket adı: `com.DealitGames.DodgeIt` · Kategori: Oyun > Arcade (ya da Yarış) · Fiyat: Ücretsiz
 
 ## Uygulama adı (en çok 30 karakter)
 
-- **DodgeIt!!!**
-- Alternatif: **DodgeIt!!! – Traffic Dodge**
+- **DodgeIt!!**
+- Alternatif: **DodgeIt!! – Traffic Dodge**
 
 ## Kısa açıklama (en çok 80 karakter)
 
@@ -24,7 +24,7 @@ Paket adı: `com.DealitGames.DodgeIt` · Kategori: Oyun > Arcade (ya da Yarış)
 ```
 One road, three lanes, and traffic that never stops. How far can you get?
 
-DodgeIt!!! is a fast one-finger arcade game. Swipe to change lanes, slip past
+DodgeIt!! is a fast one-finger arcade game. Swipe to change lanes, slip past
 cars with centimetres to spare, and keep going as the road gets faster and
 faster.
 
@@ -59,7 +59,7 @@ Quick to pick up, hard to put down. Dodge it!
 ```
 Tek yol, üç şerit ve hiç durmayan bir trafik. Ne kadar ileri gidebilirsin?
 
-DodgeIt!!! tek parmakla oynanan hızlı bir arcade oyunu. Kaydırarak şerit
+DodgeIt!! tek parmakla oynanan hızlı bir arcade oyunu. Kaydırarak şerit
 değiştir, arabaların yanından kıl payı sıyrıl ve yol hızlandıkça hayatta kal.
 
 KAYDIR VE HAYATTA KAL

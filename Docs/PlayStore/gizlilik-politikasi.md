@@ -1,4 +1,4 @@
-# DodgeIt!!! – Privacy Policy (taslak)
+# DodgeIt!! – Privacy Policy (taslak)
 
 > Bu metin bir taslaktır ve hukuki danışmanlık değildir. Köşeli parantezli yerleri doldur, sonra herkese açık bir
 > adreste yayınla (ör. GitHub Pages, Google Sites) ve o bağlantıyı Play Console > Uygulama içeriği > Gizlilik
@@ -6,11 +6,11 @@
 
 ---
 
-**Privacy Policy for DodgeIt!!!**
+**Privacy Policy for DodgeIt!!**
 
 Last updated: [DATE]
 
-DodgeIt!!! ("the game") is published by Dealit Games ("we", "us"). This policy explains what information the game
+DodgeIt!! ("the game") is published by Dealit Games ("we", "us"). This policy explains what information the game
 handles and why.
 
 ## 1. Information the game collects
