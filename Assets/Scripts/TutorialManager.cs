@@ -15,9 +15,9 @@ using System.Collections;
 // game pauses to explain what boost does (tap anywhere to continue), completing the
 // sequence. It runs once ever, gated by Tutorial_MainDone.
 //
-// The shield/speed-reducer explanations are a separate, independent one-time tip each
-// (their own PlayerPrefs flags), using the same paused/tap-to-continue textbox: the
-// first time a pickup is collected, whenever that happens to be.
+// The shield/speed-reducer/Coin Rush explanations are a separate, independent one-time
+// tip each (their own PlayerPrefs flags), using the same paused/tap-to-continue textbox:
+// the first time a pickup is collected, whenever that happens to be.
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager instance;
@@ -48,6 +48,7 @@ public class TutorialManager : MonoBehaviour
     [TextArea] public string boostExplainText = "Boost gives you a burst of speed and smashes through any car in your way!";
     [TextArea] public string shieldExplainText = "Shield makes you invincible for a few seconds - crash through anything safely!";
     [TextArea] public string reducerExplainText = "This slows down traffic for a while, giving you room to breathe.";
+    [TextArea] public string coinRushExplainText = "COIN RUSH! The road clears for a few seconds - hold and swipe to drift side to side and grab every coin!";
 
     public string swipePromptText = "SWIPE LEFT OR RIGHT";
     public string doubleTapPromptText = "DOUBLE TAP";
@@ -61,6 +62,7 @@ public class TutorialManager : MonoBehaviour
     private const string MainDoneKey = "Tutorial_MainDone";
     private const string ShieldDoneKey = "Tutorial_ShieldDone";
     private const string ReducerDoneKey = "Tutorial_ReducerDone";
+    private const string CoinRushDoneKey = "Tutorial_CoinRushDone";
 
     private Step step = Step.InitialSwipeIntro;
     private bool mainDone;
@@ -189,6 +191,15 @@ public class TutorialManager : MonoBehaviour
         PlayerPrefs.SetInt(ReducerDoneKey, 1);
         PlayerPrefs.Save();
         ShowOneShotExplanation(reducerExplainText);
+    }
+
+    // --- Called by DriftBoostManager on first Coin Rush pickup ---
+    public void NotifyCoinRushCollected()
+    {
+        if (PlayerPrefs.GetInt(CoinRushDoneKey, 0) == 1) return;
+        PlayerPrefs.SetInt(CoinRushDoneKey, 1);
+        PlayerPrefs.Save();
+        ShowOneShotExplanation(coinRushExplainText);
     }
 
     private void ShowOneShotExplanation(string message)

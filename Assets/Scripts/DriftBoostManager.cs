@@ -177,6 +177,9 @@ public class DriftBoostManager : MonoBehaviour
         if (activateSound != null && AudioManager.instance != null)
             AudioManager.instance.PlaySFX(activateSound);
 
+        // İlk kez toplandıysa oyunu durdurup ne olduğunu anlatır (kalkan / hız düşürücü ipuçları gibi)
+        TutorialManager.instance?.NotifyCoinRushCollected();
+
         return true;
     }
 
