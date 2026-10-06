@@ -164,7 +164,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   androidMinAspectRatio: 1
   applicationIdentifier:
-    Android: com.dealitgames.dodgeit
+    Android: com.dealitygames.dodgeit
   buildNumber:
     Standalone: 0
     VisionOS: 0

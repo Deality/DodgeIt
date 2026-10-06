@@ -1,6 +1,6 @@
 # DodgeIt!! – Google Play mağaza sayfası metinleri (taslak)
 
-Paket adı: `com.dealitgames.dodgeit` · Kategori: Oyun > Arcade (ya da Yarış) · Fiyat: Ücretsiz
+Paket adı: `com.dealitygames.dodgeit` · Kategori: Oyun > Arcade (ya da Yarış) · Fiyat: Ücretsiz
 
 ## Uygulama adı (en çok 30 karakter)
 
