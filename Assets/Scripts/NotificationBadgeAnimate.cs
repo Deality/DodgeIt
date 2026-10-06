@@ -68,7 +68,8 @@ public class NotificationBadgeAnimate : MonoBehaviour
         Vector2 deltaPivot = rect.pivot - pivot;
         Vector3 deltaPosition = new Vector3(deltaPivot.x * size.x * rect.localScale.x, deltaPivot.y * size.y * rect.localScale.y);
         rect.pivot = pivot;
-        rect.localPosition -= deltaPosition;
+        // Obje döndürülmüşse (ör. eğik duran Shop uyarısı) kaydırma da o açıyla yapılmalı; yoksa görsel yana kayar
+        rect.localPosition -= rect.localRotation * deltaPosition;
     }
 
     // 🔥 Sonsuz Döngü: Bekle -> Sallan (Sönerek Dur) -> Bekle...
@@ -104,7 +105,9 @@ public class NotificationBadgeAnimate : MonoBehaviour
                 // elapsed sıfırdan başladığı için animasyon her zaman pürüzsüz başlar ve pürüzsüzce sıfırda sönerek biter
                 float angle = Mathf.Sin(elapsed * shakeSpeed) * shakeMagnitude * decay;
 
-                rectTransform.localRotation = Quaternion.Euler(0, 0, angle);
+                // Sallanma, objenin kendi duruş açısının ÜSTÜNE eklenir; böylece eğik duran bir uyarı
+                // sallanırken düzleşip sonunda aniden eski açısına dönmez
+                rectTransform.localRotation = originalRotation * Quaternion.Euler(0, 0, angle);
 
                 yield return null; // Bir sonraki kareye kadar bekle
             }
