@@ -14,6 +14,15 @@ public class LeaderboardManager : MonoBehaviour
         await PopulateBoard();
     }
 
+    // Unity Gaming Services her oyuncu adının sonuna "#12345" gibi bir numara ekler; tabloda yalnızca
+    // oyuncunun seçtiği takma adı gösteriyoruz.
+    private static string DisplayName(string cloudName)
+    {
+        if (string.IsNullOrEmpty(cloudName)) return "Player";
+        int hash = cloudName.LastIndexOf('#');
+        return hash > 0 ? cloudName.Substring(0, hash) : cloudName;
+    }
+
     private async Task PopulateBoard()
     {
         foreach (Transform child in contentParent)
@@ -28,7 +37,7 @@ public class LeaderboardManager : MonoBehaviour
                 {
                     GameObject row = Instantiate(rowPrefab, contentParent);
                     LeaderboardEntry rowView = row.GetComponent<LeaderboardEntry>();
-                    rowView.SetData(cloudEntry.Rank + 1, cloudEntry.PlayerName, Mathf.RoundToInt((float)cloudEntry.Score));
+                    rowView.SetData(cloudEntry.Rank + 1, DisplayName(cloudEntry.PlayerName), Mathf.RoundToInt((float)cloudEntry.Score));
                 }
                 return;
             }
