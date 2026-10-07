@@ -50,6 +50,8 @@ public class Mission
     [Header("Gizli Görev")]
     [Tooltip("İşaretliyse görev tamamlanana kadar açıklaması ve ödülü gizli görünür (??? ve silüet).")]
     public bool isSecret;
+    [Tooltip("Gizli görev açığa çıkana kadar \"? ? ?\" yazısının altında gösterilen küçük ipucu (örn. \"It's about the truck\"). Boşsa ipucu yok.")]
+    public string secretHint;
 
     [Header("Durum")]
     public bool isCompleted;          // Görev tamamlandı mı?

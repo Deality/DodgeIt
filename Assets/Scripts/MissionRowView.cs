@@ -26,6 +26,8 @@ public class MissionRowView : MonoBehaviour
     [Header("Gizli Görev Görünümü")]
     public string secretDescription = "? ? ?";
     public string secretReward = "?";
+    [Tooltip("İpucu yazısının, \"? ? ?\" yazısına göre boyutu (yüzde).")]
+    public int secretHintSizePercent = 55;
     public Color secretIconColor = Color.black;
 
     [Header("Renkler (Buton Durumları)")]
@@ -147,7 +149,13 @@ public class MissionRowView : MonoBehaviour
     {
         bool hidden = mission.isSecret && !mission.isCompleted && !mission.isClaimed;
 
-        if (descriptionText != null) descriptionText.text = hidden ? secretDescription : mission.description;
+        if (descriptionText != null)
+        {
+            if (!hidden) descriptionText.text = mission.description;
+            else if (string.IsNullOrEmpty(mission.secretHint)) descriptionText.text = secretDescription;
+            // "? ? ?" ve altında, göreve özel küçük bir ipucu
+            else descriptionText.text = $"{secretDescription}\n<size={secretHintSizePercent}%>{mission.secretHint}</size>";
+        }
 
         if (rewardText != null)
         {

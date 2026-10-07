@@ -635,6 +635,7 @@ MonoBehaviour:
   progressFill: {fileID: 486964392}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -2713,6 +2714,7 @@ MonoBehaviour:
   progressFill: {fileID: 10736107}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -3248,6 +3250,7 @@ MonoBehaviour:
   progressFill: {fileID: 759861049}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -5502,6 +5505,7 @@ MonoBehaviour:
   progressFill: {fileID: 1737053781}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -7624,6 +7628,7 @@ MonoBehaviour:
   progressFill: {fileID: 455582201}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -10165,6 +10170,7 @@ MonoBehaviour:
   progressFill: {fileID: 1933872732}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -16063,6 +16069,7 @@ MonoBehaviour:
   progressFill: {fileID: 1576775866}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -16478,6 +16485,7 @@ MonoBehaviour:
   progressFill: {fileID: 1052912016}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -17981,6 +17989,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 300
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_a_nearmiss
@@ -17991,6 +18000,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 300
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_a_speedreducer
@@ -18001,6 +18011,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 1
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_a_shield
@@ -18011,6 +18022,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 1
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_a_car
@@ -18021,6 +18033,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 2
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_a_road
@@ -18031,6 +18044,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 2
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_10.000
@@ -18041,6 +18055,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 300
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_30.000
@@ -18051,6 +18066,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 500
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_75.000
@@ -18061,6 +18077,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 1000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_150.000
@@ -18071,6 +18088,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 2000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_500.000
@@ -18081,6 +18099,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 5000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_800.000
@@ -18091,6 +18110,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 10000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Reach_score_1.500.000
@@ -18101,6 +18121,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 25000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_10_shields
@@ -18111,6 +18132,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 500
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_30_shields
@@ -18121,6 +18143,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 3
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_75_shields
@@ -18131,6 +18154,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 2000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_150_shields
@@ -18141,6 +18165,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 4000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_5_speedreducers
@@ -18151,6 +18176,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 500
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_20_speedreducers
@@ -18161,6 +18187,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 3
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Grab_50_speedreducers
@@ -18171,6 +18198,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 2500
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Use_boost_5_times
@@ -18181,6 +18209,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 500
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Use_boost_20_times
@@ -18191,6 +18220,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 5
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Use_boost_50_times
@@ -18201,6 +18231,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 3000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Use_boost_100_times
@@ -18211,6 +18242,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 6000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_5_nearmisses
@@ -18221,6 +18253,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 1
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_20_nearmisses
@@ -18231,6 +18264,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 500
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_50_nearmisses
@@ -18241,6 +18275,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 1000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Make_100_nearmisses
@@ -18251,6 +18286,7 @@ MonoBehaviour:
     rewardType: 0
     rewardAmount: 2000
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_all_roads
@@ -18261,6 +18297,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 10
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_3_cars
@@ -18271,6 +18308,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 3
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Buy_all_cars
@@ -18281,6 +18319,7 @@ MonoBehaviour:
     rewardType: 1
     rewardAmount: 10
     isSecret: 0
+    secretHint: 
     isCompleted: 0
     isClaimed: 0
   - missionID: Secret_coin_rush_no_drift
@@ -18291,6 +18330,7 @@ MonoBehaviour:
     rewardType: 3
     rewardAmount: 12
     isSecret: 1
+    secretHint: It's about the Coin Rush
     isCompleted: 0
     isClaimed: 0
   - missionID: Secret_truck_near_miss
@@ -18301,6 +18341,7 @@ MonoBehaviour:
     rewardType: 3
     rewardAmount: 9
     isSecret: 1
+    secretHint: It's about the truck
     isCompleted: 0
     isClaimed: 0
 --- !u!1 &567632721
@@ -23176,6 +23217,7 @@ MonoBehaviour:
   progressFill: {fileID: 233858990}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -27063,6 +27105,7 @@ MonoBehaviour:
   progressFill: {fileID: 177423064}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -27848,6 +27891,7 @@ MonoBehaviour:
   progressFill: {fileID: 958596259}
   secretDescription: '? ? ?'
   secretReward: 
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -28800,6 +28844,7 @@ MonoBehaviour:
   progressFill: {fileID: 1531879967}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -30309,6 +30354,7 @@ MonoBehaviour:
   progressFill: {fileID: 1951167821}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -30673,6 +30719,7 @@ MonoBehaviour:
   progressFill: {fileID: 1371314206}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -31837,6 +31884,7 @@ MonoBehaviour:
   progressFill: {fileID: 464573588}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -33562,6 +33610,7 @@ MonoBehaviour:
   progressFill: {fileID: 1432980386}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -34479,6 +34528,7 @@ MonoBehaviour:
   progressFill: {fileID: 378012522}
   secretDescription: '? ? ?'
   secretReward: 
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -35066,6 +35116,7 @@ MonoBehaviour:
   progressFill: {fileID: 1750774194}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -37590,6 +37641,7 @@ MonoBehaviour:
   progressFill: {fileID: 620854850}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -38172,6 +38224,7 @@ MonoBehaviour:
   progressFill: {fileID: 2088125638}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -38838,6 +38891,7 @@ MonoBehaviour:
   progressFill: {fileID: 1229869823}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -42413,6 +42467,7 @@ MonoBehaviour:
   progressFill: {fileID: 971191940}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -45039,6 +45094,7 @@ MonoBehaviour:
   progressFill: {fileID: 1756166820}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -45213,6 +45269,7 @@ MonoBehaviour:
   progressFill: {fileID: 1319437196}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -45612,6 +45669,7 @@ MonoBehaviour:
   progressFill: {fileID: 10355658}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -50605,6 +50663,7 @@ MonoBehaviour:
   progressFill: {fileID: 772787821}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -53349,6 +53408,7 @@ MonoBehaviour:
   progressFill: {fileID: 1329813147}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -54783,6 +54843,7 @@ MonoBehaviour:
   progressFill: {fileID: 1339297497}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -55457,6 +55518,7 @@ MonoBehaviour:
   progressFill: {fileID: 338136738}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -58261,6 +58323,7 @@ MonoBehaviour:
   progressFill: {fileID: 420816820}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -58827,6 +58890,7 @@ MonoBehaviour:
   progressFill: {fileID: 1548501102}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -59522,6 +59586,7 @@ MonoBehaviour:
   progressFill: {fileID: 662687512}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -60259,6 +60324,7 @@ MonoBehaviour:
   progressFill: {fileID: 717407483}
   secretDescription: '? ? ?'
   secretReward: '?'
+  secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
   notReadyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
