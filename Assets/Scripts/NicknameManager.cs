@@ -68,6 +68,13 @@ public class NicknameManager : MonoBehaviour
             nickname = nickname.Substring(0, MaxNicknameLength);
         }
 
+        // Liderlik tablosunda herkes görüyor: küfür / hakaret içeren adlar kabul edilmez
+        if (!NameFilter.IsAllowed(nickname))
+        {
+            ShowWarning("Please choose a different nickname.");
+            return;
+        }
+
         PlayerPrefs.SetString(NicknameKey, nickname);
         PlayerPrefs.Save();
 

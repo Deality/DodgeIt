@@ -22,6 +22,9 @@ public class CloudLeaderboardManager : MonoBehaviour
 
     public bool IsReady { get; private set; }
 
+    // Bu cihazdaki oyuncunun kimliği (tabloda kendi satırını işaretlemek için). Giriş yapılmadıysa null.
+    public string PlayerId => IsReady ? AuthenticationService.Instance.PlayerId : null;
+
     private Task _initTask;
 
 #if UNITY_EDITOR

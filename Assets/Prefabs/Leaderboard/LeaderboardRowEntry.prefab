@@ -368,6 +368,8 @@ MonoBehaviour:
   rankText: {fileID: 5331676037148615197}
   nameText: {fileID: 5180309718748682273}
   scoreText: {fileID: 5156083572822089475}
+  frameImage: {fileID: 1316233858500789564}
+  ownFrameSprite: {fileID: 21300000, guid: b9e14065c0a65804a9953444c470207a, type: 3}
 --- !u!1 &7045896393537783447
 GameObject:
   m_ObjectHideFlags: 0
