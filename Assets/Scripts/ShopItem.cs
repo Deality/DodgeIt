@@ -19,6 +19,10 @@ public class ShopItem : MonoBehaviour
 
     [Header("UI Bağlantıları (İçine Sürükle)")]
     public TextMeshProUGUI priceText;
+    [Tooltip("Fiyat kutusundaki coin simgesi. Yalnızca kutuda fiyat yazarken görünür (Use / Selected / Locked iken gizlenir).")]
+    public GameObject coinIcon;
+    [Tooltip("Yol kartındaki PREVIEW butonu. Görevle açılan yol kilitliyken gizlenir.")]
+    public GameObject previewButton;
     public GameObject lockIcon;
     public Button myButton;
     public Image backgroundImage;
@@ -74,8 +78,11 @@ public class ShopItem : MonoBehaviour
             if (isSelected) priceText.text = "Selected ";
             else if (isPurchased) priceText.text = "Use";
             else if (achievementOnly) priceText.text = "Locked";
-            else priceText.text = price.ToString();
+            else priceText.text = price.Dotted();
         }
+
+        if (coinIcon != null) coinIcon.SetActive(!isSelected && !isPurchased && !achievementOnly);
+        if (previewButton != null) previewButton.SetActive(!(achievementOnly && !isPurchased));
 
         if (backgroundImage != null)
         {

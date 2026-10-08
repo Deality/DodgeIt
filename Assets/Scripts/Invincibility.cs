@@ -70,7 +70,7 @@ public class Invincibility : MonoBehaviour
 
             if (GameManager.instance != null)
             {
-                GameManager.instance.ActivateInvincibility(duration);
+                GameManager.instance.ActivateShieldPickup(duration);
                 Debug.Log("🛡️ Görünmezlik toplandı!");
 
                 // 🔥 Statik bağımsız tampon sistemini kullanarak Kalkan ilerlemesini ekle!

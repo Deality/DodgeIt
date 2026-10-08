@@ -20,7 +20,7 @@ public class LeaderboardEntry : MonoBehaviour
     {
         rankText.text = rank.ToString();
         nameText.text = playerName;
-        scoreText.text = score.ToString();
+        scoreText.text = score.Dotted();
 
         if (frameImage == null) frameImage = GetComponent<Image>();
         if (frameImage != null)

@@ -79,7 +79,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 28c71c12acb11744db7cfbe82da325c6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 6528448882579319882}
   - component: {fileID: 6172311993172736305}
   - component: {fileID: 3376390597012306266}
+  - component: {fileID: 5648900889351858210}
   m_Layer: 0
   m_Name: Collactable
   m_TagString: Collactable
@@ -138,7 +139,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af36abbe0da4c7e4281dcd51c3297f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gemValue: 1
+  minGemValue: 5
+  maxGemValue: 10
   enableRotation: 1
   rotationSpeed: 180
   enableBobbing: 1
@@ -212,3 +214,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5648900889351858210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8833457522766607096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f7c2a9d8e1b4c6a9b3d5e7f1a2c4b6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
+  sourceGlow: {fileID: 5191140821824943908}
+  hideSource: 0
+  sortingOrderOffset: -1
+  glowColor: {r: 1, g: 0.85, b: 0.3, a: 1}
+  haloSize: 1.9
+  haloMinAlpha: 0.35
+  haloMaxAlpha: 0.65
+  haloPulseSpeed: 3
+  haloPulseAmount: 0.06
+  enableRays: 0
+  raySize: 2.2
+  rayAlpha: 0.35
+  rayRotateSpeed: 40

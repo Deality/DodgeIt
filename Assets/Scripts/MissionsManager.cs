@@ -15,7 +15,12 @@ public enum MissionType
     BuyRoad,
     ReachScore,
     FinishCoinRushWithoutDrifting, // Coin Rush'ı hiç yön vermeden (ekrana dokunmadan) bitir - sona eklendi, mevcut kayıtlı değerler kaymasın
-    NearMissTruck                  // Oyun içindeki tıra near miss yap (enum sırası değişmedi: sahnedeki kayıtlı değer aynı)
+    NearMissTruck,                 // Oyun içindeki tıra near miss yap (enum sırası değişmedi: sahnedeki kayıtlı değer aynı)
+    // --- Aşağıdakiler sona eklendi; öncekilerin kayıtlı değerleri kaymaz ---
+    ShieldNoCrash,                 // Kalkanı topla ve süresi bitene kadar hiçbir araca çarpma
+    DestroyWithShield,             // Kalkan açıkken araca çarpıp yok et
+    DestroyWithBoost,              // Boost açıkken araca çarpıp yok et
+    CollectAllCoinRushCoins        // Bir Coin Rush'ta çıkan altınların tamamını topla
 }
 
 public enum RewardType
@@ -23,7 +28,8 @@ public enum RewardType
     Coin,
     Boost,
     Shield,
-    Car     // rewardAmount = markette kilidi açılacak arabanın indeksi (sadece başarımla açılan arabalar)
+    Car,    // rewardAmount = markette kilidi açılacak arabanın indeksi (sadece başarımla açılan arabalar)
+    Road    // rewardAmount = markette kilidi açılacak yolun indeksi (sadece başarımla açılan yollar)
 }
 
 public enum MissionCategory
@@ -479,6 +485,15 @@ public class MissionsManager : MonoBehaviour
             PlayerPrefs.Save();
             if (MarketManager.instance != null) MarketManager.instance.RefreshAllButtons();
             MarketManager.MarkNewSecretCar(); // Shop butonunda "?" uyarısı çıkar
+        }
+
+        // Yol ödülü: arabadaki gibi, markette başarımla açılan yolun kilidini açar (BuyRoad görevlerini ilerletmez).
+        if (mission.rewardType == RewardType.Road)
+        {
+            PlayerPrefs.SetInt(MarketItemType.Road.ToString() + "_Purchased_" + mission.rewardAmount, 1);
+            PlayerPrefs.Save();
+            if (MarketManager.instance != null) MarketManager.instance.RefreshAllButtons();
+            MarketManager.MarkNewSecretRoad(mission.rewardAmount); // Shop butonunda "?" uyarısı çıkar, market açılınca yola kayar
         }
 
         RefreshAndSortUI();

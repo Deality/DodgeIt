@@ -149,6 +149,7 @@ MonoBehaviour:
   driftSmokeSpread: 3
   driftSmokeColor: {r: 0.86, g: 0.86, b: 0.88, a: 0.65}
   driftSmokeSortingOrder: 1
+  driftSettleTime: 0.25
   driftDeadZone: 0.012
   driftFullSteer: 0.06
 --- !u!114 &759801811379435930
@@ -5181,7 +5182,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 9.319405}
+  m_Offset: {x: 0, y: 10.20808}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -5222,6 +5223,7 @@ MonoBehaviour:
   ghostDriftMultiplier: 1
   ghostSpawnDelay: 0.1
   displayDelay: 0.2
+  confirmDelay: 0.6
 --- !u!50 &839532713067312184
 Rigidbody2D:
   serializedVersion: 5

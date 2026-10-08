@@ -122,7 +122,7 @@ public class Collectable : MonoBehaviour
                 FloatingText ft = textObj.GetComponent<FloatingText>();
                 if (ft != null)
                 {
-                    ft.SetText("+" + earnedValue); // Rastgele çıkan değeri ekrana yazar
+                    ft.SetText("+" + earnedValue.Dotted()); // Rastgele çıkan değeri ekrana yazar
                 }
             }
             else if (GameManager.instance != null)

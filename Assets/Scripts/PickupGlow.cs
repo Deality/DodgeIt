@@ -8,6 +8,10 @@ public class PickupGlow : MonoBehaviour
 {
     [Header("Kaynak (Prefabdaki eski düz parlama)")]
     public SpriteRenderer sourceGlow;
+    [Tooltip("Kapalıysa kaynak görünür kalır: parlama, kaynağın kendi görselinin (örn. altın) arkasına eklenir.")]
+    public bool hideSource = true;
+    [Tooltip("Parlamanın, kaynağın sıralamasına (sorting order) göre farkı. Kaynağın arkasında kalsın diye -1 verin.")]
+    public int sortingOrderOffset = 0;
 
     [Header("Renk")]
     public Color glowColor = new Color(0f, 0.9f, 1f, 1f);
@@ -57,7 +61,7 @@ public class PickupGlow : MonoBehaviour
         haloRenderer = CreateLayer("GlowHalo", GetHaloSprite(), parent, localPos);
         halo = haloRenderer.transform;
 
-        sourceGlow.enabled = false;
+        if (hideSource) sourceGlow.enabled = false;
     }
 
     void OnEnable()
@@ -94,7 +98,7 @@ public class PickupGlow : MonoBehaviour
         sr.sprite = sprite;
         sr.sharedMaterial = sourceGlow.sharedMaterial;
         sr.sortingLayerID = sourceGlow.sortingLayerID;
-        sr.sortingOrder = sourceGlow.sortingOrder;
+        sr.sortingOrder = sourceGlow.sortingOrder + sortingOrderOffset;
         sr.color = WithAlpha(glowColor, 0f);
         return sr;
     }

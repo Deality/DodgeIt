@@ -49,7 +49,7 @@ public class SessionCoinDisplay : MonoBehaviour
 
         if (earned > 0)
         {
-            myText.text = "+" + earned.ToString();
+            myText.text = "+" + earned.Dotted();
             animRoutine = StartCoroutine(AnimRoutine(earned));
         }
         else
@@ -57,7 +57,7 @@ public class SessionCoinDisplay : MonoBehaviour
             // Hiç para toplanmadıysa
             myText.text = "+0";
             myText.color = Color.gray;
-            totalCoinText.text = targetTotalCoins.ToString();
+            totalCoinText.text = targetTotalCoins.Dotted();
         }
     }
 
@@ -70,14 +70,14 @@ public class SessionCoinDisplay : MonoBehaviour
         myText.color = originalColor;
 
         if (totalCoinText != null)
-            totalCoinText.text = targetTotalCoins.ToString();
+            totalCoinText.text = targetTotalCoins.Dotted();
     }
 
     IEnumerator AnimRoutine(int earnedAmount)
     {
         // Başlangıç parası (Yeni toplananlar çıkarılmış hali)
         int startTotal = targetTotalCoins - earnedAmount;
-        totalCoinText.text = startTotal.ToString();
+        totalCoinText.text = startTotal.Dotted();
 
         // 1. Panelin aşağı tam inmesini bekle
         yield return new WaitForSecondsRealtime(panelWaitTime);
@@ -114,7 +114,7 @@ public class SessionCoinDisplay : MonoBehaviour
 
             // Sayıları yuvarlayarak artır
             int current = Mathf.RoundToInt(Mathf.Lerp(startTotal, targetTotalCoins, t));
-            totalCoinText.text = current.ToString();
+            totalCoinText.text = current.Dotted();
 
             // Ana yazıyı normal boyutuna geri küçült
             float scale = Mathf.Lerp(1.2f, 1f, t);
@@ -124,7 +124,7 @@ public class SessionCoinDisplay : MonoBehaviour
         }
 
         // 4. Animasyon bittiğinde son değeri garantile
-        totalCoinText.text = targetTotalCoins.ToString();
+        totalCoinText.text = targetTotalCoins.Dotted();
         totalCoinText.rectTransform.localScale = Vector3.one;
     }
 }

@@ -129,7 +129,7 @@ public class MissionRowView : MonoBehaviour
             buttonColors.pressedColor = readyColor;
             buttonColors.selectedColor = readyColor;
 
-            if (takeButtonText != null) takeButtonText.text = "TAKE";
+            if (takeButtonText != null) takeButtonText.text = "CLAIM";
 
             takeButton.onClick.AddListener(OnTakeClicked);
         }
@@ -137,7 +137,7 @@ public class MissionRowView : MonoBehaviour
         {
             takeButton.interactable = false;
             buttonColors.disabledColor = notReadyColor;
-            if (takeButtonText != null) takeButtonText.text = "TAKE";
+            if (takeButtonText != null) takeButtonText.text = "CLAIM";
         }
 
         takeButton.colors = buttonColors;
@@ -162,12 +162,13 @@ public class MissionRowView : MonoBehaviour
             if (hidden) rewardText.text = secretReward;
             // Araba ödülünde ikon (arabanın kendisi) kutuyu dolduruyorsa ayrıca yazı gösterme
             else if (mission.rewardType == RewardType.Car) rewardText.text = rewardIcon != null ? "" : "CAR";
-            else rewardText.text = $"+{mission.rewardAmount} {mission.rewardType}";
+            else if (mission.rewardType == RewardType.Road) rewardText.text = rewardIcon != null ? "" : "ROAD";
+            else rewardText.text = $"+{mission.rewardAmount.Dotted()} {mission.rewardType}";
         }
 
         int shownValue = Mathf.Clamp(mission.currentValue, 0, Mathf.Max(mission.targetValue, 0));
         if (mission.isCompleted || mission.isClaimed) shownValue = mission.targetValue;
-        if (progressText != null) progressText.text = $"{shownValue} / {mission.targetValue}";
+        if (progressText != null) progressText.text = $"{shownValue.Dotted()} / {mission.targetValue.Dotted()}";
 
         if (progressBarRoot != null) progressBarRoot.SetActive(!hidden); // gizli görevin hedefi belli olmasın
         if (progressFill != null)

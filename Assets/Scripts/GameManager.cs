@@ -71,6 +71,14 @@ public class GameManager : MonoBehaviour
     public RectTransform reviveCountdownFill;
     public float reviveDecisionDuration = 3.5f;
     public float reviveInvincibilityDuration = 5f;
+    [Tooltip("Second chance kartının yukarıdan inme süresi (saniye). Kart yerine oturana kadar teklif geçilemez ve geri sayım başlamaz.")]
+    public float reviveSlideDuration = 0.35f;
+    private bool reviveSkipReady;
+    private RectTransform reviveCard;
+    private Vector2 reviveCardRestPosition;
+    private Image reviveBackdrop;
+    private float reviveBackdropAlpha;
+    private GameObject reviveSkipHint;
     private bool hasUsedRevive = false;
     private bool isCrashPending = false;
     // Bu oyunda kaç kez kaza yapıldı (reklamla devam dahil). NearMissDetector, yanından geçilen araca
@@ -111,6 +119,8 @@ public class GameManager : MonoBehaviour
     private const string GemsKey = "GemsCount";
 
     public bool IsInvincible { get; private set; } = false;
+    private bool shieldFromPickup;   // açık olan kalkan yoldan mı toplandı?
+    private bool shieldHitSomething; // bu kalkan sürerken bir araca çarpıldı mı?
     private Coroutine invincibilityCoroutine;
 
     public int NearMissStreakCount => nearMissStreakCount;
@@ -248,7 +258,7 @@ public class GameManager : MonoBehaviour
             scoreTimer += Time.deltaTime;
             if (scoreTimer >= multiplierIncreaseInterval) { currentScoreMultiplier += multiplierStep; scoreTimer = 0f; }
             score += baseScoreSpeed * currentScoreMultiplier * (isBoosting ? 2.0f : 1.0f) * nearMissMultiplier * Time.deltaTime;
-            if (scoreText != null) scoreText.text = Mathf.FloorToInt(score).ToString();
+            if (scoreText != null) scoreText.text = Mathf.FloorToInt(score).Dotted();
 
             if (speedText != null && ObstacleManager.instance != null)
                 speedText.text = Mathf.FloorToInt(ObstacleManager.scrollSpeed * speedDisplayMultiplier).ToString() + " km/h";
@@ -256,6 +266,17 @@ public class GameManager : MonoBehaviour
     }
 
     // --- DOKUNULMAZLIK ---
+
+    // Yoldan toplanan kalkan. Gizli görev ("kalkan bitene kadar hiçbir araca çarpma") yalnızca bununla
+    // başlayan kalkanlarda izlenir; reklamla devam ederken verilen kalkan sayılmaz.
+    public void ActivateShieldPickup(float duration)
+    {
+        // Toplanan bir kalkan zaten açıkken yenisi alınırsa süre uzar, çarpma kaydı sıfırlanmaz
+        if (!(IsInvincible && shieldFromPickup)) shieldHitSomething = false;
+        shieldFromPickup = true;
+        ActivateInvincibility(duration);
+    }
+
     public void ActivateInvincibility(float duration)
     {
         invincibilityMaxDuration = duration;
@@ -328,6 +349,11 @@ public class GameManager : MonoBehaviour
         // Timer hit 0 — everything off simultaneously
         IsInvincible = false;
         currentInvincibilityTimer = 0f;
+
+        // Gizli görev: toplanan kalkan, tek bir araca bile çarpmadan bitti
+        if (shieldFromPickup && !shieldHitSomething)
+            MissionsManager.AddGameplayProgress(MissionType.ShieldNoCrash, 1);
+        shieldFromPickup = false;
 
         if (invincibilityTimerText != null) invincibilityTimerText.text = "";
         if (invincibilityEffectObject != null) invincibilityEffectObject.SetActive(false);
@@ -406,10 +432,16 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(panelDelay);
         Time.timeScale = 0f;
 
+        if (reviveCountdownFill != null) reviveCountdownFill.localScale = new Vector3(1f, 1f, 1f);
+        reviveSkipReady = false;
         revivePanel.SetActive(true);
 
+        // Kart yukarıdan iner, arka plan kararır; geri sayım ve geçme ancak kart yerine oturunca başlar
+        yield return SlideInReviveCardRoutine();
+        reviveSkipReady = true;
+        if (reviveSkipHint != null) reviveSkipHint.SetActive(true);
+
         float t = reviveDecisionDuration;
-        if (reviveCountdownFill != null) reviveCountdownFill.localScale = new Vector3(1f, 1f, 1f);
         while (t > 0f)
         {
             t -= Time.unscaledDeltaTime;
@@ -423,6 +455,48 @@ public class GameManager : MonoBehaviour
 
         reviveOfferCoroutine = null;
         DeclineRevive();
+    }
+
+    IEnumerator SlideInReviveCardRoutine()
+    {
+        if (reviveCard == null)
+        {
+            reviveCard = revivePanel.transform.Find("Card") as RectTransform;
+            if (reviveCard != null) reviveCardRestPosition = reviveCard.anchoredPosition;
+
+            reviveBackdrop = revivePanel.GetComponent<Image>();
+            if (reviveBackdrop != null) reviveBackdropAlpha = reviveBackdrop.color.a;
+
+            Transform hint = revivePanel.transform.Find("SkipHintText");
+            if (hint != null) reviveSkipHint = hint.gameObject;
+        }
+
+        if (reviveSkipHint != null) reviveSkipHint.SetActive(false);
+        if (reviveCard == null) yield break;
+
+        // Kartın tamamı ekranın üstünde kalacak kadar yukarıdan başla
+        float panelHeight = ((RectTransform)revivePanel.transform).rect.height;
+        Vector2 startPos = reviveCardRestPosition + new Vector2(0f, panelHeight * 0.5f + reviveCard.rect.height);
+
+        float t = 0f;
+        float duration = Mathf.Max(reviveSlideDuration, 0.01f);
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / duration;
+            float p = Mathf.Clamp01(t);
+            float ease = 1f - Mathf.Pow(1f - p, 3f); // hızlı başlar, yumuşak oturur
+
+            reviveCard.anchoredPosition = Vector2.LerpUnclamped(startPos, reviveCardRestPosition, ease);
+            if (reviveBackdrop != null)
+            {
+                Color c = reviveBackdrop.color;
+                c.a = reviveBackdropAlpha * p;
+                reviveBackdrop.color = c;
+            }
+            yield return null;
+        }
+
+        reviveCard.anchoredPosition = reviveCardRestPosition;
     }
 
     // Hooked to the revive panel's "Watch Ad" button.
@@ -444,6 +518,14 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(0.3f);
         RevivePlayer();
+    }
+
+    // Hooked to the revive panel's full-screen skip area: tapping anywhere outside the card skips the wait.
+    public void SkipRevive()
+    {
+        if (reviveOfferCoroutine == null || !reviveSkipReady) return;
+
+        DeclineRevive();
     }
 
     // Hooked to the revive panel's "No Thanks" button, and also fires when the decision countdown runs out.
@@ -478,6 +560,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         isGameActive = true;
 
+        shieldFromPickup = false;
         ActivateInvincibility(reviveInvincibilityDuration);
 
         if (ObstacleManager.instance != null)
@@ -486,6 +569,9 @@ public class GameManager : MonoBehaviour
 
     public void TriggerBoostCrash(Vector3 pos)
     {
+        MissionsManager.AddGameplayProgress(MissionType.DestroyWithBoost, 1);
+        if (IsInvincible) shieldHitSomething = true; // kalkan açıkken boost ile çarpmak da "çarpma" sayılır
+
         if (boostCrashEffect != null) Instantiate(boostCrashEffect, pos, Quaternion.identity);
 
         if (AudioManager.instance != null && AudioManager.instance.boostDestroySound != null)
@@ -493,6 +579,9 @@ public class GameManager : MonoBehaviour
     }
     public void TriggerInvincibleCrash(Vector3 pos)
     {
+        MissionsManager.AddGameplayProgress(MissionType.DestroyWithShield, 1);
+        shieldHitSomething = true;
+
         if (invincibilityCrashEffect != null) Instantiate(invincibilityCrashEffect, pos, Quaternion.identity);
 
         if (AudioManager.instance != null && AudioManager.instance.shieldDestroySound != null)
@@ -559,7 +648,7 @@ public class GameManager : MonoBehaviour
 
         if (gameOverPanel != null)
         {
-            if (finalScoreText != null) finalScoreText.text = Mathf.FloorToInt(score).ToString();
+            if (finalScoreText != null) finalScoreText.text = Mathf.FloorToInt(score).Dotted();
             UpdateHighScoreUI();
             if (_isNewHighScore) StartCoroutine(AnimateHighScoreText());
 
@@ -703,7 +792,7 @@ public class GameManager : MonoBehaviour
 
     private void LoadGems() => gems = PlayerPrefs.GetInt(GemsKey, 0);
     private void SaveGems() { PlayerPrefs.SetInt(GemsKey, gems); PlayerPrefs.Save(); }
-    public void UpdateGemUI() { if (gemText != null) gemText.text = gems.ToString(); }
-    private void UpdateHighScoreUI() { if (highScoreText != null) highScoreText.text = PlayerPrefs.GetInt(HighScoreKey, 0).ToString(); }
+    public void UpdateGemUI() { if (gemText != null) gemText.text = gems.Dotted(); }
+    private void UpdateHighScoreUI() { if (highScoreText != null) highScoreText.text = PlayerPrefs.GetInt(HighScoreKey, 0).Dotted(); }
     public void AddGems(int amount) { gems += amount; sessionGems += amount; SaveGems(); UpdateGemUI(); }
 }

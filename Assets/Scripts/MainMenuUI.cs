@@ -49,7 +49,7 @@ public class MainMenuUI : MonoBehaviour
         {
             if (gemText != null)
             {
-                gemText.text = savedGems.ToString();
+                gemText.text = savedGems.Dotted();
             }
         }
     }

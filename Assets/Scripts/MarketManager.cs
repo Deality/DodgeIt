@@ -58,8 +58,13 @@ public class MarketManager : MonoBehaviour
     public float revealScrollDuration = 1.3f;
 
     public const string NewSecretCarKey = "NewSecretCarPending";
+    // Görevle açılan yolun indeksi + 1 (0 = bekleyen yok)
+    public const string NewSecretRoadKey = "NewSecretRoadPending";
     private Coroutine revealRoutine;
     private bool revealRestoreVertical;
+    private Coroutine roadRevealRoutine;
+    private ScrollRect roadScrollRect;
+    private bool roadRevealRestoreVertical;
 
     // Geçici Hafıza
     private int pendingIndex;
@@ -96,9 +101,18 @@ public class MarketManager : MonoBehaviour
         if (instance != null) instance.UpdateNewSecretCarBadge();
     }
 
+    // Görevlerden bir gizli yol alındığında çağrılır: aynı "?" uyarısını açar
+    public static void MarkNewSecretRoad(int roadIndex)
+    {
+        PlayerPrefs.SetInt(NewSecretRoadKey, roadIndex + 1);
+        PlayerPrefs.Save();
+        if (instance != null) instance.UpdateNewSecretCarBadge();
+    }
+
     public void UpdateNewSecretCarBadge()
     {
-        if (newSecretCarBadge != null) newSecretCarBadge.SetActive(PlayerPrefs.GetInt(NewSecretCarKey, 0) == 1);
+        bool pending = PlayerPrefs.GetInt(NewSecretCarKey, 0) == 1 || PlayerPrefs.GetInt(NewSecretRoadKey, 0) > 0;
+        if (newSecretCarBadge != null) newSecretCarBadge.SetActive(pending);
     }
 
     // Market paneli açıldığında (UIManager.OpenMarket) çağrılır. Bekleyen bir gizli araba varsa uyarıyı kapatır
@@ -107,13 +121,19 @@ public class MarketManager : MonoBehaviour
     {
         RefreshAllButtons(); // panel kapalıyken açılan arabanın kartı güncel olsun
 
+        RevealNewSecretRoad();
+
         if (PlayerPrefs.GetInt(NewSecretCarKey, 0) != 1) return;
         PlayerPrefs.DeleteKey(NewSecretCarKey);
         PlayerPrefs.Save();
         UpdateNewSecretCarBadge();
 
         if (carScrollRect == null) return;
-        StopReveal();
+        if (revealRoutine != null) // yalnızca araba kaydırmasını durdur; yol kaydırması ayrı çalışır
+        {
+            StopCoroutine(revealRoutine);
+            carScrollRect.vertical = revealRestoreVertical;
+        }
         revealRoutine = StartCoroutine(RevealSecretCarRoutine());
     }
 
@@ -145,10 +165,85 @@ public class MarketManager : MonoBehaviour
 
     void StopReveal()
     {
+        if (roadRevealRoutine != null)
+        {
+            StopCoroutine(roadRevealRoutine);
+            roadRevealRoutine = null;
+            if (roadScrollRect != null) roadScrollRect.vertical = roadRevealRestoreVertical;
+        }
+
         if (revealRoutine == null) return;
         StopCoroutine(revealRoutine);
         revealRoutine = null;
         if (carScrollRect != null) carScrollRect.vertical = revealRestoreVertical;
+    }
+
+    // Bekleyen bir gizli yol varsa uyarıyı kapatır ve yol listesini o yolun kartına kaydırır
+    void RevealNewSecretRoad()
+    {
+        int roadIndex = PlayerPrefs.GetInt(NewSecretRoadKey, 0) - 1;
+        if (roadIndex < 0) return;
+        PlayerPrefs.DeleteKey(NewSecretRoadKey);
+        PlayerPrefs.Save();
+        UpdateNewSecretCarBadge();
+
+        if (roadScrollRect == null && roadContentParent != null) roadScrollRect = roadContentParent.GetComponentInParent<ScrollRect>();
+        if (roadScrollRect == null) return;
+
+        RectTransform card = null;
+        foreach (ShopItem item in roadContentParent.GetComponentsInChildren<ShopItem>(true))
+        {
+            if (item.itemType == MarketItemType.Road && item.itemIndex == roadIndex)
+            {
+                // Listenin doğrudan çocuğu olan kartı bul
+                Transform t = item.transform;
+                while (t.parent != null && t.parent != roadContentParent) t = t.parent;
+                card = t as RectTransform;
+                break;
+            }
+        }
+        if (card == null) return;
+
+        if (roadRevealRoutine != null) StopCoroutine(roadRevealRoutine);
+        roadRevealRoutine = StartCoroutine(RevealSecretRoadRoutine(card));
+    }
+
+    System.Collections.IEnumerator RevealSecretRoadRoutine(RectTransform card)
+    {
+        roadRevealRestoreVertical = roadScrollRect.vertical;
+        roadScrollRect.StopMovement();
+        roadScrollRect.vertical = false;
+        roadScrollRect.verticalNormalizedPosition = 1f;
+
+        yield return new WaitForSecondsRealtime(revealDelay);
+
+        // Kart görünür alanın ortasına gelecek şekilde hedef konum (1 = en üst, 0 = en alt)
+        Canvas.ForceUpdateCanvases();
+        RectTransform content = roadScrollRect.content;
+        RectTransform viewport = roadScrollRect.viewport != null ? roadScrollRect.viewport : (RectTransform)roadScrollRect.transform;
+        float scrollable = content.rect.height - viewport.rect.height;
+        float target = 1f;
+        if (scrollable > 0f)
+        {
+            Vector3 cardCenter = content.InverseTransformPoint(card.TransformPoint(card.rect.center));
+            float fromTop = content.rect.yMax - cardCenter.y;
+            target = 1f - Mathf.Clamp01((fromTop - viewport.rect.height * 0.5f) / scrollable);
+        }
+
+        float t = 0f;
+        float duration = Mathf.Max(revealScrollDuration, 0.01f);
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / duration;
+            float p = Mathf.Clamp01(t);
+            roadScrollRect.verticalNormalizedPosition = Mathf.Lerp(1f, target, p * p * (3f - 2f * p)); // smooth step
+            yield return null;
+        }
+        roadScrollRect.verticalNormalizedPosition = target;
+
+        roadScrollRect.StopMovement();
+        roadScrollRect.vertical = roadRevealRestoreVertical;
+        roadRevealRoutine = null;
     }
 
     // --- MARKET AÇ / KAPA ---
@@ -185,7 +280,7 @@ public class MarketManager : MonoBehaviour
         if (totalGemText != null)
         {
             int gems = PlayerPrefs.GetInt("GemsCount", 0);
-            totalGemText.text = gems.ToString();
+            totalGemText.text = gems.Dotted();
         }
     }
 
@@ -234,7 +329,7 @@ public class MarketManager : MonoBehaviour
 
             if (confirmationMessageText != null)
             {
-                confirmationMessageText.text = $"Bu ürünü {item.price} altına almak istiyor musun?";
+                confirmationMessageText.text = $"Bu ürünü {item.price.Dotted()} altına almak istiyor musun?";
             }
         }
         else

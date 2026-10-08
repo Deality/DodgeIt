@@ -108,6 +108,7 @@ public class DriftBoostManager : MonoBehaviour
 
     private int collectedValue;
     private int collectedCount;
+    private int spawnedCount;
     public int CollectedValue => collectedValue;
     public int CollectedCount => collectedCount;
     private Camera mainCam;
@@ -260,6 +261,7 @@ public class DriftBoostManager : MonoBehaviour
         // Bu boost'ta toplananların sayımı sıfırdan başlar
         collectedValue = 0;
         collectedCount = 0;
+        spawnedCount = 0;
 
         SpawnPendingCoins();
 
@@ -297,6 +299,10 @@ public class DriftBoostManager : MonoBehaviour
         // Yalnızca süre doğal olarak bitince sayılır; kaza/iptal (CancelBoost) buraya gelmez.
         if (CarController2D.instance != null && !CarController2D.instance.SteeredDuringDrift)
             MissionsManager.AddGameplayProgress(MissionType.FinishCoinRushWithoutDrifting, 1);
+
+        // Haftalık görev: bu Coin Rush'ta çıkan altınların hepsi toplandı
+        if (spawnedCount > 0 && collectedCount >= spawnedCount)
+            MissionsManager.AddGameplayProgress(MissionType.CollectAllCoinRushCoins, 1);
 
         if (CarController2D.instance != null) CarController2D.instance.EndDrift();
         ClearBoostCoins();
@@ -370,7 +376,11 @@ public class DriftBoostManager : MonoBehaviour
             }
 
             GameObject coin = PoolManager.Spawn(prefab, new Vector3(nextCoinX, nextCoinY, 0f), Quaternion.identity);
-            if (coin != null) boostCoins.Add(coin);
+            if (coin != null)
+            {
+                boostCoins.Add(coin);
+                spawnedCount++; // havuzdaki aynı obje tekrar kullanılabildiği için küme boyutu yerine ayrı sayaç
+            }
 
             nextCoinY += coinSpacing;
             AdvancePattern(coinInterval, maxLateral);
@@ -493,7 +503,7 @@ public class DriftBoostManager : MonoBehaviour
         Transform tr = coinRushText.transform;
         coinRushText.text = coinRushLabel;
         coinRushText.gameObject.SetActive(true);
-        tr.SetAsLastSibling();
+        PlaceBehindPanels(tr);
 
         // Ölçeklenmiş zaman: oyun duraklatılırsa animasyon da durur
         float t = 0f;
@@ -562,7 +572,7 @@ public class DriftBoostManager : MonoBehaviour
         Transform tr = hintText.transform;
         hintText.text = hintLabel;
         hintText.gameObject.SetActive(true);
-        tr.SetAsLastSibling();
+        PlaceBehindPanels(tr);
 
         // Oyuncu ekrana basana (ya da boost bitene) kadar hafifçe nabız atarak durur
         float t = 0f;
@@ -625,7 +635,7 @@ public class DriftBoostManager : MonoBehaviour
 
     void SetResultText(int amount)
     {
-        resultText.text = $"<size=55%>{resultTitle}</size>\n+{amount}";
+        resultText.text = $"<size=55%>{resultTitle}</size>\n+{amount.Dotted()}";
     }
 
     IEnumerator ResultTextRoutine(int total)
@@ -633,7 +643,7 @@ public class DriftBoostManager : MonoBehaviour
         RectTransform rt = resultText.rectTransform;
         rt.anchoredPosition = new Vector2(0f, resultPositionY);
         resultText.gameObject.SetActive(true);
-        rt.SetAsLastSibling();
+        PlaceBehindPanels(rt);
         SetResultText(0);
         SetAlpha(resultText, 1f);
 
@@ -712,6 +722,21 @@ public class DriftBoostManager : MonoBehaviour
     }
 
     // Sahnede hazır bir yazı atanmadıysa, oyun içi skor yazısının Canvas'ına ve fontuna göre bir tane oluşturur
+    // Yazıyı HUD'un önüne ama pause paneli ve ondan sonra gelen tam ekran panellerin arkasına yerleştirir
+    void PlaceBehindPanels(Transform tr)
+    {
+        Transform panel = UIManager.instance != null && UIManager.instance.pausePanel != null ? UIManager.instance.pausePanel.transform : null;
+        if (panel == null || panel.parent != tr.parent)
+        {
+            tr.SetAsLastSibling();
+            return;
+        }
+
+        int target = panel.GetSiblingIndex();
+        if (tr.GetSiblingIndex() < target) target--;
+        tr.SetSiblingIndex(target);
+    }
+
     TextMeshProUGUI CreateOverlayText(string objName, float positionY, float fontSize, Color color, float height)
     {
         TextMeshProUGUI reference = GameManager.instance != null ? GameManager.instance.scoreText : null;

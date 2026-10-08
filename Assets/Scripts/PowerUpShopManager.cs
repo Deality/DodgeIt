@@ -120,7 +120,7 @@ public class PowerUpShopManager : MonoBehaviour
         if (totalPriceText != null)
         {
             int totalCost = currentSelectedQuantity * pricePerBoost;
-            totalPriceText.text = totalCost.ToString();
+            totalPriceText.text = totalCost.Dotted();
 
             // 🔥 YENİ EKLENDİ: Rengi kod üzerinden zorla ayarla
             totalPriceText.color = priceTextColor;
@@ -130,7 +130,7 @@ public class PowerUpShopManager : MonoBehaviour
 
         // 3. Cüzdan Yazısı
         if (walletText != null)
-            walletText.text = PlayerPrefs.GetInt("GemsCount", 0).ToString();
+            walletText.text = PlayerPrefs.GetInt("GemsCount", 0).Dotted();
 
         // 4. Beyaz Yuvarlak İçindeki Sahip Olunan Boost Sayısı
         if (boostCountText != null)

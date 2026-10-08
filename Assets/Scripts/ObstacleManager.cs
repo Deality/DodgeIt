@@ -748,6 +748,9 @@ public class ObstacleManager : MonoBehaviour
                     {
                         obs.bonusSpeed = magandaBonusSpeed;
                     }
+
+                    // Diğer araçlardan hızlı olduğu belli olsun
+                    SpeedStreaks.Attach(magandaObj);
                 }
             }
             else
