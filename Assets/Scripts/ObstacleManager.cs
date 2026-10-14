@@ -103,6 +103,8 @@ public class ObstacleManager : MonoBehaviour
     public float speedIncreaseRate = 0.3f;
     public float maxScrollSpeed = 20f;
     public float targetSpeedForRateChange = 15f;
+    [Tooltip("targetSpeedForRateChange hızına ulaşıldıktan sonraki saniyelik hız artışı (önceden sabit 1'di).")]
+    public float lateSpeedIncreaseRate = 0.8f;
 
     [Header("Difficulty - Spawn Interval Stages")]
     public float stage1Time = 5f;
@@ -156,6 +158,10 @@ public class ObstacleManager : MonoBehaviour
 
     private float currentInvincibilityChance;
     private float currentReducerChance;
+
+    // Üst üste aynı araba türü çıkmasın diye son seçilen prefablar
+    private int lastObstaclePrefabIndex = -1;
+    private int lastMagandaPrefabIndex = -1;
 
     private float timer = 0f;
     private float totalTimeElapsed = 0f;
@@ -237,6 +243,21 @@ public class ObstacleManager : MonoBehaviour
         return finalInterval;
     }
 
+    // Rastgele bir prefab seçer; birden fazla seçenek varsa bir öncekiyle aynısını seçmez
+    int PickPrefabIndex(int count, ref int lastIndex)
+    {
+        int index;
+        if (count <= 1) index = 0;
+        else if (lastIndex < 0 || lastIndex >= count) index = Random.Range(0, count);
+        else
+        {
+            index = Random.Range(0, count - 1);
+            if (index >= lastIndex) index++; // öncekini atla
+        }
+        lastIndex = index;
+        return index;
+    }
+
     void Update()
     {
         if (!canSpawn) return;
@@ -251,12 +272,9 @@ public class ObstacleManager : MonoBehaviour
         {
             if (baseDifficultySpeed < maxScrollSpeed)
             {
-                baseDifficultySpeed += speedIncreaseRate * Time.deltaTime;
-
-                if (baseDifficultySpeed >= targetSpeedForRateChange && speedIncreaseRate != 1f)
-                {
-                    speedIncreaseRate = 1f;
-                }
+                // Belirli bir hızdan sonra artış yavaşlar
+                float rate = baseDifficultySpeed >= targetSpeedForRateChange ? lateSpeedIncreaseRate : speedIncreaseRate;
+                baseDifficultySpeed += rate * Time.deltaTime;
                 baseDifficultySpeed = Mathf.Min(baseDifficultySpeed, maxScrollSpeed);
             }
 
@@ -359,6 +377,13 @@ public class ObstacleManager : MonoBehaviour
 
     // --- DRIFT BOOST: TRAFİK KİLİDİ ---
 
+    // Trafik kilitliyken akış hızını elle ayarlar (Drift modu kendi hızını kullanır)
+    public void SetLockedSpeed(float speed)
+    {
+        baseDifficultySpeed = speed;
+        scrollSpeed = speed;
+    }
+
     public void LockTraffic()
     {
         if (IsTrafficLocked) return;
@@ -450,7 +475,7 @@ public class ObstacleManager : MonoBehaviour
         if (speedReductionCoroutine != null) StopCoroutine(speedReductionCoroutine);
         isSpeedReduced = true;
         currentBoostMultiplier = 1.0f;
-        speedReductionCoroutine = StartCoroutine(SpeedReductionCoroutine(reductionDuration, reductionAmount));
+        speedReductionCoroutine = StartCoroutine(SpeedReductionCoroutine(reductionDuration + PowerUpUpgrades.Bonus(UpgradeType.SpeedReducer), reductionAmount));
     }
 
     IEnumerator SpeedReductionCoroutine(float duration, float amount)
@@ -738,7 +763,7 @@ public class ObstacleManager : MonoBehaviour
 
             if (spawnMaganda)
             {
-                int prefabIndex = Random.Range(0, magandaPrefabs.Count);
+                int prefabIndex = PickPrefabIndex(magandaPrefabs.Count, ref lastMagandaPrefabIndex);
                 if (magandaPrefabs[prefabIndex] != null)
                 {
                     GameObject magandaObj = PoolManager.Spawn(magandaPrefabs[prefabIndex], spawnPos, Quaternion.identity);
@@ -755,7 +780,7 @@ public class ObstacleManager : MonoBehaviour
             }
             else
             {
-                int prefabIndex = Random.Range(0, obstaclePrefabs.Count);
+                int prefabIndex = PickPrefabIndex(obstaclePrefabs.Count, ref lastObstaclePrefabIndex);
                 if (obstaclePrefabs[prefabIndex] != null)
                 {
                     PoolManager.Spawn(obstaclePrefabs[prefabIndex], spawnPos, Quaternion.identity);

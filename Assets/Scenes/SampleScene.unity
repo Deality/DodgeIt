@@ -971,9 +971,10 @@ MonoBehaviour:
   coinSpawnOffset: -17.3
   maxCoinInRow: 3
   coinSpacing: 12
-  speedIncreaseRate: 1.4
+  speedIncreaseRate: 1.1
   maxScrollSpeed: 180
   targetSpeedForRateChange: 120
+  lateSpeedIncreaseRate: 0.8
   stage1Time: 5
   stage2Time: 12
   stage3Time: 20
@@ -984,15 +985,15 @@ MonoBehaviour:
   maxDistanceBetweenObstacles: 42
   minimumSpawnCooldown: 0.3
   sharedPowerUpCooldown: 8
-  reducerSpawnChance: 0.01
-  maxReducerChance: 0.024
+  reducerSpawnChance: 0.015
+  maxReducerChance: 0.035
   minSpeedForReducer: 100
   reducerCooldownTime: 20
   reductionDuration: 2
   reductionAmount: 25
   reducerStartDelay: 30
   effectFadeDuration: 0.5
-  reducerPityRate: 0.001
+  reducerPityRate: 0.0015
   invincibilitySpawnChance: 0.015
   maxInvincibilityChance: 0.035
   invincibilityCooldownTime: 12
@@ -1070,6 +1071,7 @@ MonoBehaviour:
   coinArrivalMargin: 0.2
   trafficClearEffectPrefab: {fileID: 0}
   activateSound: {fileID: 0}
+  driftModePatternSwitch: {x: 5, y: 8}
 --- !u!1 &518630278
 GameObject:
   m_ObjectHideFlags: 0
@@ -3868,6 +3870,18 @@ MonoBehaviour:
   flameRise: 46
   flameSize: 26
   textPulseAmount: 0.12
+  showTierPips: 1
+  tierPipsPosition: {x: 264, y: 84}
+  tierPipSize: {x: 48, y: 26}
+  tierPipSpacing: 54
+  tierOffColor: {r: 0, g: 0, b: 0.15, a: 0.55}
+  tierUpPunch: 0.6
+  tierUpPunchDuration: 0.35
+  tierUpFlashDuration: 0.25
+  showGlow: 1
+  glowSize: 150
+  glowAlpha: 0.45
+  lowTimeThreshold: 0.25
 --- !u!225 &1016780619
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4505,6 +4519,10 @@ MonoBehaviour:
   highScoreText: {fileID: 2100328623}
   gemText: {fileID: 2112564573}
   speedText: {fileID: 549649541}
+  driftModeTopBar: {fileID: 21300000, guid: 7feb9d368d1b602498a7b4bf2fb33744, type: 3}
+  driftModeHiddenHud:
+  - {fileID: 260628140}
+  - {fileID: 1346184200}
   speedDisplayMultiplier: 1
   invincibilityTimerText: {fileID: 0}
   currentBoostAmount: 0
@@ -7413,6 +7431,10 @@ MonoBehaviour:
   coinShopPanel: {fileID: 0}
   missionsPanel: {fileID: 0}
   powerUpShopPanel: {fileID: 0}
+  powerUpsPage: {fileID: 0}
+  powerUpShopDim: {fileID: 0}
+  powerUpShopDimAlpha: 0.65
+  modeSelectPanel: {fileID: 0}
   pausePanel: {fileID: 1818318787}
   countdownText: {fileID: 518630280}
   marketSlideDirection: 3

@@ -17,6 +17,11 @@ public class GameManager : MonoBehaviour
 
     [Header("UI - Hız Göstergesi")]
     public TextMeshProUGUI speedText;
+    [Tooltip("Drift modunda üst barın yerine geçen görsel (hız ve skor kutuları olmadan).")]
+    public Sprite driftModeTopBar;
+    [Tooltip("Drift modunda hiç görünmeyecek HUD parçaları (örn. boost bekleme barı).")]
+    public GameObject[] driftModeHiddenHud;
+    private DriftModeController driftModeController;
     public float speedDisplayMultiplier = 10f;
 
     [Header("UI - Özellikler")]
@@ -201,6 +206,13 @@ public class GameManager : MonoBehaviour
 
         if (revivePanel != null) revivePanel.SetActive(false);
 
+        // Drift modu: HUD sahne açılır açılmaz değişsin (skor/hız/boost barı bir an bile görünmesin)
+        if (GameModeState.IsDrift)
+        {
+            driftModeController = gameObject.AddComponent<DriftModeController>();
+            driftModeController.PrepareHud();
+        }
+
         StartCoroutine(GameStartSequence());
     }
 
@@ -239,6 +251,10 @@ public class GameManager : MonoBehaviour
 
         if (ObstacleManager.instance != null)
             ObstacleManager.instance.StartGameLoop();
+
+        // Drift modu: trafik yok, tek uzun Coin Rush
+        if (driftModeController != null)
+            driftModeController.Begin();
     }
 
     void Update()

@@ -6,6 +6,7 @@ public class GecisKontrol : MonoBehaviour
     // Bu metot butona tıklandığında çağrılacak.
     public void OyunuBaslat()
     {
+        GameModeState.Current = GameMode.Classic;
 
         Time.timeScale = 1f;
         // SceneManager.LoadScene metodu sahne adı veya build index numarası ile sahne yükler.

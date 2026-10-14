@@ -108,6 +108,14 @@ public class DriftBoostManager : MonoBehaviour
 
     private int collectedValue;
     private int collectedCount;
+
+    // Drift modu: tek, uzun bir Coin Rush; bitince trafik geri gelmez, sonuç DriftModeController'a bildirilir
+    private bool driftModeRun;
+    private float driftModeDuration;
+    // Drift modu uzun sürdüğü için altın deseni bu aralıklarla değişir (saniye)
+    [SerializeField] private Vector2 driftModePatternSwitch = new Vector2(5f, 8f);
+    private float patternTimeLeft;
+    private System.Action<int> driftModeFinished;
     private int spawnedCount;
     public int CollectedValue => collectedValue;
     public int CollectedCount => collectedCount;
@@ -147,6 +155,19 @@ public class DriftBoostManager : MonoBehaviour
         if (instance == this) instance = null;
     }
 
+    // Drift modu başlarken çağrılır: belirtilen süre boyunca altın toplanır, bitince onFinished(toplanan coin)
+    public bool TryActivateDriftMode(float seconds, System.Action<int> onFinished)
+    {
+        driftModeRun = true;
+        driftModeDuration = seconds;
+        driftModeFinished = onFinished;
+        if (TryActivate()) return true;
+
+        driftModeRun = false;
+        driftModeFinished = null;
+        return false;
+    }
+
     // Pickup toplandığında çağrılır. Başlatılamadıysa false döner.
     public bool TryActivate()
     {
@@ -179,7 +200,7 @@ public class DriftBoostManager : MonoBehaviour
             AudioManager.instance.PlaySFX(activateSound);
 
         // İlk kez toplandıysa oyunu durdurup ne olduğunu anlatır (kalkan / hız düşürücü ipuçları gibi)
-        TutorialManager.instance?.NotifyCoinRushCollected();
+        if (!driftModeRun) TutorialManager.instance?.NotifyCoinRushCollected();
 
         return true;
     }
@@ -248,7 +269,8 @@ public class DriftBoostManager : MonoBehaviour
         // altın toplama kısmı tam boostDuration sürsün diye yolculuk süresini ekliyoruz
         float speed = Mathf.Max(ObstacleManager.scrollSpeed, 0.1f);
         float travelTime = Mathf.Max(0f, (GetSpawnY() - car.transform.position.y) / speed);
-        Duration = boostDuration + travelTime;
+        float collectTime = driftModeRun ? driftModeDuration : boostDuration + PowerUpUpgrades.Bonus(UpgradeType.CoinRush);
+        Duration = collectTime + travelTime;
         TimeRemaining = Duration;
 
         // Altınlar engellerle aynı yerden, ekranın üstündeki spawn çizgisinden gelir (ekranın ortasında belirmez).
@@ -257,6 +279,7 @@ public class DriftBoostManager : MonoBehaviour
         nextCoinY = GetSpawnY();
         coinsFinished = false;
         ChoosePattern();
+        patternTimeLeft = Random.Range(driftModePatternSwitch.x, driftModePatternSwitch.y);
 
         // Bu boost'ta toplananların sayımı sıfırdan başlar
         collectedValue = 0;
@@ -297,7 +320,7 @@ public class DriftBoostManager : MonoBehaviour
 
         // Gizli başarım: Coin Rush süresi, oyuncu hiç drift yapmadan (ekrana dokunmadan) doldu.
         // Yalnızca süre doğal olarak bitince sayılır; kaza/iptal (CancelBoost) buraya gelmez.
-        if (CarController2D.instance != null && !CarController2D.instance.SteeredDuringDrift)
+        if (!driftModeRun && CarController2D.instance != null && !CarController2D.instance.SteeredDuringDrift)
             MissionsManager.AddGameplayProgress(MissionType.FinishCoinRushWithoutDrifting, 1);
 
         // Haftalık görev: bu Coin Rush'ta çıkan altınların hepsi toplandı
@@ -306,6 +329,16 @@ public class DriftBoostManager : MonoBehaviour
 
         if (CarController2D.instance != null) CarController2D.instance.EndDrift();
         ClearBoostCoins();
+
+        if (driftModeRun)
+        {
+            // Drift modu bitti: trafik geri gelmez, sonuç paneli DriftModeController'da
+            driftModeRun = false;
+            var finished = driftModeFinished;
+            driftModeFinished = null;
+            finished?.Invoke(collectedValue);
+            return;
+        }
 
         // Boost boyunca toplanan altın miktarını göster
         ShowResultText();
@@ -384,6 +417,17 @@ public class DriftBoostManager : MonoBehaviour
 
             nextCoinY += coinSpacing;
             AdvancePattern(coinInterval, maxLateral);
+
+            // Drift modu: aynı desen 60 saniye boyunca tekrarlanmasın, birkaç saniyede bir yenisine geç
+            if (driftModeRun)
+            {
+                patternTimeLeft -= coinInterval;
+                if (patternTimeLeft <= 0f)
+                {
+                    ChoosePattern();
+                    patternTimeLeft = Random.Range(driftModePatternSwitch.x, driftModePatternSwitch.y);
+                }
+            }
         }
     }
 
@@ -501,7 +545,7 @@ public class DriftBoostManager : MonoBehaviour
     IEnumerator CoinRushTextRoutine()
     {
         Transform tr = coinRushText.transform;
-        coinRushText.text = coinRushLabel;
+        coinRushText.text = driftModeRun ? "DRIFT MODE" : coinRushLabel;
         coinRushText.gameObject.SetActive(true);
         PlaceBehindPanels(tr);
 

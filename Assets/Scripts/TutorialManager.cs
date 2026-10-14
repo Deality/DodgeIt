@@ -101,6 +101,9 @@ public class TutorialManager : MonoBehaviour
 
     void Start()
     {
+        // Drift modunda öğretici yazıları çıkmaz (trafik ve şerit değiştirme yok)
+        if (GameModeState.IsDrift) return;
+
         if (step == Step.InitialSwipeIntro)
         {
             ShowPrompt(swipePromptText);

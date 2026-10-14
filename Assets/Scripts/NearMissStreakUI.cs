@@ -32,6 +32,30 @@ public class NearMissStreakUI : MonoBehaviour
     [Tooltip("x5 yazısının nabız büyüklüğü.")]
     public float textPulseAmount = 0.12f;
 
+    [Header("Seviye Göstergesi (x2 / x3 / x5)")]
+    [Tooltip("Barın sağında üç küçük etiket: hangi seviyede olunduğunu ve bir sonrakini gösterir.")]
+    public bool showTierPips = true;
+    public Vector2 tierPipsPosition = new Vector2(264f, 84f);
+    public Vector2 tierPipSize = new Vector2(48f, 26f);
+    public float tierPipSpacing = 54f;
+    public Color tierOffColor = new Color(0f, 0f, 0.15f, 0.55f);
+
+    [Header("Seviye Atlama Efekti")]
+    [Tooltip("Yeni seviyeye geçince yazının ne kadar büyüyüp yerine oturacağı.")]
+    public float tierUpPunch = 0.6f;
+    public float tierUpPunchDuration = 0.35f;
+    [Tooltip("Seviye atlayınca barın üstünde parlayan beyaz flaş süresi.")]
+    public float tierUpFlashDuration = 0.25f;
+
+    [Header("Yazının Arkasındaki Parıltı")]
+    public bool showGlow = true;
+    public float glowSize = 150f;
+    [Range(0f, 1f)] public float glowAlpha = 0.45f;
+
+    [Header("Süre Bitiyor Uyarısı")]
+    [Tooltip("Bar bu oranın altına inince yazı hızlıca yanıp söner.")]
+    [Range(0f, 1f)] public float lowTimeThreshold = 0.25f;
+
     // Yalnızca ekranda görünen etiketler; asıl skor çarpanları (x1.5 / x2 / x4) GameManager'da ve değişmedi
     private static readonly string[] Labels = { "", "x2", "x3", "x5" };
 
@@ -45,6 +69,13 @@ public class NearMissStreakUI : MonoBehaviour
         public float drift;
         public float size;
     }
+
+    private Image[] tierPips;
+    private TextMeshProUGUI[] tierPipTexts;
+    private Image glow;
+    private int lastCount;
+    private float punchTimer;
+    private float flashTimer;
 
     private readonly List<Flame> liveFlames = new List<Flame>();
     private readonly Stack<Flame> flamePool = new Stack<Flame>();
@@ -67,33 +98,163 @@ public class NearMissStreakUI : MonoBehaviour
         bool onFire = enableMaxStreakFlames && count >= 3;
 
         UpdateFlames(onFire);
-        if (!onFire && multiplierText != null) multiplierText.transform.localScale = Vector3.one;
 
-        if (!active) return;
+        if (!active)
+        {
+            lastCount = 0;
+            if (multiplierText != null) multiplierText.transform.localScale = Vector3.one;
+            return;
+        }
 
-        float timer  = GameManager.instance.NearMissStreakTimer;
-        float total  = GameManager.instance.NearMissCurrentDuration;
+        // Seviye atlandı: yazı büyüyüp yerine oturur, bar bir an parlar
+        if (count > lastCount)
+        {
+            punchTimer = tierUpPunchDuration;
+            flashTimer = tierUpFlashDuration;
+        }
+        lastCount = count;
+        punchTimer = Mathf.Max(0f, punchTimer - Time.deltaTime);
+        flashTimer = Mathf.Max(0f, flashTimer - Time.deltaTime);
+
+        float total = GameManager.instance.NearMissCurrentDuration;
+        float fill = total > 0f ? Mathf.Clamp01(GameManager.instance.NearMissStreakTimer / total) : 0f;
+        ApplyVisual(count, fill, Time.time);
+    }
+
+    // Editörde, oyun çalışmadan taslağı görmek için (görsel kontrol)
+    public void PreviewInEditor(int count, float fill, float punchProgress)
+    {
+        lastCount = count;
+        punchTimer = tierUpPunchDuration * (1f - Mathf.Clamp01(punchProgress));
+        flashTimer = tierUpFlashDuration * (1f - Mathf.Clamp01(punchProgress));
+        ApplyVisual(Mathf.Clamp(count, 1, 3), fill, 0.4f);
+    }
+
+    void ApplyVisual(int count, float fill, float time)
+    {
+        EnsureDecorations();
+        bool onFire = enableMaxStreakFlames && count >= 3;
 
         Color c = count == 1 ? color1 : count == 2 ? color2 : color3;
         if (onFire)
         {
             // Alev gibi düzensiz titreşim
-            c = Color.Lerp(color3, flameHotColor, Mathf.PerlinNoise(Time.time * flameFlickerSpeed, 0.37f));
+            c = Color.Lerp(color3, flameHotColor, Mathf.PerlinNoise(time * flameFlickerSpeed, 0.37f));
         }
 
         if (multiplierText != null)
         {
-            multiplierText.text  = count <= 3 ? Labels[count] : Labels[3];
-            multiplierText.color = c;
-            if (onFire)
-                multiplierText.transform.localScale = Vector3.one * (1f + Mathf.Abs(Mathf.Sin(Time.time * 8f)) * textPulseAmount);
+            multiplierText.text = count <= 3 ? Labels[count] : Labels[3];
+
+            // Süre bitmek üzereyken yanıp söner
+            Color textColor = c;
+            if (fill < lowTimeThreshold) textColor.a = 0.35f + 0.65f * Mathf.Abs(Mathf.Cos(time * 14f));
+            multiplierText.color = textColor;
+
+            float scale = 1f;
+            if (punchTimer > 0f)
+            {
+                float p = 1f - punchTimer / Mathf.Max(tierUpPunchDuration, 0.01f);
+                scale += tierUpPunch * (1f - EaseOutBack(p));
+            }
+            if (onFire) scale *= 1f + Mathf.Abs(Mathf.Sin(time * 8f)) * textPulseAmount;
+            multiplierText.transform.localScale = Vector3.one * scale;
         }
 
         if (timerBarFill != null)
         {
-            timerBarFill.fillAmount = Mathf.Clamp01(timer / total);
-            timerBarFill.color      = c;
+            // Seviye atlayınca barın dolu kısmı bir an beyaza parlar
+            float flash = flashTimer > 0f ? flashTimer / Mathf.Max(tierUpFlashDuration, 0.01f) : 0f;
+            timerBarFill.fillAmount = fill;
+            timerBarFill.color = Color.Lerp(c, Color.white, flash * 0.8f);
         }
+
+        if (glow != null)
+        {
+            Color g = c;
+            g.a = glowAlpha * (0.75f + 0.25f * Mathf.Sin(time * 5f));
+            glow.color = g;
+        }
+
+        if (tierPips != null)
+        {
+            Color[] tierColors = { color1, color2, color3 };
+            for (int i = 0; i < tierPips.Length; i++)
+            {
+                int tier = i + 1;
+                bool current = tier == count;
+                bool passed = tier < count;
+                Color tc = tierColors[i];
+                tierPips[i].color = current ? tc : passed ? new Color(tc.r, tc.g, tc.b, 0.45f) : tierOffColor;
+                tierPips[i].rectTransform.localScale = Vector3.one * (current ? 1.15f : 1f);
+                tierPipTexts[i].color = current ? new Color(0.05f, 0.02f, 0.25f, 1f) : new Color(1f, 1f, 1f, passed ? 0.85f : 0.4f);
+            }
+        }
+    }
+
+    static float EaseOutBack(float p)
+    {
+        const float c1 = 1.70158f;
+        const float c3 = c1 + 1f;
+        return 1f + c3 * Mathf.Pow(p - 1f, 3f) + c1 * Mathf.Pow(p - 1f, 2f);
+    }
+
+    // Parıltı ve x2/x3/x5 etiketleri kodla bir kez kurulur (sahneye kaydedilmez)
+    void EnsureDecorations()
+    {
+        var root = (RectTransform)transform;
+
+        if (showGlow && glow == null && multiplierText != null)
+        {
+            glow = NewImage("StreakGlow", root, GetFlameSprite());
+            glow.rectTransform.sizeDelta = Vector2.one * glowSize;
+            multiplierText.ForceMeshUpdate();
+            Vector3 textCenter = multiplierText.rectTransform.TransformPoint(multiplierText.textBounds.center);
+            glow.rectTransform.position = textCenter;
+            glow.transform.SetSiblingIndex(multiplierText.transform.GetSiblingIndex()); // yazının arkasında
+        }
+
+        if (showTierPips && tierPips == null && multiplierText != null)
+        {
+            tierPips = new Image[3];
+            tierPipTexts = new TextMeshProUGUI[3];
+            for (int i = 0; i < 3; i++)
+            {
+                var pip = NewImage("StreakTier" + (i + 1), root, null);
+                pip.rectTransform.sizeDelta = tierPipSize;
+                pip.rectTransform.anchoredPosition = tierPipsPosition + new Vector2((i - 1) * tierPipSpacing, 0f);
+                tierPips[i] = pip;
+
+                var textGo = new GameObject("Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+                textGo.layer = gameObject.layer;
+                textGo.hideFlags = HideFlags.DontSave;
+                var t = textGo.GetComponent<TextMeshProUGUI>();
+                t.rectTransform.SetParent(pip.rectTransform, false);
+                t.rectTransform.anchorMin = Vector2.zero; t.rectTransform.anchorMax = Vector2.one;
+                t.rectTransform.offsetMin = t.rectTransform.offsetMax = Vector2.zero;
+                t.font = multiplierText.font;
+                t.fontSharedMaterial = multiplierText.fontSharedMaterial;
+                t.text = Labels[i + 1];
+                t.fontSize = tierPipSize.y * 0.7f;
+                t.alignment = TextAlignmentOptions.Center;
+                t.raycastTarget = false;
+                tierPipTexts[i] = t;
+            }
+        }
+    }
+
+    Image NewImage(string name, RectTransform parent, Sprite sprite)
+    {
+        var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        go.layer = gameObject.layer;
+        go.hideFlags = HideFlags.DontSave;
+        var rt = (RectTransform)go.transform;
+        rt.SetParent(parent, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        var img = go.GetComponent<Image>();
+        img.sprite = sprite;
+        img.raycastTarget = false;
+        return img;
     }
 
     // --- x5 ALEVLERİ: barın dolu kısmından yükselip sönen küçük parçalar ---

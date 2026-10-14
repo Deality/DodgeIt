@@ -19,6 +19,8 @@ public class CarController2D : MonoBehaviour
 
     [Tooltip("Öfke Modu kaç saniye sürecek?")]
     public float boostDuration = 3.0f;
+    // Powerups panelindeki yükseltme dahil gerçek boost süresi
+    public float BoostTotalDuration => boostDuration + PowerUpUpgrades.Bonus(UpgradeType.Boost);
 
     [Tooltip("Öfke Modu bittikten sonra tekrar kullanabilmek için gereken bekleme süresi")]
     public float boostCooldown = 5.0f;
@@ -385,7 +387,7 @@ public class CarController2D : MonoBehaviour
         if (GameManager.instance.UseBoostItem())
         {
             isBoostActive = true;
-            currentBoostTimer = boostDuration;
+            currentBoostTimer = BoostTotalDuration;
             GameManager.instance.isBoosting = true;
 
             MissionsManager.AddGameplayProgress(MissionType.UseBoost, 1);
@@ -604,7 +606,7 @@ public class CarController2D : MonoBehaviour
             currentBoostTimer -= Time.deltaTime;
             targetY = fixedY + forwardOffset;
 
-            float t = currentBoostTimer / boostDuration;
+            float t = currentBoostTimer / BoostTotalDuration;
 
             if (camPosSaved && mainCam != null)
             {

@@ -118,7 +118,7 @@ public class BuffTimerUI : MonoBehaviour
                         if (playerCar.isBoostActive)
                         {
                             targetAlpha = 1f;
-                            ratio = playerCar.currentBoostTimer / playerCar.boostDuration;
+                            ratio = playerCar.currentBoostTimer / playerCar.BoostTotalDuration;
                         }
                         else
                         {
@@ -179,7 +179,7 @@ public class BuffTimerUI : MonoBehaviour
                             // Yeni başladıysa sayacı fulle
                             if (!wasReducerActiveLastFrame)
                             {
-                                internalReducerTimer = ObstacleManager.instance.reductionDuration;
+                                internalReducerTimer = ObstacleManager.instance.reducerMaxDuration;
                             }
 
                             // Sayacı azalt (Drift Boost hızı kilitliyken yavaşlatıcı da donuyor)
@@ -187,7 +187,7 @@ public class BuffTimerUI : MonoBehaviour
                                 internalReducerTimer -= Time.deltaTime;
 
                             // Oranı hesapla
-                            ratio = internalReducerTimer / ObstacleManager.instance.reductionDuration;
+                            ratio = internalReducerTimer / ObstacleManager.instance.reducerMaxDuration;
                         }
                         else
                         {

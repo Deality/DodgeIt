@@ -37,6 +37,17 @@ public class UIManager : MonoBehaviour
     [Header("Power-Up Shop UI")]
     public GameObject powerUpShopPanel;
 
+    [Tooltip("Tam sayfa Powerups paneli (süre yükseltmeleri). Boost satın alma kutusu (powerUpShopPanel) bunun üstünde açılır.")]
+    public GameObject powerUpsPage;
+    [Tooltip("Boost satın alma kutusu açıkken arkasını karartan tam ekran görsel.")]
+    public Image powerUpShopDim;
+    [Range(0f, 1f)] public float powerUpShopDimAlpha = 0.65f;
+    private Coroutine dimRoutine;
+
+    [Header("Mod Seçimi")]
+    [Tooltip("Start butonuna basınca açılan oyun modu seçim ekranı.")]
+    public GameObject modeSelectPanel;
+
     [Header("Pause UI")]
     public GameObject pausePanel;
 
@@ -127,6 +138,22 @@ public class UIManager : MonoBehaviour
         {
             missionsPanel.transform.localScale = Vector3.zero;
             missionsPanel.SetActive(false);
+        }
+
+        if (powerUpsPage != null)
+        {
+            powerUpsPage.transform.localScale = Vector3.zero;
+            powerUpsPage.SetActive(false);
+        }
+        if (modeSelectPanel != null)
+        {
+            modeSelectPanel.transform.localScale = Vector3.zero;
+            modeSelectPanel.SetActive(false);
+        }
+        if (powerUpShopDim != null)
+        {
+            Color c = powerUpShopDim.color; c.a = 0f; powerUpShopDim.color = c;
+            powerUpShopDim.gameObject.SetActive(false);
         }
 
         // Başlangıçta Power-Up panelini de gizle ve küçült
@@ -400,8 +427,25 @@ public class UIManager : MonoBehaviour
     // --- BUTON FONKSİYONLARI ---
     public void StartGame() { StartCoroutine(SceneTransitionRoutine("GameScene")); }
     public void GoToShop() { Time.timeScale = 1f; OpenMarket(); }
-    public void LoadMainMenu() { StartCoroutine(SceneTransitionRoutine("MainMenu")); }
-    public void RestartGame() { StartCoroutine(SceneTransitionRoutine(SceneManager.GetActiveScene().name)); }
+    public void LoadMainMenu() { GameModeState.Current = GameMode.Classic; StartCoroutine(SceneTransitionRoutine("MainMenu")); }
+    public void RestartGame()
+    {
+        // Drift modunu yeniden başlatmak bir günlük hak harcar; hak yoksa ana menüye döner
+        if (GameModeState.IsDrift && !GameModeState.TryConsumeDriftPlay())
+        {
+            GameModeState.Current = GameMode.Classic;
+            LoadMainMenu();
+            return;
+        }
+        StartCoroutine(SceneTransitionRoutine(SceneManager.GetActiveScene().name));
+    }
+
+    // Mod seçim ekranından oyun sahnesine geçiş
+    public void StartGameInMode(GameMode mode)
+    {
+        GameModeState.Current = mode;
+        StartCoroutine(SceneTransitionRoutine("SampleScene"));
+    }
     public void QuitGame() { Debug.Log("Oyundan Çıkıldı."); Application.Quit(); }
 
     // --- MARKET KONTROLLERİ ---
@@ -467,7 +511,34 @@ public class UIManager : MonoBehaviour
         if (powerUpShopPanel != null)
         {
             StartCoroutine(SlidePanelInRoutine(powerUpShopPanel, powerUpShopSlideDirection));
+            FadeDim(true);
         }
+    }
+
+    // Boost satın alma kutusunun arkasındaki karartma
+    void FadeDim(bool show)
+    {
+        if (powerUpShopDim == null) return;
+        if (dimRoutine != null) StopCoroutine(dimRoutine);
+        dimRoutine = StartCoroutine(FadeDimRoutine(show));
+    }
+
+    IEnumerator FadeDimRoutine(bool show)
+    {
+        if (show) powerUpShopDim.gameObject.SetActive(true);
+        float from = powerUpShopDim.color.a;
+        float to = show ? powerUpShopDimAlpha : 0f;
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / 0.2f;
+            Color c = powerUpShopDim.color;
+            c.a = Mathf.Lerp(from, to, Mathf.Clamp01(t));
+            powerUpShopDim.color = c;
+            yield return null;
+        }
+        if (!show) powerUpShopDim.gameObject.SetActive(false);
+        dimRoutine = null;
     }
 
     public void ClosePowerUpShop()
@@ -476,6 +547,37 @@ public class UIManager : MonoBehaviour
         {
             StartCoroutine(SlidePanelOutRoutine(powerUpShopPanel, powerUpShopSlideDirection));
         }
+        FadeDim(false);
+
+        // Boost alındıysa yükseltme sayfasındaki coin sayısı da güncellensin
+        if (powerUpsPage != null && powerUpsPage.activeSelf)
+            powerUpsPage.GetComponent<PowerUpUpgradePanel>()?.Refresh();
+    }
+
+    // --- MOD SEÇİM EKRANI ---
+    public void OpenModeSelect()
+    {
+        if (modeSelectPanel != null)
+            StartCoroutine(SlidePanelInRoutine(modeSelectPanel, powerUpShopSlideDirection));
+    }
+
+    public void CloseModeSelect()
+    {
+        if (modeSelectPanel != null)
+            StartCoroutine(SlidePanelOutRoutine(modeSelectPanel, powerUpShopSlideDirection));
+    }
+
+    // --- TAM SAYFA POWERUPS PANELİ ---
+    public void OpenPowerUpsPage()
+    {
+        if (powerUpsPage != null)
+            StartCoroutine(SlidePanelInRoutine(powerUpsPage, powerUpShopSlideDirection));
+    }
+
+    public void ClosePowerUpsPage()
+    {
+        if (powerUpsPage != null)
+            StartCoroutine(SlidePanelOutRoutine(powerUpsPage, powerUpShopSlideDirection));
     }
 
     // --- LEADERBOARD KONTROLLERİ ---
