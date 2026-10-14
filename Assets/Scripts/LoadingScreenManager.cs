@@ -72,13 +72,9 @@ public class LoadingScreenManager : MonoBehaviour
     void Start()
     {
         // 🔥 FPS VE PERFORMANS OPTİMİZASYONU (Sınırlamaları Kaldırma)
-        // 1. Mobil cihazlarda varsayılan 30 FPS sınırını kaldırıyoruz.
-        // VSync AÇIK (1) olmalı: Android'de Optimized Frame Pacing (Swappy) sadece VSync açıkken
-        // devreye girip ekranın gerçek yenileme hızını (90/120Hz) doğru şekilde talep edebiliyor.
-        // VSync kapalıyken Unity'nin kendi zamanlayıcısı devreye giriyor ve bu, yüksek Hz ekranlarda
-        // hedeflenenden daha düşük ve düzensiz bir kare hızına yol açıyor.
-        QualitySettings.vSyncCount = 1;
-        Application.targetFrameRate = 120; // 90Hz/120Hz ekranlarda oyun yağ gibi akacaktır.
+        // 1. Mobil cihazlarda varsayılan 30 FPS sınırını kaldırıyoruz: hedef, ekranın desteklediği
+        // en yüksek yenileme hızı (60/90/120Hz). Değeri RefreshRateManager oyun açılırken buluyor.
+        RefreshRateManager.Apply();
 
         // 2. Sahne yüklenirken CPU'nun kilitlenmesini engelliyoruz.
         // Bu ayar yükleme işlemini arka planda daha düşük öncelikli yaparak UI animasyonunun (arabaların) pürüzsüz akmasını sağlar.

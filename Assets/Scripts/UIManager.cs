@@ -88,10 +88,8 @@ public class UIManager : MonoBehaviour
         if (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject);
 
-        // VSync açık olmalı: Android'de Optimized Frame Pacing yalnızca VSync açıkken ekranın
-        // gerçek yüksek yenileme hızını (90/120Hz) düzgün şekilde talep edip koruyabiliyor.
-        QualitySettings.vSyncCount = 1;
-        Application.targetFrameRate = 120;
+        // Kare hızı: ekranın desteklediği en yüksek yenileme hızı (RefreshRateManager)
+        RefreshRateManager.Apply();
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
@@ -169,7 +167,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            Application.targetFrameRate = 120;
+            RefreshRateManager.Apply();
         }
     }
 
