@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-// Güçlendirmelerin süre yükseltmeleri. Powerups panelinden coin ile satın alınır; seviye PlayerPrefs'te tutulur.
-// Oyun içindeki her güçlendirme kendi temel süresine Bonus(...) kadar saniye ekler.
+// Güçlendirme yükseltmeleri. Powerups panelinden coin ile satın alınır; seviye PlayerPrefs'te tutulur.
+// Kalkan ve Coin Rush: her seviye süreye saniye ekler. Hız düşürücü: her seviye hızı daha fazla düşürür (süre sabit).
+// Boost artık yükseltilmiyor (panelde kartı kapalı); daha önce alınmış seviyeler oyunda geçerli kalır.
 public enum UpgradeType
 {
     Boost,
@@ -12,35 +13,44 @@ public enum UpgradeType
 
 public static class PowerUpUpgrades
 {
-    public const int MaxLevel = 5;
-
     // Seviye başına fiyat: 1. seviyeye çıkmak 1.000, 5. seviyeye çıkmak 20.000 coin
     private static readonly int[] LevelPrices = { 1000, 2500, 5000, 10000, 20000 };
 
     private const string GemsKey = "GemsCount";
 
-    // Her seviyenin süreye eklediği saniye
-    public static float StepSeconds(UpgradeType type)
+    // Hız düşürücü 25 -> 27.5 -> 30 -> 32.5 -> 35: 4 seviye. Diğerleri 5 seviye.
+    public static int MaxLevel(UpgradeType type)
     {
-        return type == UpgradeType.CoinRush ? 1f : 0.5f;
+        return type == UpgradeType.SpeedReducer ? 4 : 5;
+    }
+
+    // Her seviyenin eklediği değer: saniye (kalkan, coin rush, boost) ya da hız düşürme miktarı (hız düşürücü)
+    public static float Step(UpgradeType type)
+    {
+        switch (type)
+        {
+            case UpgradeType.CoinRush: return 1f;
+            case UpgradeType.SpeedReducer: return 2.5f;
+            default: return 0.5f;
+        }
     }
 
     public static int GetLevel(UpgradeType type)
     {
-        return Mathf.Clamp(PlayerPrefs.GetInt(Key(type), 0), 0, MaxLevel);
+        return Mathf.Clamp(PlayerPrefs.GetInt(Key(type), 0), 0, MaxLevel(type));
     }
 
-    // Bu güçlendirmenin temel süresine eklenecek saniye
+    // Bu güçlendirmenin temel değerine eklenecek miktar (saniye ya da hız düşürücüde düşürme miktarı)
     public static float Bonus(UpgradeType type)
     {
-        return GetLevel(type) * StepSeconds(type);
+        return GetLevel(type) * Step(type);
     }
 
     // Bir sonraki seviyenin fiyatı; en üst seviyedeyse -1
     public static int NextPrice(UpgradeType type)
     {
         int level = GetLevel(type);
-        return level >= MaxLevel ? -1 : LevelPrices[level];
+        return level >= MaxLevel(type) ? -1 : LevelPrices[level];
     }
 
     // Coin yetiyorsa bir seviye yükseltir

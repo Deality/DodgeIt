@@ -11,7 +11,7 @@ public class PowerUpUpgradePanel : MonoBehaviour
     public class Row
     {
         public UpgradeType type;
-        [Tooltip("Yükseltmesiz temel süre (saniye). Oyundaki değerle aynı olmalı; yalnızca ekranda göstermek için.")]
+        [Tooltip("Yükseltmesiz temel değer: süre (saniye) ya da hız düşürücüde düşürme miktarı (ObstacleManager.reductionAmount). Oyundaki değerle aynı olmalı; yalnızca ekranda göstermek için.")]
         public float baseSeconds = 5f;
         public TextMeshProUGUI durationText;
         public Image[] levelPips;
@@ -99,6 +99,11 @@ public class PowerUpUpgradePanel : MonoBehaviour
         Refresh();
     }
 
+    static string FormatValue(float value, string format = "0.#")
+    {
+        return value.ToString(format, CultureInfo.InvariantCulture);
+    }
+
     public void Refresh()
     {
         int gems = PlayerPrefs.GetInt("GemsCount", 0);
@@ -112,13 +117,31 @@ public class PowerUpUpgradePanel : MonoBehaviour
 
             if (row.durationText != null)
             {
-                string current = now.ToString("0.0", CultureInfo.InvariantCulture);
-                string next = (now + PowerUpUpgrades.StepSeconds(row.type)).ToString("0.0", CultureInfo.InvariantCulture);
-                row.durationText.text = price < 0 ? $"{current}s" : $"{current}s  >  {next}s";
+                float next = now + PowerUpUpgrades.Step(row.type);
+                // Hız düşürücü süreyi değil, düşürülen hızı yükseltir: "-25  >  -27.5 km/h"
+                // (oyundaki hız göstergesi scrollSpeed'i 1'e 1 km/h olarak gösterir)
+                if (row.type == UpgradeType.SpeedReducer)
+                {
+                    string current = "-" + FormatValue(now);
+                    string after = "-" + FormatValue(next);
+                    row.durationText.text = price < 0 ? $"{current} km/h" : $"{current}  >  {after} km/h";
+                }
+                else
+                {
+                    string current = FormatValue(now, "0.0") + "s";
+                    string after = FormatValue(next, "0.0") + "s";
+                    row.durationText.text = price < 0 ? current : $"{current}  >  {after}";
+                }
             }
 
+            // Seviye sayısı güçlendirmeye göre değişir (hız düşürücü 4); fazla noktalar gizlenir
+            int maxLevel = PowerUpUpgrades.MaxLevel(row.type);
             for (int i = 0; i < row.levelPips.Length; i++)
-                if (row.levelPips[i] != null) row.levelPips[i].color = i < level ? pipOnColor : pipOffColor;
+            {
+                if (row.levelPips[i] == null) continue;
+                row.levelPips[i].gameObject.SetActive(i < maxLevel);
+                row.levelPips[i].color = i < level ? pipOnColor : pipOffColor;
+            }
 
             bool isMax = price < 0;
             bool canAfford = !isMax && gems >= price;

@@ -475,7 +475,7 @@ public class ObstacleManager : MonoBehaviour
         if (speedReductionCoroutine != null) StopCoroutine(speedReductionCoroutine);
         isSpeedReduced = true;
         currentBoostMultiplier = 1.0f;
-        speedReductionCoroutine = StartCoroutine(SpeedReductionCoroutine(reductionDuration + PowerUpUpgrades.Bonus(UpgradeType.SpeedReducer), reductionAmount));
+        speedReductionCoroutine = StartCoroutine(SpeedReductionCoroutine(reductionDuration, reductionAmount + PowerUpUpgrades.Bonus(UpgradeType.SpeedReducer)));
     }
 
     IEnumerator SpeedReductionCoroutine(float duration, float amount)

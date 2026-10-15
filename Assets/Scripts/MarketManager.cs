@@ -93,10 +93,11 @@ public class MarketManager : MonoBehaviour
 
     // --- YENİ AÇILAN GİZLİ ARABA ---
 
-    // Görevlerden bir gizli araba alındığında çağrılır: Shop butonundaki "?" uyarısını açar
-    public static void MarkNewSecretCar()
+    // Görevlerden bir gizli araba alındığında çağrılır: Shop butonundaki "?" uyarısını açar.
+    // Değer = araba indeksi + 1 (eski sürümden kalan 1 değeri 0. arabaya, yani listenin başına kaydırır).
+    public static void MarkNewSecretCar(int carIndex)
     {
-        PlayerPrefs.SetInt(NewSecretCarKey, 1);
+        PlayerPrefs.SetInt(NewSecretCarKey, carIndex + 1);
         PlayerPrefs.Save();
         if (instance != null) instance.UpdateNewSecretCarBadge();
     }
@@ -111,56 +112,49 @@ public class MarketManager : MonoBehaviour
 
     public void UpdateNewSecretCarBadge()
     {
-        bool pending = PlayerPrefs.GetInt(NewSecretCarKey, 0) == 1 || PlayerPrefs.GetInt(NewSecretRoadKey, 0) > 0;
+        bool pending = PlayerPrefs.GetInt(NewSecretCarKey, 0) > 0 || PlayerPrefs.GetInt(NewSecretRoadKey, 0) > 0;
         if (newSecretCarBadge != null) newSecretCarBadge.SetActive(pending);
     }
 
     // Market paneli açıldığında (UIManager.OpenMarket) çağrılır. Bekleyen bir gizli araba varsa uyarıyı kapatır
-    // ve araba listesini oyuncunun kontrolü dışında en alta (gizli arabaların olduğu yere) kaydırır.
+    // ve araba listesini oyuncunun kontrolü dışında o arabanın kartına kaydırır (sahip olunanlar üstte olduğu için
+    // açılan araba artık listenin sonunda değil).
     public void OnMarketOpened()
     {
-        RefreshAllButtons(); // panel kapalıyken açılan arabanın kartı güncel olsun
+        RefreshAllButtons(); // panel kapalıyken açılan kartlar güncel, sahip olunanlar üstte olsun
 
         RevealNewSecretRoad();
 
-        if (PlayerPrefs.GetInt(NewSecretCarKey, 0) != 1) return;
+        int carIndex = PlayerPrefs.GetInt(NewSecretCarKey, 0) - 1;
+        if (carIndex < 0) return;
         PlayerPrefs.DeleteKey(NewSecretCarKey);
         PlayerPrefs.Save();
         UpdateNewSecretCarBadge();
 
         if (carScrollRect == null) return;
+        RectTransform card = FindCard(carContentParent, MarketItemType.Car, carIndex);
+        if (card == null) return;
         if (revealRoutine != null) // yalnızca araba kaydırmasını durdur; yol kaydırması ayrı çalışır
         {
             StopCoroutine(revealRoutine);
             carScrollRect.vertical = revealRestoreVertical;
         }
-        revealRoutine = StartCoroutine(RevealSecretCarRoutine());
+        revealRestoreVertical = carScrollRect.vertical;
+        revealRoutine = StartCoroutine(RevealCardRoutine(carScrollRect, card, true));
     }
 
-    System.Collections.IEnumerator RevealSecretCarRoutine()
+    // Listenin doğrudan çocuğu olan, verilen ürünün kartını bulur
+    RectTransform FindCard(Transform content, MarketItemType type, int index)
     {
-        // Kaydırma sırasında oyuncu listeyi sürükleyemesin
-        revealRestoreVertical = carScrollRect.vertical;
-        carScrollRect.StopMovement();
-        carScrollRect.vertical = false;
-        carScrollRect.verticalNormalizedPosition = 1f;
-
-        yield return new WaitForSecondsRealtime(revealDelay);
-
-        float t = 0f;
-        float duration = Mathf.Max(revealScrollDuration, 0.01f);
-        while (t < 1f)
+        if (content == null) return null;
+        foreach (ShopItem item in content.GetComponentsInChildren<ShopItem>(true))
         {
-            t += Time.unscaledDeltaTime / duration;
-            float p = Mathf.Clamp01(t);
-            carScrollRect.verticalNormalizedPosition = 1f - p * p * (3f - 2f * p); // smooth step
-            yield return null;
+            if (item.itemType != type || item.itemIndex != index) continue;
+            Transform t = item.transform;
+            while (t.parent != null && t.parent != content) t = t.parent;
+            return t as RectTransform;
         }
-        carScrollRect.verticalNormalizedPosition = 0f;
-
-        carScrollRect.StopMovement();
-        carScrollRect.vertical = revealRestoreVertical;
-        revealRoutine = null;
+        return null;
     }
 
     void StopReveal()
@@ -190,37 +184,33 @@ public class MarketManager : MonoBehaviour
         if (roadScrollRect == null && roadContentParent != null) roadScrollRect = roadContentParent.GetComponentInParent<ScrollRect>();
         if (roadScrollRect == null) return;
 
-        RectTransform card = null;
-        foreach (ShopItem item in roadContentParent.GetComponentsInChildren<ShopItem>(true))
-        {
-            if (item.itemType == MarketItemType.Road && item.itemIndex == roadIndex)
-            {
-                // Listenin doğrudan çocuğu olan kartı bul
-                Transform t = item.transform;
-                while (t.parent != null && t.parent != roadContentParent) t = t.parent;
-                card = t as RectTransform;
-                break;
-            }
-        }
+        RectTransform card = FindCard(roadContentParent, MarketItemType.Road, roadIndex);
         if (card == null) return;
 
-        if (roadRevealRoutine != null) StopCoroutine(roadRevealRoutine);
-        roadRevealRoutine = StartCoroutine(RevealSecretRoadRoutine(card));
+        if (roadRevealRoutine != null)
+        {
+            StopCoroutine(roadRevealRoutine);
+            roadScrollRect.vertical = roadRevealRestoreVertical;
+        }
+        roadRevealRestoreVertical = roadScrollRect.vertical;
+        roadRevealRoutine = StartCoroutine(RevealCardRoutine(roadScrollRect, card, false));
     }
 
-    System.Collections.IEnumerator RevealSecretRoadRoutine(RectTransform card)
+    // Listeyi en üstten başlatıp kart görünür alanın ortasına gelecek şekilde yumuşakça kaydırır
+    System.Collections.IEnumerator RevealCardRoutine(ScrollRect scroll, RectTransform card, bool isCar)
     {
-        roadRevealRestoreVertical = roadScrollRect.vertical;
-        roadScrollRect.StopMovement();
-        roadScrollRect.vertical = false;
-        roadScrollRect.verticalNormalizedPosition = 1f;
+        // Kaydırma sırasında oyuncu listeyi sürükleyemesin
+        bool restoreVertical = isCar ? revealRestoreVertical : roadRevealRestoreVertical;
+        scroll.StopMovement();
+        scroll.vertical = false;
+        scroll.verticalNormalizedPosition = 1f;
 
         yield return new WaitForSecondsRealtime(revealDelay);
 
-        // Kart görünür alanın ortasına gelecek şekilde hedef konum (1 = en üst, 0 = en alt)
+        // Hedef konum (1 = en üst, 0 = en alt)
         Canvas.ForceUpdateCanvases();
-        RectTransform content = roadScrollRect.content;
-        RectTransform viewport = roadScrollRect.viewport != null ? roadScrollRect.viewport : (RectTransform)roadScrollRect.transform;
+        RectTransform content = scroll.content;
+        RectTransform viewport = scroll.viewport != null ? scroll.viewport : (RectTransform)scroll.transform;
         float scrollable = content.rect.height - viewport.rect.height;
         float target = 1f;
         if (scrollable > 0f)
@@ -236,14 +226,49 @@ public class MarketManager : MonoBehaviour
         {
             t += Time.unscaledDeltaTime / duration;
             float p = Mathf.Clamp01(t);
-            roadScrollRect.verticalNormalizedPosition = Mathf.Lerp(1f, target, p * p * (3f - 2f * p)); // smooth step
+            scroll.verticalNormalizedPosition = Mathf.Lerp(1f, target, p * p * (3f - 2f * p)); // smooth step
             yield return null;
         }
-        roadScrollRect.verticalNormalizedPosition = target;
+        scroll.verticalNormalizedPosition = target;
 
-        roadScrollRect.StopMovement();
-        roadScrollRect.vertical = roadRevealRestoreVertical;
-        roadRevealRoutine = null;
+        scroll.StopMovement();
+        scroll.vertical = restoreVertical;
+        if (isCar) revealRoutine = null;
+        else roadRevealRoutine = null;
+    }
+
+    // --- SIRALAMA: sahip olunanlar en üstte ---
+
+    // Sahnedeki ilk dizilim (fiyata göre). Sahip olunanlar bu sırayı koruyarak üste alınır, kalanlar da bu sırada kalır.
+    private readonly Dictionary<Transform, List<Transform>> originalOrder = new Dictionary<Transform, List<Transform>>();
+
+    void SortOwnedFirst(Transform content)
+    {
+        if (content == null) return;
+
+        if (!originalOrder.TryGetValue(content, out List<Transform> order))
+        {
+            order = new List<Transform>();
+            foreach (Transform child in content) order.Add(child);
+            originalOrder[content] = order;
+        }
+
+        int sibling = 0;
+        foreach (bool ownedPass in new[] { true, false })
+        {
+            foreach (Transform card in order)
+            {
+                if (card == null) continue;
+                ShopItem item = card.GetComponentInChildren<ShopItem>(true);
+                bool owned = item != null && IsOwned(item);
+                if (owned == ownedPass) card.SetSiblingIndex(sibling++);
+            }
+        }
+    }
+
+    static bool IsOwned(ShopItem item)
+    {
+        return item.itemIndex == 0 || PlayerPrefs.GetInt(item.itemType.ToString() + "_Purchased_" + item.itemIndex, 0) == 1;
     }
 
     // --- MARKET AÇ / KAPA ---
@@ -362,6 +387,9 @@ public class MarketManager : MonoBehaviour
         {
             btn.UpdateItemUI();
         }
+
+        SortOwnedFirst(carContentParent);
+        SortOwnedFirst(roadContentParent);
     }
 
     // --- SATIN ALMA / SEÇME ---

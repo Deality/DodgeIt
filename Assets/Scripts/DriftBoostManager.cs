@@ -73,7 +73,7 @@ public class DriftBoostManager : MonoBehaviour
     [SerializeField] private GameObject coinPrefab;
     [Tooltip("Dizideki iki altın arasındaki dikey mesafe.")]
     [SerializeField] private float coinSpacing = 12f;
-    [Header("Altın Desenleri (her Coin Rush'ta sırayla biri gelir)")]
+    [Header("Altın Desenleri (sırayla gelir, patternSwitchInterval'da bir değişir)")]
     [Tooltip("AÇI: altın çizgisinin yana kayma hızı, arabanın en yüksek drift hızına oranla. Yüksek = çizgi daha yatay, kenardan kenara daha kısa sürede tam drift. 1'e yaklaştıkça yetişmek zorlaşır.")]
     [SerializeField, Range(0.4f, 1f)] private float sweepFollow = 0.85f;
     [Tooltip("Her dönüşte kenarda düz gelen kısa parça (saniye). Arabanın yön değiştirip çizgiye yetişmesine zaman tanır.")]
@@ -82,6 +82,10 @@ public class DriftBoostManager : MonoBehaviour
     [SerializeField] private float holdTime = 0.6f;
     [Tooltip("İKİLİ: art arda iki geçişten sonra kenarda düz gidilen süre (saniye).")]
     [SerializeField] private float doubleHoldTime = 0.7f;
+    [Tooltip("ORTA DURAKLI: altın çizgisi yolun ortasına gelince düz gidilen süre (saniye).")]
+    [SerializeField] private float centerHoldTime = 0.35f;
+    [Tooltip("S KIVRIMI: her S dönüşünden sonra kenarda düz gidilen süre (saniye).")]
+    [SerializeField] private float sCurveHoldTime = 0.3f;
     [Tooltip("Boost bitmeden en az bu kadar saniye önce arabaya ulaşamayacak altınlar spawn edilmez.")]
     [SerializeField] private float coinArrivalMargin = 0.2f;
 
@@ -112,8 +116,8 @@ public class DriftBoostManager : MonoBehaviour
     // Drift modu: tek, uzun bir Coin Rush; bitince trafik geri gelmez, sonuç DriftModeController'a bildirilir
     private bool driftModeRun;
     private float driftModeDuration;
-    // Drift modu uzun sürdüğü için altın deseni bu aralıklarla değişir (saniye)
-    [SerializeField] private Vector2 driftModePatternSwitch = new Vector2(5f, 8f);
+    [Tooltip("Altın deseni her Coin Rush'ta (klasik, günlük ve drift modu) bu aralıkla değişir (saniye).")]
+    [SerializeField] private float patternSwitchInterval = 4f;
     private float patternTimeLeft;
     private System.Action<int> driftModeFinished;
     private int spawnedCount;
@@ -131,9 +135,11 @@ public class DriftBoostManager : MonoBehaviour
     private float nextCoinY;
     private bool coinsFinished;
 
-    // Belirli dört desen var; her Coin Rush'ta sıradaki gelir (sıra her turda karıştırılır, aynısı art arda gelmez).
-    // Hepsi kenardan kenara TAM drift ister; fark, dönüşlerin ritminde.
-    private enum CoinPattern { Zigzag, SweepAndHold, DoubleSweep, Wave }
+    // Belirli desenler var; her Coin Rush'ta sıradaki gelir (sıra her turda karıştırılır, aynısı art arda gelmez).
+    // İlk dördü kenardan kenara TAM drift ister; fark, dönüşlerin ritminde.
+    // CenterStops: kenar -> orta -> kenar (soldan ortaya, ortadan sağa, sağdan ortaya...), ortada kısa düz parça.
+    // SCurve: kenardan kenara yumuşak (yavaş başlayıp yavaş biten) "S" kıvrımları, aralarında kenarda düz parça.
+    private enum CoinPattern { Zigzag, SweepAndHold, DoubleSweep, Wave, CenterStops, SCurve }
     private CoinPattern pattern;
     private readonly List<CoinPattern> patternBag = new List<CoinPattern>();
     private int lastPattern = -1;
@@ -143,6 +149,8 @@ public class DriftBoostManager : MonoBehaviour
     private float waveTheta;
     private float waveAmplitude;
     private bool lastStartedRight;   // araba ortadayken ilk yön her seferinde değişsin
+    // CenterStops / SCurve: bir noktadan diğerine giden parça
+    private float segFromX, segToX, segDuration, segTime;
 
     void Awake()
     {
@@ -279,7 +287,7 @@ public class DriftBoostManager : MonoBehaviour
         nextCoinY = GetSpawnY();
         coinsFinished = false;
         ChoosePattern();
-        patternTimeLeft = Random.Range(driftModePatternSwitch.x, driftModePatternSwitch.y);
+        patternTimeLeft = patternSwitchInterval;
 
         // Bu boost'ta toplananların sayımı sıfırdan başlar
         collectedValue = 0;
@@ -323,7 +331,7 @@ public class DriftBoostManager : MonoBehaviour
         if (!driftModeRun && CarController2D.instance != null && !CarController2D.instance.SteeredDuringDrift)
             MissionsManager.AddGameplayProgress(MissionType.FinishCoinRushWithoutDrifting, 1);
 
-        // Haftalık görev: bu Coin Rush'ta çıkan altınların hepsi toplandı
+        // Günlük görev: bu Coin Rush'ta çıkan altınların hepsi toplandı
         if (spawnedCount > 0 && collectedCount >= spawnedCount)
             MissionsManager.AddGameplayProgress(MissionType.CollectAllCoinRushCoins, 1);
 
@@ -418,15 +426,12 @@ public class DriftBoostManager : MonoBehaviour
             nextCoinY += coinSpacing;
             AdvancePattern(coinInterval, maxLateral);
 
-            // Drift modu: aynı desen 60 saniye boyunca tekrarlanmasın, birkaç saniyede bir yenisine geç
-            if (driftModeRun)
+            // Her modda desen birkaç saniyede bir yenisine geçer
+            patternTimeLeft -= coinInterval;
+            if (patternTimeLeft <= 0f)
             {
-                patternTimeLeft -= coinInterval;
-                if (patternTimeLeft <= 0f)
-                {
-                    ChoosePattern();
-                    patternTimeLeft = Random.Range(driftModePatternSwitch.x, driftModePatternSwitch.y);
-                }
+                ChoosePattern();
+                patternTimeLeft = patternSwitchInterval;
             }
         }
     }
@@ -461,6 +466,7 @@ public class DriftBoostManager : MonoBehaviour
 
         holdLeft = 0f;
         sweepsDone = 0;
+        segDuration = 0f; // CenterStops / SCurve: ilk parça AdvancePattern'da başlar
 
         if (pattern == CoinPattern.Wave)
         {
@@ -487,6 +493,12 @@ public class DriftBoostManager : MonoBehaviour
 
         if (holdLeft > 0f) { holdLeft -= dt; return; } // kenarda düz git
 
+        if (pattern == CoinPattern.CenterStops || pattern == CoinPattern.SCurve)
+        {
+            AdvanceSegment(dt, lateral);
+            return;
+        }
+
         nextCoinX += patternDir * lateral * dt;
 
         bool hitRight = nextCoinX >= maxX, hitLeft = nextCoinX <= minX;
@@ -509,6 +521,59 @@ public class DriftBoostManager : MonoBehaviour
                 holdLeft = cornerHoldTime;
                 break;
         }
+    }
+
+    // CenterStops / SCurve: çizgiyi mevcut parçanın hedefine doğru ilerletir; hedefe varınca düz parça + yeni hedef.
+    void AdvanceSegment(float dt, float lateral)
+    {
+        if (segDuration <= 0f) StartNextSegment(lateral);
+
+        segTime += dt;
+        float p = Mathf.Clamp01(segTime / segDuration);
+        // S kıvrımı yavaş başlar, ortada hızlanır, yavaş biter; orta duraklı desen sabit hızla gider
+        if (pattern == CoinPattern.SCurve) p = p * p * (3f - 2f * p);
+        nextCoinX = Mathf.Lerp(segFromX, segToX, p);
+
+        if (segTime < segDuration) return;
+
+        nextCoinX = segToX;
+        float mid = (minX + maxX) * 0.5f;
+        bool atCenter = Mathf.Abs(segToX - mid) < 0.05f;
+        if (pattern == CoinPattern.SCurve) holdLeft = sCurveHoldTime;
+        else holdLeft = atCenter ? centerHoldTime : cornerHoldTime;
+        StartNextSegment(lateral);
+    }
+
+    void StartNextSegment(float lateral)
+    {
+        float mid = (minX + maxX) * 0.5f;
+        float target;
+
+        if (pattern == CoinPattern.SCurve)
+        {
+            // Kenardan kenara; araba ortadaysa ilk kıvrım patternDir yönündeki kenara
+            target = patternDir > 0f ? maxX : minX;
+            patternDir = -patternDir;
+        }
+        else if (Mathf.Abs(nextCoinX - mid) < 0.05f)
+        {
+            // Ortadayız: sağa ya da sola (ortadan sağa / ortadan sola). İki taraf da eşit uzaklıkta, oyuncu adil şekilde görür.
+            target = patternDir > 0f ? maxX : minX;
+            patternDir = Random.value < 0.5f ? 1f : -1f;
+        }
+        else
+        {
+            // Kenardayız (ya da arada): önce ortaya (soldan ortaya / sağdan ortaya)
+            target = mid;
+        }
+
+        segFromX = nextCoinX;
+        segToX = target;
+        segTime = 0f;
+        float dist = Mathf.Abs(segToX - segFromX);
+        // Smoothstep'in en yüksek eğimi 1.5x -> S kıvrımında da çizgi arabanın yetişebileceği hızı aşmasın
+        float peakFactor = pattern == CoinPattern.SCurve ? 1.5f : 1f;
+        segDuration = Mathf.Max(dist * peakFactor / Mathf.Max(lateral, 0.01f), 0.05f);
     }
 
     void ClearBoostCoins()

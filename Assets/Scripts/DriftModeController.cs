@@ -3,12 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// DRIFT MODU: trafik hiç gelmez; oyun başlar başlamaz uzun bir Coin Rush (varsayılan 30 sn) açılır.
+// DRIFT MODU: trafik hiç gelmez; oyun başlar başlamaz uzun bir Coin Rush (varsayılan 20 sn) açılır.
 // Süre bitince küçük bir sonuç paneli çıkar: kazanılan coin, kalan günlük hakla tekrar oynama ve ana menü.
 // GameManager, mod Drift ise oyun başlarken bu bileşeni ekler. Panel taslak olarak kodla kurulur.
 public class DriftModeController : MonoBehaviour
 {
-    public float driftDuration = 30f;
+    public float driftDuration = 20f;
     [Tooltip("Drift başlarken ve biterken yolun akış hızı. Süre boyunca yavaşça artar.")]
     public float startSpeed = 100f;
     public float endSpeed = 150f;

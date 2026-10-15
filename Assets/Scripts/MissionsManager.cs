@@ -34,7 +34,7 @@ public enum RewardType
 
 public enum MissionCategory
 {
-    Weekly,       // Haftalık (Belirli aralıklarla sıfırlanır)
+    Weekly,       // Günlük görevler (adı kayıtlı değerler bozulmasın diye Weekly kaldı; her gün sıfırlanır)
     Achievement   // Başarım (Kalıcı)
 }
 
@@ -130,7 +130,7 @@ public class MissionsManager : MonoBehaviour
     private MissionRowView[] achievementRows;
 
     private MissionCategory currentCategory = MissionCategory.Weekly;
-    private const string LastWeekKey = "LastPlayedWeek";
+    private const string LastDayKey = "LastPlayedDay";
     private bool isInitialized = false;
 
     void Awake()
@@ -285,14 +285,15 @@ public class MissionsManager : MonoBehaviour
         isInitialized = true;
     }
 
+    // Günlük görevler: yeni bir güne girilince ilerleme ve alınan ödüller sıfırlanır
     void CheckWeeklyReset()
     {
-        int currentWeek = GetIso8601WeekOfYear(DateTime.Now);
-        int savedWeek = PlayerPrefs.GetInt(LastWeekKey, -1);
+        string today = DateTime.Now.ToString("yyyyMMdd");
+        string savedDay = PlayerPrefs.GetString(LastDayKey, "");
 
-        if (savedWeek != currentWeek)
+        if (savedDay != today)
         {
-            Debug.Log("Yeni bir haftaya girildi! Haftalık görevler sıfırlanıyor...");
+            Debug.Log("Yeni bir güne girildi! Günlük görevler sıfırlanıyor...");
 
             foreach (var mission in allWeeklyQuests)
             {
@@ -300,7 +301,7 @@ public class MissionsManager : MonoBehaviour
                 PlayerPrefs.DeleteKey("Claimed_" + mission.missionID);
             }
 
-            PlayerPrefs.SetInt(LastWeekKey, currentWeek);
+            PlayerPrefs.SetString(LastDayKey, today);
             PlayerPrefs.Save();
         }
 
@@ -484,7 +485,7 @@ public class MissionsManager : MonoBehaviour
             PlayerPrefs.SetInt(MarketItemType.Car.ToString() + "_Purchased_" + mission.rewardAmount, 1);
             PlayerPrefs.Save();
             if (MarketManager.instance != null) MarketManager.instance.RefreshAllButtons();
-            MarketManager.MarkNewSecretCar(); // Shop butonunda "?" uyarısı çıkar
+            MarketManager.MarkNewSecretCar(mission.rewardAmount); // Shop butonunda "?" uyarısı çıkar, market açılınca arabaya kayar
         }
 
         // Yol ödülü: arabadaki gibi, markette başarımla açılan yolun kilidini açar (BuyRoad görevlerini ilerletmez).
