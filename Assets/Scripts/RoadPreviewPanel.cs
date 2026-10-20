@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 // Marketteki yol kartlarındaki küçük görselin büyük hâlini gösteren tam ekran önizleme.
-// Yol, oyundaki gibi yukarıdan aşağı akar. Arayüz ilk kullanımda kodla kurulur; ekranın
+// Yol, oyundaki gibi yukarıdan aşağı akar. Araba kartları da bunu kullanır: araba, seçili yolun ortasında durur. Arayüz ilk kullanımda kodla kurulur; ekranın
 // herhangi bir yerine dokununca kapanır.
 public class RoadPreviewPanel : MonoBehaviour
 {
@@ -21,11 +21,14 @@ public class RoadPreviewPanel : MonoBehaviour
     private float tileHeight;
     private float scrollOffset;
 
-    public static void Show(Sprite roadSprite, Canvas canvas, TMP_FontAsset font)
+    // Arabanın yol genişliğine oranı (oyundakine yakın görünsün diye)
+    private const float CarWidthRatio = 0.2f;
+
+    public static void Show(Sprite roadSprite, Canvas canvas, TMP_FontAsset font, Sprite carSprite = null)
     {
         if (roadSprite == null || canvas == null) return;
         if (instance == null) instance = Build(canvas.rootCanvas, font);
-        instance.Open(roadSprite);
+        instance.Open(roadSprite, carSprite);
     }
 
     static RoadPreviewPanel Build(Canvas canvas, TMP_FontAsset font)
@@ -65,6 +68,13 @@ public class RoadPreviewPanel : MonoBehaviour
             panel.tileImages[i] = tile;
         }
 
+        // Araba önizlemesinde yolun ortasında duran araba
+        var car = NewImage("Car", viewport.rectTransform, Color.white);
+        car.raycastTarget = false;
+        car.preserveAspect = true;
+        car.rectTransform.anchorMin = car.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        panel.carImage = car;
+
         // Kapatma ipucu
         var hintGo = new GameObject("CloseHint", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
         hintGo.layer = root.layer;
@@ -86,8 +96,9 @@ public class RoadPreviewPanel : MonoBehaviour
 
     private RectTransform frame;
     private RectTransform hint;
+    private Image carImage;
 
-    void Open(Sprite roadSprite)
+    void Open(Sprite roadSprite, Sprite carSprite)
     {
         // Yolun en-boy oranını koru
         float aspect = roadSprite.rect.height / roadSprite.rect.width;
@@ -108,6 +119,16 @@ public class RoadPreviewPanel : MonoBehaviour
         {
             tileImages[i].sprite = roadSprite;
             tiles[i].sizeDelta = new Vector2(width, tileHeight + 2f); // +2: iki karo arasında çizgi kalmasın
+        }
+
+        carImage.gameObject.SetActive(carSprite != null);
+        if (carSprite != null)
+        {
+            carImage.sprite = carSprite;
+            float carWidth = width * CarWidthRatio;
+            carImage.rectTransform.sizeDelta = new Vector2(carWidth, carWidth * carSprite.rect.height / carSprite.rect.width);
+            carImage.rectTransform.anchoredPosition = new Vector2(0f, -tileHeight * 0.15f);
+            carImage.transform.SetAsLastSibling();
         }
 
         scrollOffset = 0f;

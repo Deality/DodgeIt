@@ -391,6 +391,7 @@ public class CarController2D : MonoBehaviour
             GameManager.instance.isBoosting = true;
 
             MissionsManager.AddGameplayProgress(MissionType.UseBoost, 1);
+            if (GameManager.instance.IsInvincible) MissionsManager.AddGameplayProgress(MissionType.BoostWhileShielded, 1);
             TutorialManager.instance?.NotifyBoostActivated();
 
             if (frontFireEffect != null)

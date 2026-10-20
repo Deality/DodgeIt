@@ -20,7 +20,8 @@ public enum MissionType
     ShieldNoCrash,                 // Kalkanı topla ve süresi bitene kadar hiçbir araca çarpma
     DestroyWithShield,             // Kalkan açıkken araca çarpıp yok et
     DestroyWithBoost,              // Boost açıkken araca çarpıp yok et
-    CollectAllCoinRushCoins        // Bir Coin Rush'ta çıkan altınların tamamını topla
+    CollectAllCoinRushCoins,       // Bir Coin Rush'ta çıkan altınların tamamını topla
+    BoostWhileShielded             // Kalkan açıkken boost kullan (gizli görev)
 }
 
 public enum RewardType

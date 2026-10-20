@@ -13,8 +13,9 @@ public static class GameModeState
     public static GameMode Current = GameMode.Classic;
     public static bool IsDrift => Current == GameMode.Drift;
 
-    // Drift modu: günde 3 hak; gün değişince sıfırlanır
-    public const int DriftDailyPlays = 3;
+    // Drift (Coin Rush) modu: günde 1 ücretsiz hak + reklam izleyerek 1 hak daha; gün değişince sıfırlanır
+    public const int DriftFreePlays = 1;
+    public const int DriftDailyPlays = 2; // ücretsiz + reklamlı toplam
     private const string DriftDateKey = "DriftMode_Date";
     private const string DriftUsedKey = "DriftMode_Used";
 
@@ -43,6 +44,9 @@ public static class GameModeState
         PlayerPrefs.Save();
         return true;
     }
+
+    // Ücretsiz hak bitti ama reklamla açılacak hak var mı?
+    public static bool NextDriftPlayNeedsAd => DriftPlaysLeft > 0 && DriftPlaysLeft <= DriftDailyPlays - DriftFreePlays;
 
     // Yeni hakların açılmasına kalan süre (gece yarısı)
     public static TimeSpan TimeUntilReset => DateTime.Today.AddDays(1) - DateTime.Now;

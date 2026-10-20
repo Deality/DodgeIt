@@ -1068,10 +1068,12 @@ MonoBehaviour:
   cornerHoldTime: 0.18
   holdTime: 0.6
   doubleHoldTime: 0.7
+  centerHoldTime: 0.35
+  sCurveHoldTime: 0.3
   coinArrivalMargin: 0.2
   trafficClearEffectPrefab: {fileID: 0}
   activateSound: {fileID: 0}
-  driftModePatternSwitch: {x: 5, y: 8}
+  patternSwitchInterval: 4
 --- !u!1 &518630278
 GameObject:
   m_ObjectHideFlags: 0
@@ -4523,6 +4525,12 @@ MonoBehaviour:
   driftModeHiddenHud:
   - {fileID: 260628140}
   - {fileID: 1346184200}
+  - {fileID: 531543151}
+  coinRushTierBadges:
+  - {fileID: 21300000, guid: 1da23b181e12b734b900d5024bdefb74, type: 3}
+  - {fileID: 21300000, guid: 7f233b02d69ab12469bb1884f54d59d7, type: 3}
+  - {fileID: 21300000, guid: 83287ebd8b4a7f64aad91fd1421538ef, type: 3}
+  - {fileID: 21300000, guid: abea603ee61f9c24e991a2168fa0f5d1, type: 3}
   speedDisplayMultiplier: 1
   invincibilityTimerText: {fileID: 0}
   currentBoostAmount: 0
@@ -4634,6 +4642,7 @@ MonoBehaviour:
   - {fileID: 1692546701658414956, guid: d4359b699c5610d4bac69e86ca8b87a0, type: 3}
   - {fileID: 1692546701658414956, guid: e7154d42d83f4674983e31171836c631, type: 3}
   - {fileID: 1692546701658414956, guid: 7a8d742dc1d7f1144a357b934efb7d5b, type: 3}
+  - {fileID: 1692546701658414956, guid: c3c71ae3e02b0d542af24547f6ae0ef2, type: 3}
   roadSprites:
   - {fileID: -1539432581291487184, guid: 4c76feebf447de141b911902c3ef203c, type: 3}
   - {fileID: -2257040666945723329, guid: 1d4d647bc690b494b9c187449ca3a5b9, type: 3}
@@ -7445,6 +7454,7 @@ MonoBehaviour:
   gameOverSlideDirection: 0
   slideSpeed: 4
   fadeOverlay: {fileID: 2146624682}
+  coinRainSprite: {fileID: 0}
   sceneTransitionDuration: 0.5
   panelPopUpSpeed: 10
   isPaused: 0

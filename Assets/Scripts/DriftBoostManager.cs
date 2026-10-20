@@ -123,6 +123,7 @@ public class DriftBoostManager : MonoBehaviour
     private int spawnedCount;
     public int CollectedValue => collectedValue;
     public int CollectedCount => collectedCount;
+    public int SpawnedCount => spawnedCount;
     private Camera mainCam;
 
     private float waitTimer;

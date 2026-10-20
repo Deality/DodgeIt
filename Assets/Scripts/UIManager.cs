@@ -79,6 +79,8 @@ public class UIManager : MonoBehaviour
     // 🔥 Sahne Geçiş Paneli (Siyah Ekran)
     [Header("Sahne Geçişi")]
     public Image fadeOverlay;
+    [Tooltip("Coin Rush moduna geçerken ekranı kaplayan coin yağmurunun sprite'ı (boşsa normal kararma).")]
+    public Sprite coinRainSprite;
     [Tooltip("Geçiş süresi (Saniye).")]
     public float sceneTransitionDuration = 0.5f;
 
@@ -171,8 +173,12 @@ public class UIManager : MonoBehaviour
 
         if (countdownText != null) countdownText.gameObject.SetActive(false);
 
-        // BAŞLANGIÇTA FADE IN (Siyah ekrandan açılış)
-        if (fadeOverlay != null)
+        // BAŞLANGIÇTA FADE IN (Siyah ekrandan açılış). Coin yağmuru geçişiyle gelindiyse açılışı coinler yapar.
+        if (fadeOverlay != null && CoinRainTransition.IsRunning)
+        {
+            fadeOverlay.gameObject.SetActive(false);
+        }
+        else if (fadeOverlay != null)
         {
             fadeOverlay.gameObject.SetActive(true);
             fadeOverlay.color = Color.black;
@@ -393,6 +399,8 @@ public class UIManager : MonoBehaviour
         if (fadeOverlay != null)
         {
             fadeOverlay.gameObject.SetActive(true);
+            // Kararma her şeyin önünde olsun (mod seçim ekranı, Coin Rush sonuç paneli vb. üstte kalmasın)
+            fadeOverlay.transform.SetAsLastSibling();
             float t = 0;
             while (t < sceneTransitionDuration)
             {
@@ -444,6 +452,12 @@ public class UIManager : MonoBehaviour
     public void StartGameInMode(GameMode mode)
     {
         GameModeState.Current = mode;
+        // Coin Rush: ekranı coin yağmuru kaplar, sahne coinlerin arkasında yüklenir
+        if (mode == GameMode.Drift && coinRainSprite != null)
+        {
+            CoinRainTransition.Play(coinRainSprite, "SampleScene");
+            return;
+        }
         StartCoroutine(SceneTransitionRoutine("SampleScene"));
     }
     public void QuitGame() { Debug.Log("Oyundan Çıkıldı."); Application.Quit(); }

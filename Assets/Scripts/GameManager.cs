@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     public Sprite driftModeTopBar;
     [Tooltip("Drift modunda hiç görünmeyecek HUD parçaları (örn. boost bekleme barı).")]
     public GameObject[] driftModeHiddenHud;
+    [Tooltip("Coin Rush sonuç panelindeki kademe rozetleri: Bronze, Silver, Gold, Diamond sırasıyla.")]
+    public Sprite[] coinRushTierBadges;
     private DriftModeController driftModeController;
     public float speedDisplayMultiplier = 10f;
 
