@@ -36,6 +36,7 @@ public class SpeedReducer : MonoBehaviour
             if (ObstacleManager.instance != null)
             {
                 ObstacleManager.instance.ActivateSpeedReduction();
+                if (CarController2D.instance != null) CarController2D.instance.StartBrakeMarks(); // fren izi
                 Debug.Log("Hız Düşürücü toplandı! Spawn aralığı genişletildi.");
 
                 // 🔥 Statik bağımsız tampon sistemini kullanarak Yavaşlatıcı ilerlemesini ekle!

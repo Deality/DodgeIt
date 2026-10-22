@@ -219,15 +219,19 @@ public class LoadingScreenManager : MonoBehaviour
 
         float checkTimer = 0f;
         float minimumCheckTime = 1.8f;
+        float offlineNoticeTime = 1.5f;
         Color originalBorderColor = loadingBorderImage != null ? loadingBorderImage.color : Color.white;
 
-        while (checkTimer < minimumCheckTime || Application.internetReachability == NetworkReachability.NotReachable)
+        // İnternet yoksa oyun yine açılır; oyuncuya kısa bir süre "No internet connection" gösterilir
+        bool offline = false;
+        while (checkTimer < minimumCheckTime || (offline && checkTimer < minimumCheckTime + offlineNoticeTime))
         {
+            offline = Application.internetReachability == NetworkReachability.NotReachable;
             checkTimer += Time.unscaledDeltaTime;
 
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {
-                UpdateStatus("Connection failed: please check your internet connection.");
+                UpdateStatus("No internet connection");
                 if (loadingBorderImage != null)
                 {
                     float pulse = (Mathf.Sin(Time.unscaledTime * 6f) + 1f) * 0.5f;

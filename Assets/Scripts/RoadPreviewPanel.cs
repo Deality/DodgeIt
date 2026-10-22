@@ -21,14 +21,12 @@ public class RoadPreviewPanel : MonoBehaviour
     private float tileHeight;
     private float scrollOffset;
 
-    // Arabanın yol genişliğine oranı (oyundakine yakın görünsün diye)
-    private const float CarWidthRatio = 0.2f;
-
-    public static void Show(Sprite roadSprite, Canvas canvas, TMP_FontAsset font, Sprite carSprite = null)
+    // carWidthRatio: arabanın oyundaki genişliğinin yol genişliğine oranı (CarDatabase.CarWidthOnRoad)
+    public static void Show(Sprite roadSprite, Canvas canvas, TMP_FontAsset font, Sprite carSprite = null, float carWidthRatio = 0.12f)
     {
         if (roadSprite == null || canvas == null) return;
         if (instance == null) instance = Build(canvas.rootCanvas, font);
-        instance.Open(roadSprite, carSprite);
+        instance.Open(roadSprite, carSprite, carWidthRatio);
     }
 
     static RoadPreviewPanel Build(Canvas canvas, TMP_FontAsset font)
@@ -98,7 +96,7 @@ public class RoadPreviewPanel : MonoBehaviour
     private RectTransform hint;
     private Image carImage;
 
-    void Open(Sprite roadSprite, Sprite carSprite)
+    void Open(Sprite roadSprite, Sprite carSprite, float carWidthRatio)
     {
         // Yolun en-boy oranını koru
         float aspect = roadSprite.rect.height / roadSprite.rect.width;
@@ -125,7 +123,7 @@ public class RoadPreviewPanel : MonoBehaviour
         if (carSprite != null)
         {
             carImage.sprite = carSprite;
-            float carWidth = width * CarWidthRatio;
+            float carWidth = width * carWidthRatio;
             carImage.rectTransform.sizeDelta = new Vector2(carWidth, carWidth * carSprite.rect.height / carSprite.rect.width);
             carImage.rectTransform.anchoredPosition = new Vector2(0f, -tileHeight * 0.15f);
             carImage.transform.SetAsLastSibling();

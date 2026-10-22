@@ -4,10 +4,10 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
 
-// Sahne değişse bile hayatta kalan tekil (singleton) bileşen. Yükleme ekranından sonra
-// (Ana Menü veya oyun içinde) internet bağlantısı koparsa ekrana bir pop-up çıkarır ve
-// oyuncuyu "Bağlan" butonuyla tekrar Yükleme Ekranı'na (LoadingScreen) yönlendirir; o sahne
-// zaten bağlantı gelene kadar bekleyen kendi kontrolünü yapıyor.
+// Sahne değişse bile hayatta kalan tekil (singleton) bileşen.
+// Oyun internetsiz de oynanabildiği için bağlantı kopunca artık kendiliğinden pop-up açmaz;
+// internet yoksa oyuncu bunu yalnızca reklam izlemek istediğinde görür (RewardedAd).
+// CheckConnectionAndShowPopupIfNeeded elle çağrılırsa eski pop-up davranışı hâlâ çalışır.
 public class ConnectionWatcher : MonoBehaviour
 {
     public static ConnectionWatcher instance;
@@ -42,20 +42,6 @@ public class ConnectionWatcher : MonoBehaviour
             connectButton.onClick.AddListener(OnConnectButtonClicked);
 
         HidePopup();
-    }
-
-    void Start()
-    {
-        StartCoroutine(MonitorConnectionRoutine());
-    }
-
-    IEnumerator MonitorConnectionRoutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSecondsRealtime(checkInterval);
-            CheckConnectionAndShowPopupIfNeeded();
-        }
     }
 
     // Oyunun herhangi bir yerinden (ör. Game Over paneli açıldığında) anında kontrol

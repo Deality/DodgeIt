@@ -81,6 +81,9 @@ public class CarController2D : MonoBehaviour
     [SerializeField] private float driftMarkPointSpacing = 1.5f;
     [Tooltip("Tek bir iz parçasındaki en fazla nokta; dolunca iz kesintisiz olarak yeni bir parçayla devam eder.")]
     [SerializeField] private int driftMarkMaxPoints = 60;
+    [Tooltip("Hız düşürücü toplanınca arka tekerleklerin fren izi bırakma süresi (saniye).")]
+    [SerializeField] private float brakeMarkDuration = 0.8f;
+    private float brakeMarkTimer;
 
     [Header("Drift Dumanı")]
     [Tooltip("Boş bırakılırsa Resources/Materials/DriftSmoke (beyaz bulut) kullanılır.")]
@@ -970,7 +973,10 @@ public class CarController2D : MonoBehaviour
 
         // İz ve duman yalnızca oyuncu gerçekten yön verip kayarken çıkar; dümdüz giderken çıkmaz
         bool isSliding = IsDrifting && driftSteerDirection != 0f;
-        if (isSliding)
+        // Hız düşürücü sonrası fren: kısa süre arka tekerlekler iz bırakır
+        bool isBraking = brakeMarkTimer > 0f;
+        if (isBraking) brakeMarkTimer -= Time.deltaTime;
+        if (isSliding || isBraking)
         {
             UpdateDriftMarks();
         }
@@ -985,6 +991,9 @@ public class CarController2D : MonoBehaviour
         // Lastik sesi de dumanla aynı koşulda: yalnızca basılı tutup kayarken. Çağrı kesilince ses kendiliğinden söner.
         if (isSliding && AudioManager.instance != null)
             AudioManager.instance.SetDriftSound(Mathf.Max(0.4f, Mathf.Abs(driftVelocity) / Mathf.Max(driftSpeed, 0.01f)));
+        else if (isBraking && AudioManager.instance != null)
+            AudioManager.instance.SetDriftSound(0.6f * brakeMarkTimer / Mathf.Max(brakeMarkDuration, 0.01f)); // fren cıyaklaması söner
+
     }
 
     void GetRearWheelPositions(out Vector3 leftWheel, out Vector3 rightWheel)
@@ -1115,6 +1124,14 @@ public class CarController2D : MonoBehaviour
         // Duman objeleri sahnede bağımsız duruyor; araba yok olunca onları da temizle
         if (leftDriftSmoke != null) Destroy(leftDriftSmoke.gameObject);
         if (rightDriftSmoke != null) Destroy(rightDriftSmoke.gameObject);
+    }
+
+    // Hız düşürücü toplanınca çağrılır: araba fren yapmış gibi kısa süre lastik izi bırakır
+    public void StartBrakeMarks()
+    {
+        brakeMarkTimer = brakeMarkDuration;
+        leftDriftMark = null;  // önceki izle birleşmesin, yeni iz başlasın
+        rightDriftMark = null;
     }
 
     // --- DRIFT LASTİK İZLERİ ---

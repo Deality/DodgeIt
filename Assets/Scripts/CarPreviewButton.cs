@@ -28,6 +28,18 @@ public class CarPreviewButton : MonoBehaviour
 
         Sprite road = CarDatabase.instance.GetRoad(PlayerPrefs.GetInt("Selected_Road", 0));
         var priceText = item != null ? item.priceText : null;
-        RoadPreviewPanel.Show(road, carImage.canvas, priceText != null ? priceText.font : null, carImage.sprite);
+
+        // Araba, oyundaki prefab sprite'ı ve yola göre oyundaki boyutuyla gösterilir
+        Sprite carSprite = carImage.sprite;
+        float ratio = 0.12f;
+        if (item != null)
+        {
+            GameObject prefab = CarDatabase.instance.GetCar(item.itemIndex);
+            var sr = prefab != null ? prefab.GetComponentInChildren<SpriteRenderer>(true) : null;
+            if (sr != null && sr.sprite != null) carSprite = sr.sprite;
+            float r = CarDatabase.instance.CarWidthOnRoad(item.itemIndex, road);
+            if (r > 0f) ratio = r;
+        }
+        RoadPreviewPanel.Show(road, carImage.canvas, priceText != null ? priceText.font : null, carSprite, ratio);
     }
 }

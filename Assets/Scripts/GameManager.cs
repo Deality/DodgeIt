@@ -522,6 +522,9 @@ public class GameManager : MonoBehaviour
     {
         if (reviveOfferCoroutine == null) return;
 
+        // İnternet yoksa reklam açılmaz: uyarı çıkar, teklif ve geri sayımı sürer
+        if (!RewardedAd.IsAvailable) { RewardedAd.ShowNoInternetNotice(); return; }
+
         StopCoroutine(reviveOfferCoroutine);
         reviveOfferCoroutine = null;
 
@@ -678,8 +681,6 @@ public class GameManager : MonoBehaviour
 
             gameOverPanel.SetActive(true);
             gameOverPanel.transform.localScale = originalPanelScale;
-
-            ConnectionWatcher.instance?.CheckConnectionAndShowPopupIfNeeded();
 
             if (rect != null)
             {

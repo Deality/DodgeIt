@@ -12,6 +12,20 @@ public class CarDatabase : MonoBehaviour
     // Buraya, seçilen yolu değiştirmek için yol sprite'larını sürükleyin.
     public Sprite[] roadSprites;
 
+    [Tooltip("Oyun sahnesinde yol sprite'ının ölçeği. Marketteki araba önizlemesi, arabayı yola göre oyundaki boyutunda göstermek için kullanır.")]
+    public float roadWorldScale = 6f;
+
+    // Arabanın oyundaki genişliğinin yol genişliğine oranı (önizlemede gerçek boyut için)
+    public float CarWidthOnRoad(int carIndex, Sprite road)
+    {
+        GameObject car = GetCar(carIndex);
+        var sr = car != null ? car.GetComponentInChildren<SpriteRenderer>(true) : null;
+        if (sr == null || sr.sprite == null || road == null) return 0f;
+        float carWidth = sr.sprite.bounds.size.x * Mathf.Abs(sr.transform.lossyScale.x);
+        float roadWidth = road.bounds.size.x * roadWorldScale;
+        return roadWidth > 0f ? carWidth / roadWidth : 0f;
+    }
+
     void Awake()
     {
         if (instance == null) instance = this;

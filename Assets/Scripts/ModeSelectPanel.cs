@@ -36,8 +36,7 @@ public class ModeSelectPanel : MonoBehaviour
             }
             else
             {
-                var wait = GameModeState.TimeUntilReset;
-                driftPlaysText.text = $"NEW PLAYS IN {wait.Hours:00}:{wait.Minutes:00}";
+                driftPlaysText.text = "NO PLAYS LEFT TODAY"; // yenilenmeye kalan süreyi kartın altındaki sayaç gösterir
             }
         }
         if (driftButton != null) driftButton.interactable = left > 0;

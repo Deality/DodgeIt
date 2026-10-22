@@ -13,15 +13,18 @@ public class CoinRainTransition : MonoBehaviour
     private static CoinRainTransition instance;
 
     private const float RefWidth = 1080f, RefHeight = 1920f;
-    private const float CoverDuration = 0.9f;   // ekranın coinlerle kaplanma süresi
-    private const float RevealDuration = 0.8f;  // yeni sahnede perdenin açılma süresi
+    private const float CoverDuration = 1.1f;   // ekranın coinlerle kaplanma süresi
+    private const float RevealDuration = 1.0f;  // yeni sahnede perdenin açılma süresi
+    private const float MaxExitWait = 3f;       // güvenlik: coinler bu sürede çıkmadıysa geçiş yine biter
+    private const float Gravity = 3200f;        // coinler yavaş başlar, düştükçe hızlanır
     private const int CoinCount = 90;
     private static readonly Color CurtainColor = new Color32(3, 0, 92, 255);
 
     private class Coin
     {
         public RectTransform rt;
-        public float x, y, speed, spin, delay;
+        public float x, y, speed, startSpeed, spin, delay;
+        public bool done;
     }
 
     private readonly List<Coin> coins = new List<Coin>();
@@ -71,9 +74,9 @@ public class CoinRainTransition : MonoBehaviour
                 rt = img.rectTransform,
                 x = Random.Range(-0.5f, 0.5f),
                 y = 0f,
-                speed = Random.Range(2600f, 3600f),
+                startSpeed = Random.Range(500f, 1000f),
                 spin = Random.Range(-360f, 360f),
-                delay = (float)i / CoinCount * CoverDuration * 0.75f + Random.Range(0f, 0.08f)
+                delay = (float)i / CoinCount * CoverDuration * 0.8f + Random.Range(0f, 0.08f)
             });
             img.gameObject.SetActive(false);
         }
@@ -93,7 +96,7 @@ public class CoinRainTransition : MonoBehaviour
         {
             t += Time.unscaledDeltaTime;
             float p = Mathf.Clamp01(t / CoverDuration);
-            SetCurtain(p * p);
+            SetCurtain(Smooth(p));
             UpdateCoins(t, halfH, width, false);
             yield return null;
         }
@@ -109,14 +112,14 @@ public class CoinRainTransition : MonoBehaviour
             yield return null;
         }
 
-        // 3) Perde açılır, coinler ekrandan akıp çıkar (yeni coin doğmaz)
+        // 3) Perde yumuşakça açılır; ekrandaki coinler aşağı düşüp ekrandan kendileri çıkar (yeni coin doğmaz).
+        // Geçiş, son coin ekranın altından çıkınca biter; hiçbir coin ekranın ortasında kaybolmaz.
         float r = 0f;
-        while (r < RevealDuration)
+        while (r < RevealDuration || (AnyCoinOnScreen() && r < MaxExitWait))
         {
             r += Time.unscaledDeltaTime;
             t += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(r / RevealDuration);
-            SetCurtain(1f - p);
+            SetCurtain(1f - Smooth(Mathf.Clamp01(r / RevealDuration)));
             UpdateCoins(t, halfH, width, true);
             yield return null;
         }
@@ -133,20 +136,32 @@ public class CoinRainTransition : MonoBehaviour
             if (time < c.delay) continue;
             if (!c.rt.gameObject.activeSelf)
             {
+                if (revealing || c.done) continue; // açılırken yeni coin girmez
                 c.rt.gameObject.SetActive(true);
                 c.y = halfH + c.rt.sizeDelta.y;
+                c.speed = c.startSpeed;
             }
+            c.speed += Gravity * Time.unscaledDeltaTime;
             c.y -= c.speed * Time.unscaledDeltaTime;
             if (c.y < -halfH - c.rt.sizeDelta.y)
             {
-                if (revealing) { c.rt.gameObject.SetActive(false); continue; }
+                if (revealing) { c.rt.gameObject.SetActive(false); c.done = true; continue; }
                 c.y = halfH + c.rt.sizeDelta.y;
                 c.x = Random.Range(-0.5f, 0.5f);
+                c.speed = c.startSpeed;
             }
             c.rt.anchoredPosition = new Vector2(c.x * width, c.y);
             c.rt.localRotation = Quaternion.Euler(0f, 0f, c.spin * time);
         }
     }
+
+    bool AnyCoinOnScreen()
+    {
+        foreach (var c in coins) if (c.rt.gameObject.activeSelf) return true;
+        return false;
+    }
+
+    static float Smooth(float p) => p * p * (3f - 2f * p);
 
     void SetCurtain(float a)
     {
