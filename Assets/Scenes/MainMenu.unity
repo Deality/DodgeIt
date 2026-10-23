@@ -6034,6 +6034,7 @@ GameObject:
   - component: {fileID: 130231426}
   - component: {fileID: 130231425}
   - component: {fileID: 130231424}
+  - component: {fileID: 130231428}
   m_Layer: 0
   m_Name: BuyButton
   m_TagString: Untagged
@@ -6159,6 +6160,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 130231422}
   m_CullTransparentMesh: 1
+--- !u!114 &130231428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130231422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f1ad296ec4fc141b21f3dae9999f75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoinPackButton
+  productId: coins_32500
+  priceText: {fileID: 1238382704}
 --- !u!1 &131746984
 GameObject:
   m_ObjectHideFlags: 0
@@ -19851,6 +19866,7 @@ GameObject:
   - component: {fileID: 455686732}
   - component: {fileID: 455686731}
   - component: {fileID: 455686730}
+  - component: {fileID: 455686734}
   m_Layer: 0
   m_Name: BuyButton
   m_TagString: Untagged
@@ -19976,6 +19992,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 455686728}
   m_CullTransparentMesh: 1
+--- !u!114 &455686734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455686728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f1ad296ec4fc141b21f3dae9999f75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoinPackButton
+  productId: coins_17500
+  priceText: {fileID: 351557667}
 --- !u!1 &457856007
 GameObject:
   m_ObjectHideFlags: 0
@@ -23266,6 +23296,7 @@ GameObject:
   - component: {fileID: 532664561}
   - component: {fileID: 532664560}
   - component: {fileID: 532664559}
+  - component: {fileID: 532664563}
   m_Layer: 0
   m_Name: BuyButton
   m_TagString: Untagged
@@ -23391,6 +23422,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 532664557}
   m_CullTransparentMesh: 1
+--- !u!114 &532664563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532664557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f1ad296ec4fc141b21f3dae9999f75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoinPackButton
+  productId: coins_5000
+  priceText: {fileID: 1834082931}
 --- !u!1 &533267613
 GameObject:
   m_ObjectHideFlags: 0
@@ -24311,6 +24356,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ed1d4f60b364b0241b61bcec21c4b28f, type: 3}
   - {fileID: 21300000, guid: 5e9fa152412f969449c75520879458d5, type: 3}
   - {fileID: 21300000, guid: f10e3a5fb5ab6b448afe08ea91ac249f, type: 3}
+  roadWorldScale: 6
 --- !u!114 &544273041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26775,6 +26821,7 @@ GameObject:
   - component: {fileID: 588523104}
   - component: {fileID: 588523103}
   - component: {fileID: 588523102}
+  - component: {fileID: 588523106}
   m_Layer: 0
   m_Name: BuyButton
   m_TagString: Untagged
@@ -26900,6 +26947,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588523100}
   m_CullTransparentMesh: 1
+--- !u!114 &588523106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588523100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f1ad296ec4fc141b21f3dae9999f75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoinPackButton
+  productId: coins_75000
+  priceText: {fileID: 29311592}
 --- !u!1 &599047166
 GameObject:
   m_ObjectHideFlags: 0

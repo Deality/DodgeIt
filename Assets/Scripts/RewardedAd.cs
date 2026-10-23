@@ -4,15 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// Ödüllü reklam gösterimi için tek giriş noktası.
-// TODO: gerçek bir reklam SDK'sı (ör. AdMob) eklenince Show içi o SDK'nın ödüllü reklam çağrısıyla değiştirilecek.
-// Şimdilik GameManager'daki revive reklamı gibi kısa bir beklemeden sonra her zaman başarılı sayılır.
+// Ödüllü reklam gösterimi için tek giriş noktası; reklamı AdMobRewarded gösterir.
 // İnternet yoksa reklam açılmaz; ekranda kısa bir "NO INTERNET CONNECTION" uyarısı çıkar.
+// Reklam henüz yüklenmediyse "AD NOT READY" uyarısı çıkar ve yükleme yeniden denenir.
 public static class RewardedAd
 {
     public static bool IsAvailable => Application.internetReachability != NetworkReachability.NotReachable;
 
-    // host: bekleme coroutine'ini çalıştıracak aktif bir bileşen. onRewarded yalnızca reklam sonuna kadar izlenirse çağrılır.
+    // host: çağıran aktif bileşen (kapanmışsa reklam açılmaz). onRewarded yalnızca reklam sonuna kadar izlenirse çağrılır.
     public static void Show(MonoBehaviour host, Action onRewarded, Action onFailed = null)
     {
         if (!IsAvailable)
@@ -22,20 +21,28 @@ public static class RewardedAd
             return;
         }
         if (host == null || !host.isActiveAndEnabled) { onFailed?.Invoke(); return; }
-        host.StartCoroutine(SimulateRoutine(onRewarded));
-    }
-
-    static IEnumerator SimulateRoutine(Action onRewarded)
-    {
-        yield return new WaitForSecondsRealtime(0.3f);
-        onRewarded?.Invoke();
+        if (!AdMobRewarded.IsReady)
+        {
+            ShowAdNotReadyNotice();
+            AdMobRewarded.Load();
+            onFailed?.Invoke();
+            return;
+        }
+        AdMobRewarded.Show(earned =>
+        {
+            if (earned) onRewarded?.Invoke();
+            else onFailed?.Invoke();
+        });
     }
 
     // --- İNTERNET YOK UYARISI ---
     // Her şeyin önünde, ekranın ortasında kısa süre görünen yazı. Kendi kanvasında çalışır; dokunuşları engellemez.
     private static NoticeView notice;
 
-    public static void ShowNoInternetNotice()
+    public static void ShowNoInternetNotice() => ShowNotice("NO INTERNET CONNECTION");
+    public static void ShowAdNotReadyNotice() => ShowNotice("AD NOT READY, TRY AGAIN");
+
+    public static void ShowNotice(string message)
     {
         if (notice == null)
         {
@@ -51,12 +58,13 @@ public static class RewardedAd
             notice = go.AddComponent<NoticeView>();
             notice.Build();
         }
-        notice.Play();
+        notice.Play(message);
     }
 
     private class NoticeView : MonoBehaviour
     {
         private CanvasGroup group;
+        private TextMeshProUGUI label;
         private Coroutine routine;
 
         public void Build()
@@ -76,7 +84,7 @@ public static class RewardedAd
 
             var textGo = new GameObject("Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             textGo.transform.SetParent(box.transform, false);
-            var t = textGo.GetComponent<TextMeshProUGUI>();
+            var t = label = textGo.GetComponent<TextMeshProUGUI>();
             // Oyunun yazı tipi (Akira) yüklüyse onu kullan
             foreach (var f in Resources.FindObjectsOfTypeAll<TMP_FontAsset>())
                 if (f.name.StartsWith("Akira")) { t.font = f; break; }
@@ -93,8 +101,9 @@ public static class RewardedAd
             group.alpha = 0f;
         }
 
-        public void Play()
+        public void Play(string message)
         {
+            label.text = message;
             if (routine != null) StopCoroutine(routine);
             routine = StartCoroutine(Routine());
         }

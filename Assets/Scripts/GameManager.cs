@@ -441,8 +441,13 @@ public class GameManager : MonoBehaviour
         SaveHighScore();
         MissionsManager.AddGameplayProgress(MissionType.ReachScore, Mathf.FloorToInt(score));
 
+        // Klasik modda birkaç oyunda bir sonuç ekranından önce geçiş reklamı
+        showInterstitialBeforeResults = !GameModeState.IsDrift && AdMobInterstitial.RegisterRunAndCheck(hasUsedRevive);
+
         StartCoroutine(ShowGameOverPanelRoutine());
     }
+
+    private bool showInterstitialBeforeResults;
 
     // --- REKLAM İZLEYEREK DEVAM ETME (REVIVE) ---
     IEnumerator ShowReviveOfferRoutine()
@@ -522,23 +527,17 @@ public class GameManager : MonoBehaviour
     {
         if (reviveOfferCoroutine == null) return;
 
-        // İnternet yoksa reklam açılmaz: uyarı çıkar, teklif ve geri sayımı sürer
+        // İnternet yoksa ya da reklam henüz yüklenmediyse reklam açılmaz: uyarı çıkar, teklif ve geri sayımı sürer
         if (!RewardedAd.IsAvailable) { RewardedAd.ShowNoInternetNotice(); return; }
+        if (!AdMobRewarded.IsReady) { RewardedAd.ShowAdNotReadyNotice(); AdMobRewarded.Load(); return; }
 
         StopCoroutine(reviveOfferCoroutine);
         reviveOfferCoroutine = null;
 
         if (revivePanel != null) revivePanel.SetActive(false);
 
-        // TODO: replace with a real rewarded-ad SDK call (e.g. AdMob) once one is
-        // integrated. For now the "ad" always succeeds after a short simulated delay.
-        StartCoroutine(SimulateRewardedAdRoutine());
-    }
-
-    IEnumerator SimulateRewardedAdRoutine()
-    {
-        yield return new WaitForSecondsRealtime(0.3f);
-        RevivePlayer();
+        // Reklam yarıda kapatılırsa oyun normal şekilde biter
+        RewardedAd.Show(this, RevivePlayer, DeclineRevive);
     }
 
     // Hooked to the revive panel's full-screen skip area: tapping anywhere outside the card skips the wait.
@@ -662,6 +661,14 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(panelDelay);
 
         Time.timeScale = 0f;
+
+        if (showInterstitialBeforeResults)
+        {
+            showInterstitialBeforeResults = false;
+            bool adClosed = false;
+            AdMobInterstitial.Show(() => adClosed = true);
+            while (!adClosed) yield return null;
+        }
 
         // --- Set up panel before animation starts ---
         RectTransform rect = gameOverPanel != null ? gameOverPanel.GetComponent<RectTransform>() : null;

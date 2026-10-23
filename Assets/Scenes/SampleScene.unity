@@ -7321,7 +7321,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Watch a video
+  m_text: Watch an ad
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
