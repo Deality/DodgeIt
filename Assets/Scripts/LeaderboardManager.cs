@@ -9,6 +9,8 @@ public class LeaderboardManager : MonoBehaviour
     public Transform contentParent;
 
     private const string HighScoreKey = "HighScore";
+    // Tabloda yalnızca ilk 100 oyuncu gösterilir (buton altındaki "TOP 100" yazısıyla aynı)
+    private const int TopCount = 100;
 
     private async void OnEnable()
     {
@@ -54,7 +56,7 @@ public class LeaderboardManager : MonoBehaviour
 
         if (CloudLeaderboardManager.instance != null)
         {
-            var entries = await CloudLeaderboardManager.instance.GetTopScoresAsync(50);
+            var entries = await CloudLeaderboardManager.instance.GetTopScoresAsync(TopCount);
             if (entries != null && entries.Count > 0)
             {
                 string myId = CloudLeaderboardManager.instance.PlayerId;

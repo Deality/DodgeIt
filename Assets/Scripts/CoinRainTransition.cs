@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// Coin Rush moduna geçiş: ekranın üstünden coinler yağar, arkada lacivert bir perde dolar ve ekran tamamen
-// kapanınca sahne yüklenir. Yeni sahnede coinler aşağı akıp ekrandan çıkarken perde açılır.
+// Coin Rush moduna geçiş: coinler ekranın üstünden yağıp alttan yukarı doğru yığılır ve ekranı tamamen kaplar.
+// Ekran kaplanınca hareket durur ve sahne coinlerin arkasında yüklenir (yüklemenin takılması bu yüzden görünmez).
+// Yeni sahnede coinler aşağı dökülüp ekrandan çıkarken oyun açılır.
 // Kendi kanvasında çalışır ve sahne değişiminde yok olmaz (iş bitince kendini siler).
 public class CoinRainTransition : MonoBehaviour
 {
@@ -13,21 +14,24 @@ public class CoinRainTransition : MonoBehaviour
     private static CoinRainTransition instance;
 
     private const float RefWidth = 1080f, RefHeight = 1920f;
-    private const float CoverDuration = 1.1f;   // ekranın coinlerle kaplanma süresi
-    private const float RevealDuration = 1.0f;  // yeni sahnede perdenin açılma süresi
-    private const float MaxExitWait = 3f;       // güvenlik: coinler bu sürede çıkmadıysa geçiş yine biter
-    private const float Gravity = 3200f;        // coinler yavaş başlar, düştükçe hızlanır
-    private const int CoinCount = 90;
+    private const float FillDuration = 0.75f;   // alt sıradan üst sıraya coinlerin yağmaya başlama aralığı
+    private const float RevealDuration = 0.45f; // açılışta alt sıradan üst sıraya coinlerin dökülmeye başlama aralığı
+    private const float MaxPhaseTime = 4f;      // güvenlik: bir aşama bu süreyi geçerse yine biter
+    private const float MaxStep = 1f / 30f;     // takılan karede coinler ileri sıçramasın
+    private const float Gravity = 6000f;        // coinler yavaş başlar, düştükçe hızlanır
+    private const float SpacingX = 150f;        // yan yana coin aralığı (coin çapından küçük: arada boşluk kalmaz)
+    private const float SpacingY = 128f;        // sıra aralığı (sıralar yarım aralık kaydırılmış, petek düzeni)
     private static readonly Color CurtainColor = new Color32(3, 0, 92, 255);
 
     private class Coin
     {
         public RectTransform rt;
-        public float x, y, speed, startSpeed, spin, delay;
-        public bool done;
+        public float x, y, targetY, speed, spin, angle, delay;
+        public bool landed, gone;
     }
 
     private readonly List<Coin> coins = new List<Coin>();
+    private Sprite sprite;
     private Image curtain;
     private RectTransform area;
 
@@ -46,81 +50,95 @@ public class CoinRainTransition : MonoBehaviour
         scaler.matchWidthOrHeight = 0f;
 
         instance = go.AddComponent<CoinRainTransition>();
-        instance.Build(coinSprite);
+        instance.sprite = coinSprite;
+        instance.area = (RectTransform)go.transform;
         instance.StartCoroutine(instance.Run(sceneName));
     }
 
-    void Build(Sprite coinSprite)
+    // Ekranı petek düzeninde, kenarlardan taşacak şekilde kaplayan coin yuvaları oluşturur
+    void Build(float width, float height)
     {
-        area = (RectTransform)transform;
-
-        // Perde: dokunuşları da keser (geçiş sırasında butonlara basılmasın)
+        // Perde: coinlerin arkasında yavaşça dolar ve dokunuşları keser (geçiş sırasında butonlara basılmasın)
         curtain = NewImage("Curtain", area, new Color(CurtainColor.r, CurtainColor.g, CurtainColor.b, 0f));
         curtain.raycastTarget = true;
         var crt = curtain.rectTransform;
         crt.anchorMin = Vector2.zero; crt.anchorMax = Vector2.one;
         crt.offsetMin = crt.offsetMax = Vector2.zero;
 
-        for (int i = 0; i < CoinCount; i++)
+        float halfW = width * 0.5f, halfH = height * 0.5f;
+        int rows = Mathf.CeilToInt(height / SpacingY) + 2;
+        int cols = Mathf.CeilToInt(width / SpacingX) + 2;
+        for (int r = 0; r < rows; r++)
         {
-            var img = NewImage("Coin", area, Color.white);
-            img.sprite = coinSprite;
-            img.preserveAspect = true;
-            float size = Random.Range(130f, 250f);
-            img.rectTransform.sizeDelta = new Vector2(size, size);
-            img.rectTransform.anchorMin = img.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            coins.Add(new Coin
+            float rowY = -halfH + r * SpacingY;
+            float offset = (r % 2 == 0) ? 0f : SpacingX * 0.5f;
+            float rowT = (float)r / (rows - 1); // 0 = en alt sıra
+            for (int c = 0; c < cols; c++)
             {
-                rt = img.rectTransform,
-                x = Random.Range(-0.5f, 0.5f),
-                y = 0f,
-                startSpeed = Random.Range(500f, 1000f),
-                spin = Random.Range(-360f, 360f),
-                delay = (float)i / CoinCount * CoverDuration * 0.8f + Random.Range(0f, 0.08f)
-            });
-            img.gameObject.SetActive(false);
+                var img = NewImage("Coin", area, Color.white);
+                img.sprite = sprite;
+                img.preserveAspect = true;
+                float size = Random.Range(205f, 240f);
+                img.rectTransform.sizeDelta = new Vector2(size, size);
+                img.rectTransform.anchorMin = img.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                img.gameObject.SetActive(false);
+                coins.Add(new Coin
+                {
+                    rt = img.rectTransform,
+                    x = -halfW - SpacingX * 0.5f + c * SpacingX + offset + Random.Range(-8f, 8f),
+                    targetY = rowY + Random.Range(-8f, 8f),
+                    spin = Random.Range(-540f, 540f),
+                    angle = Random.Range(0f, 360f),
+                    delay = rowT * FillDuration + Random.Range(0f, 0.12f)
+                });
+            }
         }
-        // Büyük coinler önde dursun
-        coins.Sort((a, b) => a.rt.sizeDelta.x.CompareTo(b.rt.sizeDelta.x));
+        // Üst sıralar alttakilerin önünde dursun (yağan coin yığının üstüne düşüyormuş gibi görünür)
         for (int i = 0; i < coins.Count; i++) coins[i].rt.SetSiblingIndex(i + 1);
     }
 
     IEnumerator Run(string sceneName)
     {
-        float halfH = area.rect.height * 0.5f;
+        yield return null; // kanvas ölçeklensin, ekran boyutu doğru okunsun
         float width = area.rect.width;
+        float halfH = area.rect.height * 0.5f;
+        Build(width, area.rect.height);
 
-        // 1) Coinler yağar, perde dolar
+        // 1) Coinler yağar ve alttan yukarı yığılarak ekranı tamamen kaplar
         float t = 0f;
-        while (t < CoverDuration)
+        while (!AllLanded() && t < MaxPhaseTime)
         {
-            t += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(t / CoverDuration);
-            SetCurtain(Smooth(p));
-            UpdateCoins(t, halfH, width, false);
+            float dt = Mathf.Min(Time.unscaledDeltaTime, MaxStep);
+            t += dt;
+            FillCoins(t, dt, halfH);
+            SetCurtain(Smooth(Mathf.Clamp01(t / (FillDuration + 0.3f))));
             yield return null;
         }
+        foreach (var c in coins) Land(c);
         SetCurtain(1f);
+        yield return null; // tam kaplı kare ekrana çıksın
 
-        // 2) Sahne perdenin arkasında yüklenir
+        // 2) Sahne, hareketsiz coin duvarının arkasında yüklenir
         Time.timeScale = 1f;
         AsyncOperation load = SceneManager.LoadSceneAsync(sceneName);
-        while (!load.isDone)
-        {
-            t += Time.unscaledDeltaTime;
-            UpdateCoins(t, halfH, width, false);
-            yield return null;
-        }
+        while (!load.isDone) yield return null;
+        // Yeni sahnenin ilk ağır kareleri de duvarın arkasında geçsin
+        for (int i = 0; i < 3; i++) yield return null;
 
-        // 3) Perde yumuşakça açılır; ekrandaki coinler aşağı düşüp ekrandan kendileri çıkar (yeni coin doğmaz).
-        // Geçiş, son coin ekranın altından çıkınca biter; hiçbir coin ekranın ortasında kaybolmaz.
-        float r = 0f;
-        while (r < RevealDuration || (AnyCoinOnScreen() && r < MaxExitWait))
+        // 3) Coinler alt sıradan başlayarak aşağı dökülür, perde açılır ve oyun görünür
+        foreach (var c in coins)
         {
-            r += Time.unscaledDeltaTime;
-            t += Time.unscaledDeltaTime;
-            SetCurtain(1f - Smooth(Mathf.Clamp01(r / RevealDuration)));
-            UpdateCoins(t, halfH, width, true);
+            float rowT = Mathf.InverseLerp(-halfH, halfH, c.targetY);
+            c.delay = rowT * RevealDuration + Random.Range(0f, 0.1f);
+            c.speed = Random.Range(0f, 300f);
+        }
+        float r = 0f;
+        while (!AllGone() && r < MaxPhaseTime)
+        {
+            float dt = Mathf.Min(Time.unscaledDeltaTime, MaxStep);
+            r += dt;
+            DropCoins(r, dt, halfH);
+            SetCurtain(1f - Smooth(Mathf.Clamp01(r / (RevealDuration + 0.25f))));
             yield return null;
         }
 
@@ -128,37 +146,70 @@ public class CoinRainTransition : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // Her coin kendi gecikmesiyle üstten girer, düşer; ekranın altından çıkınca (kapanış sırasında) tekrar üste döner
-    void UpdateCoins(float time, float halfH, float width, bool revealing)
+    // Kapanış: her coin kendi gecikmesiyle üstten girer, düşer ve yuvasına oturunca durur
+    void FillCoins(float time, float dt, float halfH)
     {
         foreach (var c in coins)
         {
-            if (time < c.delay) continue;
+            if (c.landed || time < c.delay) continue;
             if (!c.rt.gameObject.activeSelf)
             {
-                if (revealing || c.done) continue; // açılırken yeni coin girmez
                 c.rt.gameObject.SetActive(true);
                 c.y = halfH + c.rt.sizeDelta.y;
-                c.speed = c.startSpeed;
+                c.speed = Random.Range(900f, 1300f);
             }
-            c.speed += Gravity * Time.unscaledDeltaTime;
-            c.y -= c.speed * Time.unscaledDeltaTime;
-            if (c.y < -halfH - c.rt.sizeDelta.y)
-            {
-                if (revealing) { c.rt.gameObject.SetActive(false); c.done = true; continue; }
-                c.y = halfH + c.rt.sizeDelta.y;
-                c.x = Random.Range(-0.5f, 0.5f);
-                c.speed = c.startSpeed;
-            }
-            c.rt.anchoredPosition = new Vector2(c.x * width, c.y);
-            c.rt.localRotation = Quaternion.Euler(0f, 0f, c.spin * time);
+            c.speed += Gravity * dt;
+            c.y -= c.speed * dt;
+            c.angle += c.spin * dt;
+            if (c.y <= c.targetY) { Land(c); continue; }
+            Place(c);
         }
     }
 
-    bool AnyCoinOnScreen()
+    // Açılış: coinler yuvalarından aşağı düşer, ekranın altından çıkınca kaybolur
+    void DropCoins(float time, float dt, float halfH)
     {
-        foreach (var c in coins) if (c.rt.gameObject.activeSelf) return true;
-        return false;
+        foreach (var c in coins)
+        {
+            if (c.gone || time < c.delay) continue;
+            c.speed += Gravity * dt;
+            c.y -= c.speed * dt;
+            c.angle += c.spin * dt;
+            if (c.y < -halfH - c.rt.sizeDelta.y)
+            {
+                c.rt.gameObject.SetActive(false);
+                c.gone = true;
+                continue;
+            }
+            Place(c);
+        }
+    }
+
+    void Land(Coin c)
+    {
+        c.landed = true;
+        c.y = c.targetY;
+        c.speed = 0f;
+        c.rt.gameObject.SetActive(true);
+        Place(c);
+    }
+
+    static void Place(Coin c)
+    {
+        c.rt.anchoredPosition = new Vector2(c.x, c.y);
+        c.rt.localRotation = Quaternion.Euler(0f, 0f, c.angle);
+    }
+
+    bool AllLanded()
+    {
+        foreach (var c in coins) if (!c.landed) return false;
+        return true;
+    }
+
+    bool AllGone()
+    {
+        foreach (var c in coins) if (!c.gone) return false;
+        return true;
     }
 
     static float Smooth(float p) => p * p * (3f - 2f * p);
