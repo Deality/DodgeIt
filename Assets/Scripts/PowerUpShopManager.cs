@@ -23,7 +23,7 @@ public class PowerUpShopManager : MonoBehaviour
     public Color priceTextColor = Color.black; // Varsayılan olarak Siyah yapıldı
 
     [Header("Fiyat ve Limit Ayarları")]
-    public int pricePerBoost = 10;
+    public int pricePerBoost = 500;
     public int maxPurchaseLimit = 100;
     public int quantityStep = 1;
 

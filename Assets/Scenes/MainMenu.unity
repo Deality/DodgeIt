@@ -2082,7 +2082,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 3
-  price: 30000
+  price: 90000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -4142,7 +4142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 1
-  price: 1500
+  price: 4500
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -9990,7 +9990,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 16
-  price: 26000
+  price: 78000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -11993,7 +11993,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 8
-  price: 14000
+  price: 42000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -17369,7 +17369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 8
-  price: 8000
+  price: 24000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -21320,7 +21320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 18
-  price: 16000
+  price: 48000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -25065,7 +25065,7 @@ MonoBehaviour:
   selectedQuantityText: {fileID: 1426568861}
   totalPriceText: {fileID: 519082849}
   priceTextColor: {r: 0, g: 0, b: 0, a: 1}
-  pricePerBoost: 200
+  pricePerBoost: 500
   maxPurchaseLimit: 20
   quantityStep: 1
   insufficientFundsPanel: {fileID: 1571822749}
@@ -29356,7 +29356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 13
-  price: 36000
+  price: 108000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -34487,7 +34487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 6
-  price: 10000
+  price: 30000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -35301,7 +35301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 14
-  price: 30000
+  price: 90000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -37242,7 +37242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 3
-  price: 4500
+  price: 13500
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -41638,7 +41638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 2
-  price: 18000
+  price: 54000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -48092,7 +48092,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 5
-  price: 18000
+  price: 54000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -53234,7 +53234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 7
-  price: 12000
+  price: 36000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -64791,7 +64791,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 5
-  price: 8000
+  price: 24000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -65771,7 +65771,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 7
-  price: 30000
+  price: 90000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -70636,7 +70636,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 4
-  price: 4000
+  price: 12000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -71136,7 +71136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 2
-  price: 3000
+  price: 9000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -74721,7 +74721,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 10
-  price: 18000
+  price: 54000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -78670,7 +78670,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 9
-  price: 12000
+  price: 36000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -79761,7 +79761,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 11
-  price: 20000
+  price: 60000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -85456,7 +85456,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 15
-  price: 23000
+  price: 69000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -86006,7 +86006,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 1
   itemIndex: 1
-  price: 4000
+  price: 12000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -91497,7 +91497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 4
-  price: 6000
+  price: 18000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}
@@ -91923,7 +91923,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   itemType: 0
   itemIndex: 17
-  price: 21000
+  price: 63000
   achievementOnly: 0
   lockedHint: Achievement
   silhouetteImage: {fileID: 0}

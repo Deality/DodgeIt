@@ -13,8 +13,8 @@ public enum UpgradeType
 
 public static class PowerUpUpgrades
 {
-    // Seviye başına fiyat: 1. seviyeye çıkmak 1.000, 5. seviyeye çıkmak 20.000 coin
-    private static readonly int[] LevelPrices = { 1000, 2500, 5000, 10000, 20000 };
+    // Seviye başına fiyat: 1. seviyeye çıkmak 3.000, 5. seviyeye çıkmak 60.000 coin
+    private static readonly int[] LevelPrices = { 3000, 7500, 15000, 30000, 60000 };
 
     private const string GemsKey = "GemsCount";
 
