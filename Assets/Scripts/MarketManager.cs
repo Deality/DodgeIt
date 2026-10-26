@@ -32,6 +32,10 @@ public class MarketManager : MonoBehaviour
     [Header("Diğer UI Referansları")]
     public GameObject marketItemPrefab;
     public TextMeshProUGUI totalGemText;
+    [Tooltip("Sahip olunan / toplam araba sayısı (örn. \"CARS 9/20\")")]
+    public TextMeshProUGUI carCountText;
+    [Tooltip("Sahip olunan / toplam yol sayısı (örn. \"ROADS 3/10\")")]
+    public TextMeshProUGUI roadCountText;
 
     // 🔥 BURASI ÇOK ÖNEMLİ: Bu kutucuklara panelleri sürüklemezseniz açılmaz!
     [Header("Pop-Up Panelleri")]
@@ -390,6 +394,26 @@ public class MarketManager : MonoBehaviour
 
         SortOwnedFirst(carContentParent);
         SortOwnedFirst(roadContentParent);
+        UpdateOwnedCounts();
+    }
+
+    // Listelerdeki kartlardan sahip olunan / toplam sayısını yazar
+    void UpdateOwnedCounts()
+    {
+        SetOwnedCount(carCountText, carContentParent, "CARS");
+        SetOwnedCount(roadCountText, roadContentParent, "ROADS");
+    }
+
+    static void SetOwnedCount(TextMeshProUGUI label, Transform content, string title)
+    {
+        if (label == null || content == null) return;
+        int owned = 0, total = 0;
+        foreach (ShopItem item in content.GetComponentsInChildren<ShopItem>(true))
+        {
+            total++;
+            if (IsOwned(item)) owned++;
+        }
+        label.text = "<color=#FFFFFF>" + title + "</color>  " + owned + "/" + total;
     }
 
     // --- SATIN ALMA / SEÇME ---

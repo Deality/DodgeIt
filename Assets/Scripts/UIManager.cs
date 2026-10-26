@@ -572,7 +572,11 @@ public class UIManager : MonoBehaviour
     public void OpenModeSelect()
     {
         if (modeSelectPanel != null)
+        {
             StartCoroutine(SlidePanelInRoutine(modeSelectPanel, powerUpShopSlideDirection));
+            // Öğretici yeni bittiyse Drift kilidinin açılışı panel yerine oturunca oynar
+            modeSelectPanel.GetComponent<ModeSelectPanel>()?.PlayUnlockIfPending();
+        }
     }
 
     public void CloseModeSelect()
