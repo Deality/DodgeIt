@@ -104,6 +104,8 @@ public class PowerUpUpgradePanel : MonoBehaviour
         return value.ToString(format, CultureInfo.InvariantCulture);
     }
 
+    static string CoinRange(int min, int max) => max > min ? $"{min}-{max}" : min.ToString();
+
     public void Refresh()
     {
         int gems = PlayerPrefs.GetInt("GemsCount", 0);
@@ -120,7 +122,15 @@ public class PowerUpUpgradePanel : MonoBehaviour
                 float next = now + PowerUpUpgrades.Step(row.type);
                 // Hız düşürücü süreyi değil, düşürülen hızı yükseltir: "-25  >  -27.5 km/h"
                 // (oyundaki hız göstergesi scrollSpeed'i 1'e 1 km/h olarak gösterir)
-                if (row.type == UpgradeType.SpeedReducer)
+                // Coin değeri: "5  >  5-6" (baseSeconds = coinin en düşük değeri)
+                if (row.type == UpgradeType.CoinValue)
+                {
+                    int min = Mathf.RoundToInt(row.baseSeconds);
+                    string current = CoinRange(min, min + level);
+                    string after = CoinRange(min, min + level + 1);
+                    row.durationText.text = price < 0 ? current : $"{current}  >  {after}";
+                }
+                else if (row.type == UpgradeType.SpeedReducer)
                 {
                     string current = "-" + FormatValue(now);
                     string after = "-" + FormatValue(next);

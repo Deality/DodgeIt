@@ -13,6 +13,8 @@ public class SessionCoinDisplay : MonoBehaviour
     public float panelWaitTime = 0.5f; // Panelin inmesini bekle
     public float moveDuration = 0.5f;  // Uçma süresi
     public float countDuration = 0.8f; // Sayaç artış süresi
+    [Tooltip("Toplanan coin yazısı uçup toplama eklendikten sonra yerinde bu saydamlıkta (hayalet hâli) kalır; o turda ne kadar toplandığı görülsün.")]
+    [Range(0f, 1f)] public float ghostAlpha = 0.45f;
 
     private TextMeshProUGUI myText;
     private Vector3 originalLocalPos;
@@ -68,6 +70,7 @@ public class SessionCoinDisplay : MonoBehaviour
 
         transform.localPosition = originalLocalPos;
         myText.color = originalColor;
+        animRoutine = null;
 
         if (totalCoinText != null)
             totalCoinText.text = targetTotalCoins.Dotted();
@@ -103,14 +106,19 @@ public class SessionCoinDisplay : MonoBehaviour
             yield return null;
         }
 
-        // 3. Sayacı artır
+        // 3. Sayacı artır; uçan yazı yerine dönüp hayalet olarak belirir
         t = 0;
+        transform.localPosition = originalLocalPos;
         // Ana yazıya hafif bir patlama/büyüme hissi ver
         totalCoinText.rectTransform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
 
         while (t < 1f)
         {
             t += Time.unscaledDeltaTime / countDuration;
+
+            Color g = originalColor;
+            g.a = originalColor.a * ghostAlpha * Mathf.Clamp01(t);
+            myText.color = g;
 
             // Sayıları yuvarlayarak artır
             int current = Mathf.RoundToInt(Mathf.Lerp(startTotal, targetTotalCoins, t));

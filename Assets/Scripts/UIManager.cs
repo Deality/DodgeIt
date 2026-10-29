@@ -254,6 +254,29 @@ public class UIManager : MonoBehaviour
         isCountDownActive = false;
     }
 
+    // Oyun duraklatılmışken (timeScale 0) 3-2-1-GO! sayar, sonra onDone çağrılır (örn. reklamla devam etme)
+    public void PlayCountdown(System.Action onDone)
+    {
+        StartCoroutine(CountdownThen(onDone));
+    }
+
+    IEnumerator CountdownThen(System.Action onDone)
+    {
+        isCountDownActive = true;
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(true);
+            countdownText.transform.SetAsLastSibling();
+            yield return StartCoroutine(AnimateCountdownStep("3", 0.5f));
+            yield return StartCoroutine(AnimateCountdownStep("2", 0.5f));
+            yield return StartCoroutine(AnimateCountdownStep("1", 0.5f));
+            yield return StartCoroutine(AnimateCountdownStep("GO!", 0.5f));
+            countdownText.gameObject.SetActive(false);
+        }
+        isCountDownActive = false;
+        onDone?.Invoke();
+    }
+
     IEnumerator AnimateCountdownStep(string text, float duration)
     {
         countdownText.text = text;

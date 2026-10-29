@@ -21,7 +21,9 @@ public enum MissionType
     DestroyWithShield,             // Kalkan açıkken araca çarpıp yok et
     DestroyWithBoost,              // Boost açıkken araca çarpıp yok et
     CollectAllCoinRushCoins,       // Bir Coin Rush'ta çıkan altınların tamamını topla
-    BoostWhileShielded             // Kalkan açıkken boost kullan (gizli görev)
+    BoostWhileShielded,            // Kalkan açıkken boost kullan (gizli görev)
+    DestroyPoliceCar,              // Ana menüde arkadan geçen polis arabasına dokunup patlat (gizli görev)
+    ReachWindSpeed                 // Rüzgar efektlerinin çıktığı hıza ulaş (gizli görev)
 }
 
 public enum RewardType
@@ -53,6 +55,8 @@ public class Mission
     [Header("Ödüller")]
     public RewardType rewardType;
     public int rewardAmount;          // Ödül miktarı
+    [Tooltip("Asıl ödüle ek olarak verilen boost sayısı (0 = yok).")]
+    public int bonusBoostReward;
 
     [Header("Gizli Görev")]
     [Tooltip("İşaretliyse görev tamamlanana kadar açıklaması ve ödülü gizli görünür (??? ve silüet).")]
@@ -132,6 +136,13 @@ public class MissionsManager : MonoBehaviour
 
     private MissionCategory currentCategory = MissionCategory.Weekly;
     private const string LastDayKey = "LastPlayedDay";
+
+    [Header("Günlük Görev Döngüsü")]
+    [Tooltip("Her gün havuzdan rastgele seçilen günlük görev sayısı. Döngüde henüz çıkmamış görevlerden seçilir; yetmeyince döngü baştan başlar (7 görev, 3'er: 3 + kalan 4'ten 3, sonra yeniden).")]
+    public int dailyQuestsPerDay = 3;
+    private const string DailyTodayKey = "DailyQuestToday";       // bugünün görev ID'leri (virgülle)
+    private const string DailyCycleUsedKey = "DailyQuestCycleUsed"; // bu döngüde çıkmış görev ID'leri
+    private readonly HashSet<string> todaysDailyIds = new HashSet<string>();
     private bool isInitialized = false;
 
     void Awake()
@@ -303,12 +314,60 @@ public class MissionsManager : MonoBehaviour
             }
 
             PlayerPrefs.SetString(LastDayKey, today);
+            PickTodaysDailyQuests();
             PlayerPrefs.Save();
         }
+        LoadTodaysDailyQuests();
 
         LoadAndSyncProgress(allWeeklyQuests);
         LoadAndSyncProgress(allAchievements);
     }
+
+    // Döngüde henüz çıkmamış görevlerden rastgele seçer; yeterli kalmadıysa döngü baştan başlar
+    void PickTodaysDailyQuests()
+    {
+        if (allWeeklyQuests == null || allWeeklyQuests.Count == 0) return;
+
+        var all = new List<string>();
+        foreach (var m in allWeeklyQuests) if (m != null && !string.IsNullOrEmpty(m.missionID)) all.Add(m.missionID);
+        int count = Mathf.Clamp(dailyQuestsPerDay, 1, all.Count);
+
+        var used = new HashSet<string>(SplitIds(PlayerPrefs.GetString(DailyCycleUsedKey, "")));
+        var available = all.FindAll(id => !used.Contains(id));
+        if (available.Count < count)
+        {
+            used.Clear();
+            available = new List<string>(all);
+        }
+
+        var picked = new List<string>();
+        for (int i = 0; i < count; i++)
+        {
+            int r = UnityEngine.Random.Range(0, available.Count);
+            picked.Add(available[r]);
+            available.RemoveAt(r);
+        }
+        foreach (var id in picked) used.Add(id);
+
+        PlayerPrefs.SetString(DailyTodayKey, string.Join(",", picked));
+        PlayerPrefs.SetString(DailyCycleUsedKey, string.Join(",", used));
+    }
+
+    void LoadTodaysDailyQuests()
+    {
+        if (!PlayerPrefs.HasKey(DailyTodayKey))
+        {
+            PickTodaysDailyQuests(); // döngü sisteminden önceki sürümden gelen oyuncu
+            PlayerPrefs.Save();
+        }
+        todaysDailyIds.Clear();
+        foreach (var id in SplitIds(PlayerPrefs.GetString(DailyTodayKey, ""))) todaysDailyIds.Add(id);
+    }
+
+    static string[] SplitIds(string csv) => string.IsNullOrEmpty(csv) ? new string[0] : csv.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+    // Günlük görev bugün gösteriliyor mu? (Başarımlar her zaman açık)
+    bool IsActiveToday(Mission m) => m != null && (allWeeklyQuests == null || !allWeeklyQuests.Contains(m) || todaysDailyIds.Contains(m.missionID));
 
     void LoadAndSyncProgress(List<Mission> missions)
     {
@@ -397,6 +456,8 @@ public class MissionsManager : MonoBehaviour
 
             row.Setup(m);
 
+            if (!IsActiveToday(m)) { row.gameObject.SetActive(false); continue; }
+
             if (m.isClaimed) claimed.Add(row);
             else if (m.isCompleted) readyToClaim.Add(row);
             else inProgress.Add(row);
@@ -433,6 +494,7 @@ public class MissionsManager : MonoBehaviour
             if (mission.missionType == type)
             {
                 foundMatch = true;
+                if (!IsActiveToday(mission)) continue; // bugün çıkmayan günlük görev ilerlemez
                 string claimKey = "Claimed_" + mission.missionID;
                 if (PlayerPrefs.GetInt(claimKey, 0) == 1) continue;
 
@@ -479,6 +541,14 @@ public class MissionsManager : MonoBehaviour
             }
         }
 
+        if (mission.bonusBoostReward > 0)
+        {
+            int boosts = PlayerPrefs.GetInt("PlayerBoosts", 0) + mission.bonusBoostReward;
+            PlayerPrefs.SetInt("PlayerBoosts", boosts);
+            PlayerPrefs.Save();
+            if (GameManager.instance != null) GameManager.instance.currentBoostAmount = boosts;
+        }
+
         // Araba ödülü: markette "sadece başarımla açılır" olarak kilitli duran arabanın kilidini açar.
         // Satın alma sayılmaz (BuyCar görevlerini ilerletmez). GameManager'a bağlı değil.
         if (mission.rewardType == RewardType.Car)
@@ -523,7 +593,7 @@ public class MissionsManager : MonoBehaviour
         bool hasUnclaimedReward = false;
 
         if (allWeeklyQuests != null)
-            foreach (var m in allWeeklyQuests) { if (m == null) continue; if (m.isCompleted && !m.isClaimed) { hasUnclaimedReward = true; break; } }
+            foreach (var m in allWeeklyQuests) { if (m == null || !IsActiveToday(m)) continue; if (m.isCompleted && !m.isClaimed) { hasUnclaimedReward = true; break; } }
 
         if (!hasUnclaimedReward && allAchievements != null)
             foreach (var m in allAchievements) { if (m == null) continue; if (m.isCompleted && !m.isClaimed) { hasUnclaimedReward = true; break; } }

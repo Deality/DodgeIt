@@ -500,13 +500,22 @@ public class DriftBoostManager : MonoBehaviour
             return;
         }
 
-        nextCoinX += patternDir * lateral * dt;
-
-        bool hitRight = nextCoinX >= maxX, hitLeft = nextCoinX <= minX;
-        if (!hitRight && !hitLeft) return;
+        // Kenardan kenara geçiş düz çizgi değil, hafif kavisli: yavaş başlar, ortada hızlanır, yavaş biter
+        if (segDuration <= 0f)
+        {
+            segFromX = nextCoinX;
+            segToX = patternDir > 0f ? maxX : minX;
+            segTime = 0f;
+            segDuration = Mathf.Max(Mathf.Abs(segToX - segFromX) * CurvePeakFactor / Mathf.Max(lateral, 0.01f), 0.05f);
+        }
+        segTime += dt;
+        nextCoinX = Mathf.Lerp(segFromX, segToX, CurveEase(Mathf.Clamp01(segTime / segDuration)));
+        if (segTime < segDuration) return;
 
         // Kenara varıldı: çizgi kenarda kalır, yön döner, desene göre kısa ya da uzun düz parça gelir
-        nextCoinX = hitRight ? maxX : minX;
+        bool hitRight = segToX >= maxX;
+        nextCoinX = segToX;
+        segDuration = 0f;
         patternDir = hitRight ? -1f : 1f;
         sweepsDone++;
 
@@ -531,8 +540,8 @@ public class DriftBoostManager : MonoBehaviour
 
         segTime += dt;
         float p = Mathf.Clamp01(segTime / segDuration);
-        // S kıvrımı yavaş başlar, ortada hızlanır, yavaş biter; orta duraklı desen sabit hızla gider
-        if (pattern == CoinPattern.SCurve) p = p * p * (3f - 2f * p);
+        // S kıvrımı yavaş başlar, ortada hızlanır, yavaş biter; orta duraklı desen hafif kavisli gider
+        p = pattern == CoinPattern.SCurve ? p * p * (3f - 2f * p) : CurveEase(p);
         nextCoinX = Mathf.Lerp(segFromX, segToX, p);
 
         if (segTime < segDuration) return;
@@ -573,9 +582,15 @@ public class DriftBoostManager : MonoBehaviour
         segTime = 0f;
         float dist = Mathf.Abs(segToX - segFromX);
         // Smoothstep'in en yüksek eğimi 1.5x -> S kıvrımında da çizgi arabanın yetişebileceği hızı aşmasın
-        float peakFactor = pattern == CoinPattern.SCurve ? 1.5f : 1f;
+        float peakFactor = pattern == CoinPattern.SCurve ? 1.5f : CurvePeakFactor;
         segDuration = Mathf.Max(dist * peakFactor / Mathf.Max(lateral, 0.01f), 0.05f);
     }
+
+    // Düz geçişlerin kavis miktarı: 0 = dümdüz çizgi, 1 = tam S kıvrımı
+    [SerializeField, Range(0f, 1f)] private float sweepCurve = 0.55f;
+    float CurveEase(float p) => Mathf.Lerp(p, p * p * (3f - 2f * p), sweepCurve);
+    // Kavisli geçişin en dik yeri düz çizginin bu kadar katı; süre buna göre uzar ki araba yetişebilsin
+    float CurvePeakFactor => 1f + 0.5f * sweepCurve;
 
     void ClearBoostCoins()
     {

@@ -109,6 +109,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip menuMusic;
     [Tooltip("Bu sahnede backgroundMusic, diğer sahnelerde menuMusic çalar.")]
     public string gameSceneName = "SampleScene";
+    [Tooltip("Bu sahnede müzik çalmaz.")]
+    public string loadingSceneName = "LoadingScreen";
 
     [Header("Menüde Boğuk Müzik")]
     [Tooltip("Menüdeyken müziğin kesim frekansı (Hz). Düşük = daha boğuk, \"su altında\" hissi. 22000 = efekt kapalı.")]
@@ -379,10 +381,11 @@ public class AudioManager : MonoBehaviour
     // --- MÜZİK ---
     public void PlayMusic()
     {
-        // Oyun sahnesinde oyun müziği, diğer sahnelerde (menü, yükleme) menü müziği.
+        // Oyun sahnesinde oyun müziği, menüde menü müziği; yükleme ekranında müzik yok.
         // menuMusic boşsa menüde müzik çalmaz.
-        bool inGame = SceneManager.GetActiveScene().name == gameSceneName;
-        AudioClip clip = inGame ? backgroundMusic : menuMusic;
+        string sceneName = SceneManager.GetActiveScene().name;
+        bool inGame = sceneName == gameSceneName;
+        AudioClip clip = sceneName == loadingSceneName ? null : inGame ? backgroundMusic : menuMusic;
 
         if (musicSource == null) return;
         if (clip == null) { musicSource.Stop(); return; } // bu sahnenin müziği yok: öncekini sustur

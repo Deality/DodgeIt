@@ -288,14 +288,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupGlow
   sourceGlow: {fileID: 5396536620137902120}
+  hideSource: 1
+  sortingOrderOffset: 0
   glowColor: {r: 1, g: 0.35, b: 0.3, a: 1}
-  haloSize: 1.4
+  haloSize: 2.513597
   haloMinAlpha: 0.45
   haloMaxAlpha: 0.9
   haloPulseSpeed: 4
   haloPulseAmount: 0.12
   enableRays: 1
-  raySize: 1.9
+  raySize: 3.4561958
   rayAlpha: 0.35
   rayRotateSpeed: 40
 --- !u!58 &753905591039628160

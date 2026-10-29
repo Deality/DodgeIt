@@ -62,6 +62,8 @@ public class ObstacleManager : MonoBehaviour
 
     [Header("🔥 Büyük Araç (Tır) Ayarları")]
     public GameObject bigTruckPrefab;
+    [Tooltip("Ek tır çeşitleri. Her tır olayında bigTruckPrefab ile bunlar arasından rastgele biri çıkar.")]
+    public List<GameObject> extraTruckPrefabs = new List<GameObject>();
     public GameObject warningSignPrefab;
     public float truckSpawnSpeedThreshold = 20f;
     public float truckBonusSpeed = 10f;
@@ -319,6 +321,22 @@ public class ObstacleManager : MonoBehaviour
     }
 
     // 🔥 TIR ETKİNLİĞİ FONKSİYONU
+    // Ana tır ve ek tır çeşitleri arasından rastgele biri
+    GameObject PickTruckPrefab()
+    {
+        int extras = 0;
+        if (extraTruckPrefabs != null) foreach (var p in extraTruckPrefabs) if (p != null) extras++;
+        int pick = Random.Range(0, extras + (bigTruckPrefab != null ? 1 : 0));
+        if (bigTruckPrefab != null && pick == 0) return bigTruckPrefab;
+        if (bigTruckPrefab != null) pick--;
+        foreach (var p in extraTruckPrefabs)
+        {
+            if (p == null) continue;
+            if (pick-- == 0) return p;
+        }
+        return bigTruckPrefab;
+    }
+
     IEnumerator StartTruckEvent()
     {
         isTruckEventActive = true;
@@ -346,7 +364,8 @@ public class ObstacleManager : MonoBehaviour
             yield return new WaitForSeconds(currentWarnDuration);
         }
 
-        if (bigTruckPrefab != null)
+        GameObject truckPrefab = PickTruckPrefab();
+        if (truckPrefab != null)
         {
             Camera cam = Camera.main;
             float camHeight = 2f * cam.orthographicSize;
@@ -355,7 +374,7 @@ public class ObstacleManager : MonoBehaviour
             float truckSpawnY = normalSpawnY + truckSpawnYOffset;
 
             Vector3 spawnPos = new Vector3(lanes[targetLane].position.x, truckSpawnY, 0f);
-            GameObject truck = PoolManager.Spawn(bigTruckPrefab, spawnPos, Quaternion.identity);
+            GameObject truck = PoolManager.Spawn(truckPrefab, spawnPos, Quaternion.identity);
 
             FastMover mover = truck.GetComponent<FastMover>();
             if (mover != null)

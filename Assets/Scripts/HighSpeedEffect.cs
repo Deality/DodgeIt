@@ -73,6 +73,7 @@ public class HighSpeedEffect : MonoBehaviour
 
                 StartFade(true); // Görünür yap
                 isActive = true;
+                ReportWindSecret();
             }
         }
         // Hız Sınırının Altındaysa -> FADE OUT BAŞLAT
@@ -85,6 +86,22 @@ public class HighSpeedEffect : MonoBehaviour
             }
         }
     }
+
+    // Gizli görev: rüzgar efektleri ilk kez çıkınca (oyun sırasında, Drift modu hariç) bir kez bildirilir
+    private void ReportWindSecret()
+    {
+        if (windSecretReported || GameModeState.IsDrift) return;
+        if (GameManager.instance == null || !GameManager.instance.isGameActive) return;
+        windSecretReported = true;
+        MissionsManager.AddGameplayProgress(MissionType.ReachWindSpeed, 1);
+    }
+
+    private static bool windSecretReported; // tur başına bir kez (sahne yeniden yüklenince sıfırlanır)
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics() => windSecretReported = false;
+
+    void OnDestroy() => windSecretReported = false;
 
     private void StartFade(bool fadeIn)
     {

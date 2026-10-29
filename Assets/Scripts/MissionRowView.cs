@@ -163,6 +163,7 @@ public class MissionRowView : MonoBehaviour
             // Araba ödülünde ikon (arabanın kendisi) kutuyu dolduruyorsa ayrıca yazı gösterme
             else if (mission.rewardType == RewardType.Car) rewardText.text = rewardIcon != null ? "" : "CAR";
             else if (mission.rewardType == RewardType.Road) rewardText.text = rewardIcon != null ? "" : "ROAD";
+            else if (mission.bonusBoostReward > 0) rewardText.text = $"+{mission.rewardAmount.Dotted()} {mission.rewardType}\n+{mission.bonusBoostReward} Boost";
             else rewardText.text = $"+{mission.rewardAmount.Dotted()} {mission.rewardType}";
         }
 

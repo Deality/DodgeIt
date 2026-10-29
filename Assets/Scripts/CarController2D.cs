@@ -364,7 +364,11 @@ public class CarController2D : MonoBehaviour
 
     void LateUpdate()
     {
-        if (isInitialized) MoveCar();
+        if (isInitialized)
+        {
+            MoveCar();
+            ApplyWallWobbleRotation();
+        }
     }
 
     void ProcessTap(Vector2 screenPos)
@@ -910,6 +914,7 @@ public class CarController2D : MonoBehaviour
         if (GameManager.instance != null && !GameManager.instance.isGameActive) return;
         int newLane = currentLane - 1;
         if (newLane >= 0) SetLane(newLane, -1);
+        else BumpWall(-1);
     }
 
     public void MoveRight()
@@ -917,6 +922,58 @@ public class CarController2D : MonoBehaviour
         if (GameManager.instance != null && !GameManager.instance.isGameActive) return;
         int newLane = currentLane + 1;
         if (newLane <= 2) SetLane(newLane, 1);
+        else BumpWall(1);
+    }
+
+    // --- Duvara sürtme: kenar şeritteyken duvara doğru kaydırınca araba kendi şeridinde yalpalar ---
+    [Header("Duvar Yalpalaması")]
+    [Tooltip("Yalpalamanın yana savrulma genliği, şerit genişliğine oranla.")]
+    public float wallBumpAmplitude = 0.18f;
+    [Tooltip("Yalpalarken en fazla eğilme açısı (derece).")]
+    public float wallBumpTilt = 9f;
+    public float wallBumpDuration = 0.5f;
+    private float wallBumpTimer = -1f;
+    private int wallBumpDir;
+    private Quaternion wobbleBaseRotation, wobbleWrittenRotation;
+    private bool wobbleRotationApplied;
+
+    void BumpWall(int dir)
+    {
+        if (IsDrifting) return;
+        wallBumpDir = dir;
+        wallBumpTimer = 0f;
+        if (AudioManager.instance != null) AudioManager.instance.PlayRandomSwipeSound();
+    }
+
+    // 0..1 arası sönümlü salınım: önce duvara doğru, sonra geri sekip durulur
+    float WallWobble(out float decayOut)
+    {
+        float t = wallBumpTimer;
+        float decay = Mathf.Exp(-7f * t);
+        decayOut = decay;
+        return Mathf.Sin(t * 26f) * decay;
+    }
+
+    void ApplyWallWobbleRotation()
+    {
+        // Animator rotasyonu yazdıysa onu taban al; yazmadıysa önceki tabanı kullan (eğim birikmesin)
+        if (wallBumpTimer < 0f)
+        {
+            if (wobbleRotationApplied)
+            {
+                if (transform.rotation == wobbleWrittenRotation) transform.rotation = wobbleBaseRotation;
+                wobbleRotationApplied = false;
+            }
+            return;
+        }
+
+        Quaternion current = transform.rotation;
+        Quaternion baseRot = wobbleRotationApplied && current == wobbleWrittenRotation ? wobbleBaseRotation : current;
+        float w = WallWobble(out _);
+        wobbleBaseRotation = baseRot;
+        wobbleWrittenRotation = baseRot * Quaternion.Euler(0f, 0f, wallBumpDir * wallBumpTilt * w);
+        transform.rotation = wobbleWrittenRotation;
+        wobbleRotationApplied = true;
     }
 
     void MoveCar()
@@ -950,7 +1007,20 @@ public class CarController2D : MonoBehaviour
             else logicalX = Mathf.MoveTowards(logicalX, targetX, moveSpeed * Time.deltaTime);
         }
 
-        transform.position = new Vector3(logicalX, currentY, transform.position.z);
+        // Duvar yalpalaması: araba şeridinden çıkmadan duvara doğru savrulup geri gelir
+        float wobbleX = 0f;
+        if (wallBumpTimer >= 0f)
+        {
+            if (IsDrifting) wallBumpTimer = -1f;
+            else
+            {
+                wallBumpTimer += Time.deltaTime;
+                if (wallBumpTimer >= wallBumpDuration) wallBumpTimer = -1f;
+                else wobbleX = wallBumpDir * laneDistance * wallBumpAmplitude * WallWobble(out _);
+            }
+        }
+
+        transform.position = new Vector3(logicalX + wobbleX, currentY, transform.position.z);
 
         // Eğilme yalnızca drift sırasında ve drift bittikten sonra düzelene kadar uygulanır;
         // diğer zamanlarda rotasyona dokunmuyoruz (Animator'ın şerit değiştirme animasyonları bozulmasın)

@@ -33,6 +33,7 @@ public class DriftModeController : MonoBehaviour
     private static readonly Color Green = new Color32(138, 221, 84, 255);
     private static readonly Color Gold = new Color32(246, 198, 62, 255);
     private static readonly Color Gray = new Color32(120, 120, 140, 255);
+    private static readonly Color DoubleColor = new Color32(40, 205, 255, 255);
 
     private static readonly string[] TierNames = { "BRONZE", "SILVER", "GOLD", "DIAMOND" };
     private static readonly Color[] TierColors =
@@ -173,6 +174,35 @@ public class DriftModeController : MonoBehaviour
         card.anchoredPosition = rest;
 
         yield return TierBarRoutine(card, coins, ratio, tier, bonus);
+        OfferDoubleCoins(card, coins + bonus);
+    }
+
+    // Bu turda kazanılan coin kadar daha: reklam sonuna kadar izlenirse eklenir, buton bir kez kullanılır
+    void OfferDoubleCoins(RectTransform card, int earned)
+    {
+        var dbl = card.Find("DoubleCoinsButton");
+        if (dbl == null || earned <= 0) return;
+        var button = dbl.GetComponent<Button>();
+        var label = dbl.Find("Text").GetComponent<TextMeshProUGUI>();
+        var coinsText = card.Find("Coins").GetComponent<TextMeshProUGUI>();
+        dbl.gameObject.SetActive(true);
+        StartCoroutine(Punch((RectTransform)dbl, 1.15f));
+
+        bool used = false;
+        button.onClick.AddListener(() =>
+        {
+            if (used || leaving) return;
+            used = true;
+            RewardedAd.Show(this, () =>
+            {
+                if (GameManager.instance != null) GameManager.instance.AddGems(earned);
+                coinsText.text = "+" + (earned * 2).Dotted();
+                StartCoroutine(Punch(coinsText.rectTransform, 1.3f));
+                if (AudioManager.instance != null) AudioManager.instance.PlayCoinRushTotal();
+                label.text = "COINS DOUBLED!";
+                button.interactable = false;
+            }, () => used = false);
+        });
     }
 
     // --- KADEME BARI ---
@@ -312,12 +342,12 @@ public class DriftModeController : MonoBehaviour
 
         // Tekrar oyna: ücretsiz hak bittiyse reklam izleyerek
         var again = NewImage("PlayAgainButton", card.rectTransform, left > 0 ? Green : Gray);
-        again.rectTransform.sizeDelta = new Vector2(600f, 150f);
-        again.rectTransform.anchoredPosition = new Vector2(0f, -200f);
+        again.rectTransform.sizeDelta = new Vector2(600f, 130f);
+        again.rectTransform.anchoredPosition = new Vector2(0f, -290f);
         string againText = left <= 0 ? "NO PLAYS LEFT" : needsAd ? "WATCH AD" : "PLAY AGAIN";
-        NewText("Text", again.rectTransform, font, againText, 54f, Navy, new Vector2(0f, 18f), new Vector2(560f, 70f));
+        NewText("Text", again.rectTransform, font, againText, 50f, Navy, new Vector2(0f, 16f), new Vector2(560f, 64f));
         string leftText = left <= 0 ? "NEW PLAYS TOMORROW" : needsAd ? "+1 PLAY TODAY" : $"{left} FREE PLAY LEFT";
-        NewText("Left", again.rectTransform, font, leftText, 30f, Navy, new Vector2(0f, -38f), new Vector2(560f, 44f));
+        NewText("Left", again.rectTransform, font, leftText, 28f, Navy, new Vector2(0f, -34f), new Vector2(560f, 40f));
         if (left > 0)
         {
             again.raycastTarget = true; // butona dokunulabilsin
@@ -328,13 +358,23 @@ public class DriftModeController : MonoBehaviour
 
         // Ana menü
         var menu = NewImage("MainMenuButton", card.rectTransform, Gold);
-        menu.rectTransform.sizeDelta = new Vector2(600f, 120f);
-        menu.rectTransform.anchoredPosition = new Vector2(0f, -370f);
-        NewText("Text", menu.rectTransform, font, "MAIN MENU", 50f, Navy, Vector2.zero, new Vector2(560f, 80f));
+        menu.rectTransform.sizeDelta = new Vector2(600f, 100f);
+        menu.rectTransform.anchoredPosition = new Vector2(0f, -430f);
+        NewText("Text", menu.rectTransform, font, "MAIN MENU", 46f, Navy, Vector2.zero, new Vector2(560f, 76f));
         menu.raycastTarget = true; // butona dokunulabilsin
         var mb = menu.gameObject.AddComponent<Button>();
         mb.targetGraphic = menu;
         mb.onClick.AddListener(BackToMenu);
+
+        // Reklam izleyerek bu turun coinlerini 2 katına çıkar (kademe barı bitince görünür)
+        var dbl = NewImage("DoubleCoinsButton", card.rectTransform, DoubleColor);
+        dbl.rectTransform.sizeDelta = new Vector2(600f, 100f);
+        dbl.rectTransform.anchoredPosition = new Vector2(0f, -150f);
+        NewText("Text", dbl.rectTransform, font, "WATCH AN AD FOR 2X COINS", 36f, Navy, Vector2.zero, new Vector2(570f, 76f));
+        dbl.raycastTarget = true;
+        var db = dbl.gameObject.AddComponent<Button>();
+        db.targetGraphic = dbl;
+        dbl.gameObject.SetActive(false);
 
         return root.rectTransform;
     }

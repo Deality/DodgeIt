@@ -22,6 +22,22 @@ public static class DodgeItBuildMenu
         Build(ApkPath, BuildOptions.AutoRunPlayer);
     }
 
+    // Telefon bağlı değilken ya da komut satırından (Unity kapalıyken):
+    // Unity.exe -batchmode -projectPath . -executeMethod DodgeItBuildMenu.BuildTestApkCli
+    // Keystore şifreleri girilmemişse (Unity her açılışta unutuyor) test APK'sı Unity'nin debug anahtarıyla imzalanır.
+    [MenuItem("DodgeIt/Build Test APK (Sadece Dosya)")]
+    public static void BuildTestApkCli()
+    {
+        ApplyReleaseSettings(appBundle: false);
+        bool useDebugKey = PlayerSettings.Android.useCustomKeystore &&
+            (string.IsNullOrEmpty(PlayerSettings.Android.keystorePass) || string.IsNullOrEmpty(PlayerSettings.Android.keyaliasPass));
+        if (useDebugKey) PlayerSettings.Android.useCustomKeystore = false;
+        bool ok;
+        try { ok = Build(ApkPath, BuildOptions.None); }
+        finally { if (useDebugKey) PlayerSettings.Android.useCustomKeystore = true; }
+        if (Application.isBatchMode) EditorApplication.Exit(ok ? 0 : 1);
+    }
+
     [MenuItem("DodgeIt/Build Google Play AAB")]
     public static void BuildPlayAab()
     {
@@ -48,7 +64,7 @@ public static class DodgeItBuildMenu
         PlayerSettings.SetIl2CppCodeGeneration(NamedBuildTarget.Android, Il2CppCodeGeneration.OptimizeSize);
     }
 
-    static void Build(string path, BuildOptions options)
+    static bool Build(string path, BuildOptions options)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path));
         var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
@@ -65,5 +81,6 @@ public static class DodgeItBuildMenu
             Debug.Log($"[DodgeIt Build] {path} hazır: {new FileInfo(path).Length / 1048576f:F1} MB ({s.totalTime:mm\\:ss})");
         else
             Debug.LogError($"[DodgeIt Build] {path} başarısız: {s.result}, {s.totalErrors} hata");
+        return s.result == BuildResult.Succeeded;
     }
 }

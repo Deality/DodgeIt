@@ -8,7 +8,8 @@ public enum UpgradeType
     Boost,
     Shield,
     CoinRush,
-    SpeedReducer
+    SpeedReducer,
+    CoinValue // oyundaki her coinin değeri: 5 -> 5-6 -> ... -> 5-10
 }
 
 public static class PowerUpUpgrades
@@ -31,6 +32,7 @@ public static class PowerUpUpgrades
         {
             case UpgradeType.CoinRush: return 1f;
             case UpgradeType.SpeedReducer: return 2.5f;
+            case UpgradeType.CoinValue: return 1f;
             default: return 0.5f;
         }
     }
@@ -70,6 +72,12 @@ public static class PowerUpUpgrades
         return true;
     }
 
+    // Bir coinin en yüksek değeri: yükseltmesiz sabit en düşük değer, her seviye +1 (en fazla coinin kendi üst sınırı)
+    public static int CoinMaxValue(int minValue, int maxValue)
+    {
+        return Mathf.Min(minValue + GetLevel(UpgradeType.CoinValue), Mathf.Max(minValue, maxValue));
+    }
+
     public static string DisplayName(UpgradeType type)
     {
         switch (type)
@@ -77,6 +85,7 @@ public static class PowerUpUpgrades
             case UpgradeType.Boost: return "BOOST";
             case UpgradeType.Shield: return "SHIELD";
             case UpgradeType.CoinRush: return "COIN RUSH";
+            case UpgradeType.CoinValue: return "COIN VALUE";
             default: return "SPEED REDUCER";
         }
     }

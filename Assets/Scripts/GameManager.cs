@@ -441,9 +441,6 @@ public class GameManager : MonoBehaviour
         SaveHighScore();
         MissionsManager.AddGameplayProgress(MissionType.ReachScore, Mathf.FloorToInt(score));
 
-        // Klasik modda birkaç oyunda bir sonuç ekranından önce geçiş reklamı
-        showInterstitialBeforeResults = !GameModeState.IsDrift && AdMobInterstitial.RegisterRunAndCheck(hasUsedRevive);
-
         StartCoroutine(ShowGameOverPanelRoutine());
     }
 
@@ -551,7 +548,8 @@ public class GameManager : MonoBehaviour
     // Hooked to the revive panel's "No Thanks" button, and also fires when the decision countdown runs out.
     public void DeclineRevive()
     {
-        if (revivePanel != null) revivePanel.SetActive(false);
+        // Ardından 2x coin teklifi gelecekse pencere açık kalır: yeni pencere çarpıp onu ekrandan atar
+        if (revivePanel != null && !WillOfferDoubleCoins) revivePanel.SetActive(false);
 
         if (reviveOfferCoroutine != null)
         {
@@ -559,9 +557,12 @@ public class GameManager : MonoBehaviour
             reviveOfferCoroutine = null;
         }
 
-        Time.timeScale = 1f;
+        // Oyun kazadan sonuç ekranına kadar donuk kalır (arkada akmasın)
+        Time.timeScale = 0f;
         FinalizeGameOver();
     }
+
+    bool WillOfferDoubleCoins => !GameModeState.IsDrift && offerDoubleCoins && sessionGems > 0 && revivePanel != null;
 
     private void RevivePlayer()
     {
@@ -577,6 +578,17 @@ public class GameManager : MonoBehaviour
             pendingCrashObstacle = null;
         }
 
+        // Reklam kapanınca oyun hemen başlamaz: 3-2-1 geri sayımından sonra devam eder
+        if (UIManager.instance != null && UIManager.instance.countdownText != null)
+        {
+            Time.timeScale = 0f;
+            UIManager.instance.PlayCountdown(ResumeAfterRevive);
+        }
+        else ResumeAfterRevive();
+    }
+
+    private void ResumeAfterRevive()
+    {
         Time.timeScale = 1f;
         isGameActive = true;
 
@@ -662,12 +674,22 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 0f;
 
+        // Klasik mod: bu turun coinlerini reklamla 2 katına çıkarma teklifi (sonuç ekranından önce)
+        bool doubledWithAd = false;
+        if (WillOfferDoubleCoins)
+            yield return DoubleCoinsOfferRoutine(watched => doubledWithAd = watched);
+        Time.timeScale = 0f; // reklam (editördeki sahte reklam dahil) kapanınca oyunu yeniden başlatmış olabilir
+
+        // Klasik modda birkaç oyunda bir sonuç ekranından önce geçiş reklamı (ödüllü reklam izlendiyse gelmez)
+        showInterstitialBeforeResults = !GameModeState.IsDrift && AdMobInterstitial.RegisterRunAndCheck(hasUsedRevive || doubledWithAd);
+
         if (showInterstitialBeforeResults)
         {
             showInterstitialBeforeResults = false;
             bool adClosed = false;
             AdMobInterstitial.Show(() => adClosed = true);
             while (!adClosed) yield return null;
+            Time.timeScale = 0f;
         }
 
         // --- Set up panel before animation starts ---
@@ -741,6 +763,160 @@ public class GameManager : MonoBehaviour
             rect.anchoredPosition = originalPanelPosition;
 
         StartCoroutine(PulseRestartButtonRoutine());
+    }
+
+    // --- 2X COIN TEKLİFİ ---
+    [Header("2x Coin Reklamı (Klasik)")]
+    public bool offerDoubleCoins = true;
+    [Tooltip("Teklif bu süre içinde kabul edilmezse kendiliğinden geçilir (saniye).")]
+    public float doubleCoinsDecisionDuration = 4f;
+    private GameObject doubleCoinsPanel;
+
+    // Second chance penceresinin kopyası: başlık/yazı/buton değişir, aynı görünür.
+    // Reklam sonuna kadar izlenirse bu turda toplanan coin kadar daha eklenir.
+    IEnumerator DoubleCoinsOfferRoutine(System.Action<bool> done)
+    {
+        int earned = sessionGems;
+        if (doubleCoinsPanel == null)
+        {
+            doubleCoinsPanel = Instantiate(revivePanel, revivePanel.transform.parent);
+            doubleCoinsPanel.name = "DoubleCoinsPanel";
+        }
+        Transform card = doubleCoinsPanel.transform.Find("Card");
+        SetPanelText(card, "TitleText", "DOUBLE COINS !!");
+        SetPanelText(card, "SubtitleText", $"Watch an ad to double the coins you collected this round: +{earned.Dotted()}");
+        SetPanelText(card, "WatchAdButton/Text", "Watch an ad (2x)");
+        var fill = card != null ? card.Find("CountdownBarBG/CountdownBarFill") as RectTransform : null;
+        var watchButton = card != null ? card.Find("WatchAdButton")?.GetComponent<Button>() : null;
+        var skipButton = doubleCoinsPanel.transform.Find("SkipArea")?.GetComponent<Button>();
+
+        int state = -1; // -1 = giriş animasyonu, 0 = bekliyor, 1 = reklam açık, 2 = bitti
+        bool watched = false;
+        if (watchButton != null)
+        {
+            watchButton.onClick = new Button.ButtonClickedEvent(); // kopyadan gelen "revive" bağlantısı silinsin
+            watchButton.onClick.AddListener(() =>
+            {
+                if (state != 0) return;
+                state = 1;
+                doubleCoinsPanel.SetActive(false);
+                RewardedAd.Show(this, () => { watched = true; state = 2; }, () => state = 2);
+            });
+        }
+        if (skipButton != null)
+        {
+            skipButton.onClick = new Button.ButtonClickedEvent();
+            skipButton.onClick.AddListener(() => { if (state == 0) state = 2; });
+        }
+
+        if (fill != null) fill.localScale = Vector3.one;
+        doubleCoinsPanel.transform.SetAsLastSibling();
+        doubleCoinsPanel.SetActive(true);
+        yield return DoubleCoinsIntroRoutine(card as RectTransform);
+        state = 0;
+
+        float t = doubleCoinsDecisionDuration;
+        while (state == 0 && t > 0f)
+        {
+            t -= Time.unscaledDeltaTime;
+            if (fill != null) fill.localScale = new Vector3(Mathf.Clamp01(t / doubleCoinsDecisionDuration), 1f, 1f);
+            yield return null;
+        }
+        if (state == 0) state = 2;
+        while (state != 2) yield return null; // reklam kapanana kadar bekle
+        doubleCoinsPanel.SetActive(false);
+
+        if (watched)
+        {
+            AddGems(earned); // sessionGems de artar: sonuç ekranında "+2x" görünür
+            if (AudioManager.instance != null && AudioManager.instance.coinSound != null)
+                AudioManager.instance.PlayUI(AudioManager.instance.coinSound);
+        }
+        done(watched);
+    }
+
+    // 2x penceresi alttan hızla gelir; "keep going" penceresi hâlâ ekrandaysa ona çarpar, onu dönerek yukarı
+    // fırlatır, kendisi yerine oturup hafifçe sallanır. Önceki pencere yoksa yalnızca alttan gelip sallanır.
+    IEnumerator DoubleCoinsIntroRoutine(RectTransform card)
+    {
+        if (card == null) yield break;
+        Vector2 rest = reviveCard != null ? reviveCardRestPosition : card.anchoredPosition;
+        float panelH = ((RectTransform)doubleCoinsPanel.transform).rect.height;
+        float cardH = card.rect.height;
+
+        bool collide = revivePanel != null && revivePanel.activeSelf && reviveCard != null;
+        var hint = doubleCoinsPanel.transform.Find("SkipHintText");
+        if (hint != null) hint.gameObject.SetActive(false);
+
+        // Arka karartma tek kat olsun: eski pencerenin karartması kapanır, yeninin karartması tam görünür
+        var backdrop = doubleCoinsPanel.GetComponent<Image>();
+        if (backdrop != null && reviveBackdrop != null)
+        {
+            Color c = backdrop.color; c.a = reviveBackdropAlpha; backdrop.color = c;
+        }
+        if (collide && reviveBackdrop != null)
+        {
+            Color c = reviveBackdrop.color; c.a = 0f; reviveBackdrop.color = c;
+        }
+
+        Vector2 start = rest + new Vector2(0f, -(panelH * 0.5f + cardH));
+        Vector2 contact = collide ? rest + new Vector2(0f, -cardH * 0.98f) : rest;
+        card.localRotation = Quaternion.identity;
+
+        // 1) Hızlanarak yukarı (çarpışma noktasına ya da doğrudan yerine)
+        float dur = collide ? 0.26f : 0.32f;
+        for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / dur)
+        {
+            float p = Mathf.Clamp01(t);
+            card.anchoredPosition = Vector2.LerpUnclamped(start, contact, collide ? p * p : 1f - Mathf.Pow(1f - p, 3f));
+            yield return null;
+        }
+        card.anchoredPosition = contact;
+
+        if (collide)
+        {
+            if (AudioManager.instance != null && AudioManager.instance.boostDestroySound != null)
+                AudioManager.instance.PlayUI(AudioManager.instance.boostDestroySound);
+
+            // 2) Eski pencere dönerek yukarı fırlar, yeni pencere çarpmanın etkisiyle yerine oturur
+            Vector2 oldStart = reviveCard.anchoredPosition;
+            Vector2 oldEnd = oldStart + new Vector2(140f, panelH * 0.5f + cardH * 1.2f);
+            float flyDur = 0.38f;
+            for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / flyDur)
+            {
+                float p = Mathf.Clamp01(t);
+                reviveCard.anchoredPosition = Vector2.LerpUnclamped(oldStart, oldEnd, p * p);
+                reviveCard.localRotation = Quaternion.Euler(0f, 0f, -28f * p);
+                // Yeni kart yerine biraz geçip geri gelir (geri esneme)
+                float back = 1f + 2.2f * Mathf.Pow(p - 1f, 3f) + 1.2f * Mathf.Pow(p - 1f, 2f);
+                card.anchoredPosition = Vector2.LerpUnclamped(contact, rest, back);
+                yield return null;
+            }
+            revivePanel.SetActive(false);
+            reviveCard.anchoredPosition = reviveCardRestPosition;
+            reviveCard.localRotation = Quaternion.identity;
+            if (reviveBackdrop != null) { Color c = reviveBackdrop.color; c.a = reviveBackdropAlpha; reviveBackdrop.color = c; }
+        }
+        card.anchoredPosition = rest;
+
+        // 3) Hafif sallanma
+        float wobble = 0.55f;
+        for (float t = 0f; t < wobble; t += Time.unscaledDeltaTime)
+        {
+            float decay = Mathf.Exp(-6f * t);
+            card.localRotation = Quaternion.Euler(0f, 0f, 5f * Mathf.Sin(t * 32f) * decay);
+            card.localScale = Vector3.one * (1f + 0.04f * Mathf.Sin(t * 32f) * decay);
+            yield return null;
+        }
+        card.localRotation = Quaternion.identity;
+        card.localScale = Vector3.one;
+        if (hint != null) hint.gameObject.SetActive(true);
+    }
+
+    static void SetPanelText(Transform root, string path, string text)
+    {
+        var t = root != null ? root.Find(path)?.GetComponent<TMPro.TextMeshProUGUI>() : null;
+        if (t != null) t.text = text;
     }
 
     private void SaveHighScore()

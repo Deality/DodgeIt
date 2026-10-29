@@ -101,8 +101,8 @@ public class Collectable : MonoBehaviour
         {
             isCollected = true;
 
-            // RASTGELE COIN DEĞERİ HESAPLAMA
-            int earnedValue = Random.Range(minGemValue, maxGemValue + 1);
+            // RASTGELE COIN DEĞERİ: üst sınır Powerups'taki COIN VALUE yükseltmesiyle açılır (5 -> 5-6 -> ... -> 5-10)
+            int earnedValue = Random.Range(minGemValue, PowerUpUpgrades.CoinMaxValue(minGemValue, maxGemValue) + 1);
 
             if (GameManager.instance != null)
             {
