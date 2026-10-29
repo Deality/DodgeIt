@@ -11707,8 +11707,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 292.5, y: 9.6}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 285.92468, y: -12}
+  m_SizeDelta: {x: 170, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &224363182
 MonoBehaviour:
@@ -11761,8 +11761,8 @@ MonoBehaviour:
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 14
-  m_fontSizeMax: 36
+  m_fontSizeMin: 18
+  m_fontSizeMax: 90
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -11796,7 +11796,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 78.741455, y: 0, z: 17.810608, w: -50.805916}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -22036,8 +22036,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -8, y: -39.912537}
-  m_SizeDelta: {x: 993.6, y: 997.6841}
+  m_AnchoredPosition: {x: -8, y: -41.949}
+  m_SizeDelta: {x: 993.6, y: 1031.0276}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &470612294
 MonoBehaviour:
@@ -25635,6 +25635,8 @@ MonoBehaviour:
   currentInvincibilityTimer: 0
   invincibilityMaxDuration: 1
   controlsPanel: {fileID: 0}
+  offerDoubleCoins: 1
+  doubleCoinsDecisionDuration: 4
 --- !u!114 &544273044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27539,7 +27541,7 @@ MonoBehaviour:
     rewardAmount: 7500
     bonusBoostReward: 0
     isSecret: 1
-    secretHint: It's about the wind
+    secretHint: It's about the speed
     isCompleted: 0
     isClaimed: 0
   dailyQuestsPerDay: 3
@@ -37311,8 +37313,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 292.5, y: 9.6}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 285.92468, y: -12}
+  m_SizeDelta: {x: 170, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &795822858
 MonoBehaviour:
@@ -37365,8 +37367,8 @@ MonoBehaviour:
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 14
-  m_fontSizeMax: 36
+  m_fontSizeMin: 18
+  m_fontSizeMax: 90
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -37400,7 +37402,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 78.741455, y: 0, z: 17.810608, w: -50.805916}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -38499,7 +38501,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
+  m_fontSize: 47.3
   m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -51195,7 +51197,7 @@ MonoBehaviour:
   progressBarRoot: {fileID: 1509043066}
   progressFill: {fileID: 752348542}
   secretDescription: '? ? ?'
-  secretReward: 
+  secretReward: '?'
   secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
@@ -56679,7 +56681,7 @@ MonoBehaviour:
   progressBarRoot: {fileID: 425598670}
   progressFill: {fileID: 2012222504}
   secretDescription: '? ? ?'
-  secretReward: 
+  secretReward: '?'
   secretHintSizePercent: 55
   secretIconColor: {r: 0, g: 0, b: 0, a: 1}
   readyColor: {r: 0, g: 1, b: 0, a: 1}
@@ -56740,7 +56742,7 @@ GameObject:
   - component: {fileID: 1237448862}
   - component: {fileID: 1237448861}
   m_Layer: 5
-  m_Name: AchievementRow_Secret_Shield (34)
+  m_Name: AchievementRow_Secret_BoostShield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -89543,6 +89545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuPoliceCar
   explosionPrefab: {fileID: 3355514368184200079, guid: b13814b9e09d8c94682f0ce633a9643e, type: 3}
+  explosionSizeMultiplier: 2
   paradeSpeed: 0
 --- !u!1 &1951167820
 GameObject:
@@ -90228,7 +90231,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b335e02746c3b9540848dcf054886174, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2fecfafe8e237de498fcd3f726b809f3, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

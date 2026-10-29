@@ -286,7 +286,13 @@ public class ModeSelectPanel : MonoBehaviour
         if (classicCarIcon == null || CarDatabase.instance == null) return;
         GameObject car = CarDatabase.instance.GetCar(PlayerPrefs.GetInt("Selected_Car", 0));
         var sr = car != null ? car.GetComponentInChildren<SpriteRenderer>(true) : null;
-        if (sr != null && sr.sprite != null) classicCarIcon.sprite = sr.sprite;
+        if (sr != null && sr.sprite != null)
+        {
+            classicCarIcon.sprite = sr.sprite;
+            // Bazı prefablar görseli Flip X/Y ile çevirir (örn. varsayılan araba); kartta da aynı yöne baksın
+            Vector3 s = classicCarIcon.rectTransform.localScale;
+            classicCarIcon.rectTransform.localScale = new Vector3(Mathf.Abs(s.x) * (sr.flipX ? -1f : 1f), Mathf.Abs(s.y) * (sr.flipY ? -1f : 1f), s.z);
+        }
     }
 
     public void PlayClassic()

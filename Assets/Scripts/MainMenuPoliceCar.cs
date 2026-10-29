@@ -128,7 +128,7 @@ public class MainMenuPoliceCar : MonoBehaviour
     {
         yield return new WaitForSeconds(1.2f); // patlama bitsin
 
-        List<Sprite> sprites = OwnedCarSprites();
+        List<SpriteRenderer> sprites = OwnedCarSprites();
         if (sprites.Count == 0 || cam == null) yield break;
 
         float height = sr.bounds.size.y;
@@ -145,8 +145,11 @@ public class MainMenuPoliceCar : MonoBehaviour
         int next = 0;
         while (true)
         {
-            car.sprite = sprites[next % sprites.Count];
+            var src = sprites[next % sprites.Count];
             next++;
+            car.sprite = src.sprite;
+            car.flipX = src.flipX; // prefabdaki gibi (varsayılan araba görseli Flip Y ile çevrilmiş)
+            car.flipY = src.flipY;
             float spriteH = car.sprite.bounds.size.y;
             go.transform.localScale = Vector3.one * (spriteH > 0f ? height / spriteH : 1f);
 
@@ -163,16 +166,16 @@ public class MainMenuPoliceCar : MonoBehaviour
         }
     }
 
-    static List<Sprite> OwnedCarSprites()
+    static List<SpriteRenderer> OwnedCarSprites()
     {
-        var list = new List<Sprite>();
+        var list = new List<SpriteRenderer>();
         if (CarDatabase.instance == null || CarDatabase.instance.carPrefabs == null) return list;
         for (int i = 0; i < CarDatabase.instance.carPrefabs.Length; i++)
         {
             bool owned = i == 0 || PlayerPrefs.GetInt(MarketItemType.Car + "_Purchased_" + i, 0) == 1;
             if (!owned) continue;
             var csr = CarDatabase.instance.carPrefabs[i] != null ? CarDatabase.instance.carPrefabs[i].GetComponentInChildren<SpriteRenderer>(true) : null;
-            if (csr != null && csr.sprite != null) list.Add(csr.sprite);
+            if (csr != null && csr.sprite != null) list.Add(csr);
         }
         return list;
     }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public class LeaderboardManager : MonoBehaviour
@@ -9,23 +10,62 @@ public class LeaderboardManager : MonoBehaviour
     public Transform contentParent;
 
     private const string HighScoreKey = "HighScore";
-    // Tabloda yalnızca ilk 100 oyuncu gösterilir (buton altındaki "TOP 100" yazısıyla aynı)
-    private const int TopCount = 100;
 
-    private async void OnEnable()
+    // Ekrandaki listenin özeti; arkadan gelen liste aynıysa satırlar yeniden çizilmez
+    private string shownSignature;
+
+    private void OnEnable()
     {
-        await PopulateBoard();
+        shownSignature = null;
+        var cloud = CloudLeaderboardManager.instance;
+        if (cloud != null)
+        {
+            cloud.TopScoresUpdated += OnTopScoresUpdated;
+            // Son bilinen liste hemen görünür, güncel olanı arkadan istenir
+            ShowEntries(cloud.CachedTopScores, true);
+            _ = cloud.RefreshTopScoresAsync();
+        }
+        else
+        {
+            ShowEntries(null, true);
+        }
     }
 
-    // Unity Gaming Services her oyuncu adının sonuna "#12345" gibi bir numara ekler; tabloda yalnızca
-    // oyuncunun seçtiği takma adı gösteriyoruz.
+    private void OnDisable()
+    {
+        if (CloudLeaderboardManager.instance != null)
+            CloudLeaderboardManager.instance.TopScoresUpdated -= OnTopScoresUpdated;
+    }
+
+    private void OnTopScoresUpdated()
+    {
+        if (this == null || !isActiveAndEnabled) return;
+        // İlk çizimde liste boştuysa oyuncunun satırına kaydır; doluysa oyuncu kaydırıyor olabilir, dokunma
+        bool wasEmpty = string.IsNullOrEmpty(shownSignature);
+        ShowEntries(CloudLeaderboardManager.instance.CachedTopScores, wasEmpty);
+    }
+
+    // Unity Gaming Services her oyuncu adının sonuna "#12345" gibi bir numara ekler. Aynı adı seçen
+    // oyuncular ayırt edilebilsin diye bu numara adın yanında küçük ve soluk gösterilir.
     private static string DisplayName(string cloudName)
     {
         if (string.IsNullOrEmpty(cloudName)) return "Player";
         int hash = cloudName.LastIndexOf('#');
         string name = hash > 0 ? cloudName.Substring(0, hash) : cloudName;
+        string tag = hash > 0 ? cloudName.Substring(hash) : "";
         // Filtre eklenmeden önce alınmış ya da başka yoldan girmiş uygunsuz adlar tabloda gösterilmez
-        return NameFilter.IsAllowed(name) ? name : "Player";
+        if (!NameFilter.IsAllowed(name)) name = "Player";
+        // noparse: oyuncunun yazdığı "<" gibi karakterler zengin metin etiketi sanılmasın
+        string shown = "<noparse>" + name + "</noparse>";
+        return tag.Length > 0 ? shown + "<size=60%><alpha=#73> " + tag + "</size>" : shown;
+    }
+
+    private static string Signature(List<CloudLeaderboardManager.CachedEntry> entries)
+    {
+        if (entries == null) return "";
+        var sb = new System.Text.StringBuilder();
+        foreach (var e in entries) sb.Append(e.rank).Append('|').Append(e.name).Append('|').Append(e.score).Append('|').Append(e.isOwn).Append(';');
+        return sb.ToString();
     }
 
     // Listeyi, oyuncunun kendi satırı görünür alanın ortasına gelecek şekilde kaydırır
@@ -49,35 +89,28 @@ public class LeaderboardManager : MonoBehaviour
         scroll.verticalNormalizedPosition = 1f - Mathf.Clamp01(target / hidden);
     }
 
-    private async Task PopulateBoard()
+    private void ShowEntries(List<CloudLeaderboardManager.CachedEntry> entries, bool scrollToOwn)
     {
+        string signature = Signature(entries);
+        if (signature == shownSignature) return;
+        shownSignature = signature;
+
         foreach (Transform child in contentParent)
             Destroy(child.gameObject);
 
-        if (CloudLeaderboardManager.instance != null)
+        if (entries != null && entries.Count > 0)
         {
-            var entries = await CloudLeaderboardManager.instance.GetTopScoresAsync(TopCount);
-            if (entries != null && entries.Count > 0)
+            RectTransform myRow = null;
+            foreach (var entry in entries)
             {
-                string myId = CloudLeaderboardManager.instance.PlayerId;
-                RectTransform myRow = null;
-                foreach (var cloudEntry in entries)
-                {
-                    GameObject row = Instantiate(rowPrefab, contentParent);
-                    LeaderboardEntry rowView = row.GetComponent<LeaderboardEntry>();
-                    // Oyuncunun kendi satırı koyu mavi çerçeveyle işaretlenir
-                    bool isOwn = !string.IsNullOrEmpty(myId) && cloudEntry.PlayerId == myId;
-                    rowView.SetData(cloudEntry.Rank + 1, DisplayName(cloudEntry.PlayerName), Mathf.RoundToInt((float)cloudEntry.Score), isOwn);
-                    if (isOwn) myRow = (RectTransform)row.transform;
-                }
-
-                if (myRow != null)
-                {
-                    await Task.Yield(); // satırların yerleşmesi için bir kare bekle
-                    if (this != null && myRow != null) ScrollToRow(myRow);
-                }
-                return;
+                GameObject row = Instantiate(rowPrefab, contentParent);
+                // Oyuncunun kendi satırı koyu mavi çerçeveyle işaretlenir
+                row.GetComponent<LeaderboardEntry>().SetData(entry.rank, DisplayName(entry.name), entry.score, entry.isOwn);
+                if (entry.isOwn) myRow = (RectTransform)row.transform;
             }
+
+            if (scrollToOwn && myRow != null) _ = ScrollNextFrame(myRow);
+            return;
         }
 
         // Fallback (cloud unreachable, or no scores submitted yet anywhere): show the
@@ -88,5 +121,11 @@ public class LeaderboardManager : MonoBehaviour
         GameObject fallbackRow = Instantiate(rowPrefab, contentParent);
         LeaderboardEntry fallbackEntry = fallbackRow.GetComponent<LeaderboardEntry>();
         fallbackEntry.SetData(1, NicknameManager.GetNickname(), highScore, true);
+    }
+
+    private async Task ScrollNextFrame(RectTransform myRow)
+    {
+        await Task.Yield(); // satırların yerleşmesi için bir kare bekle
+        if (this != null && myRow != null) ScrollToRow(myRow);
     }
 }

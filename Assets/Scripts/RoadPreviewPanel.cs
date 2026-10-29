@@ -61,9 +61,10 @@ public class RoadPreviewPanel : MonoBehaviour
         foreach (var col in car.GetComponentsInChildren<Collider2D>(true)) col.enabled = false;
         foreach (var rb in car.GetComponentsInChildren<Rigidbody2D>(true)) rb.simulated = false;
         foreach (var audio in car.GetComponentsInChildren<AudioSource>(true)) audio.enabled = false;
-        // Yalnızca yüksek hızda çıkan rüzgar çizgileri kapalı; geri kalan her şey prefabdaki gibi
+        // Oyunda yalnızca boost / yüksek hızda görünen efektler (öndeki boost alevi, rüzgar çizgileri) kapalı;
+        // egzoz ve gölge prefabdaki gibi
         foreach (Transform t in car.GetComponentsInChildren<Transform>(true))
-            if (t.name.Contains("SpeedLines")) t.gameObject.SetActive(false);
+            if (t.name.Contains("FrontFire") || t.name.Contains("SpeedLines")) t.gameObject.SetActive(false);
 
         var body = car.GetComponent<SpriteRenderer>();
         if (body == null) body = car.GetComponentInChildren<SpriteRenderer>(true);

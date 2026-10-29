@@ -25,6 +25,28 @@ public class CloudLeaderboardManager : MonoBehaviour
     // Bu cihazdaki oyuncunun kimliği (tabloda kendi satırını işaretlemek için). Giriş yapılmadıysa null.
     public string PlayerId => IsReady ? AuthenticationService.Instance.PlayerId : null;
 
+    // Tabloda yalnızca ilk 100 oyuncu gösterilir (buton altındaki "TOP 100" yazısıyla aynı)
+    public const int TopCount = 100;
+
+    // Panel açılınca boş ekran beklemesin diye son çekilen tablo bellekte ve cihazda saklanır;
+    // panel bunu hemen gösterir, arkadan gelen güncel liste farklıysa yerine koyar.
+    [Serializable]
+    public class CachedEntry
+    {
+        public int rank;
+        public string name;
+        public int score;
+        public bool isOwn;
+    }
+
+    [Serializable]
+    private class CachedBoard { public List<CachedEntry> entries = new List<CachedEntry>(); }
+
+    private const string CacheKey = "LeaderboardCache";
+    public List<CachedEntry> CachedTopScores { get; private set; } = new List<CachedEntry>();
+    public event Action TopScoresUpdated;
+    private Task _refreshTask;
+
     private Task _initTask;
 
 #if UNITY_EDITOR
@@ -71,6 +93,7 @@ public class CloudLeaderboardManager : MonoBehaviour
         // has run), the Leaderboards package can end up registered too late to be included
         // in that pass, leaving LeaderboardsService.Instance permanently unset for the rest
         // of the session even though Authentication initializes and signs in fine.
+        LoadCache();
         StartCoroutine(DelayedInit());
     }
 
@@ -78,6 +101,50 @@ public class CloudLeaderboardManager : MonoBehaviour
     {
         yield return null;
         _initTask = InitializeAsync();
+        // Oyuncu tabloyu açmadan önce liste hazır olsun
+        _ = RefreshTopScoresAsync();
+    }
+
+    private void LoadCache()
+    {
+        try
+        {
+            var board = JsonUtility.FromJson<CachedBoard>(PlayerPrefs.GetString(CacheKey, ""));
+            if (board != null && board.entries != null) CachedTopScores = board.entries;
+        }
+        catch (Exception) { /* bozuk kayıt: boş başla */ }
+    }
+
+    // Aynı anda gelen istekler tek bir ağ çağrısını paylaşır
+    public Task RefreshTopScoresAsync()
+    {
+        if (_refreshTask == null || _refreshTask.IsCompleted) _refreshTask = RefreshInternal();
+        return _refreshTask;
+    }
+
+    private async Task RefreshInternal()
+    {
+        if (_initTask == null) return; // DelayedInit henüz çalışmadı; o zaten yenileyecek
+        var entries = await GetTopScoresAsync(TopCount);
+        if (entries == null || entries.Count == 0) return; // ağ yoksa eski liste kalsın
+
+        string myId = PlayerId;
+        var fresh = new List<CachedEntry>(entries.Count);
+        foreach (var e in entries)
+        {
+            fresh.Add(new CachedEntry
+            {
+                rank = e.Rank + 1,
+                name = e.PlayerName,
+                score = Mathf.RoundToInt((float)e.Score),
+                isOwn = !string.IsNullOrEmpty(myId) && e.PlayerId == myId
+            });
+        }
+
+        CachedTopScores = fresh;
+        PlayerPrefs.SetString(CacheKey, JsonUtility.ToJson(new CachedBoard { entries = fresh }));
+        PlayerPrefs.Save();
+        TopScoresUpdated?.Invoke();
     }
 
     private async Task InitializeAsync()
@@ -134,6 +201,7 @@ public class CloudLeaderboardManager : MonoBehaviour
         try
         {
             await LeaderboardsService.Instance.AddPlayerScoreAsync(leaderboardId, score);
+            _ = RefreshTopScoresAsync(); // yeni rekor tabloya hemen yansısın
         }
         catch (Exception e)
         {
