@@ -1,16 +1,15 @@
-# DodgeIt!! – Privacy Policy (taslak)
+# DodgeIt!! – Privacy Policy
 
-> Bu metin bir taslaktır ve hukuki danışmanlık değildir. Köşeli parantezli yerleri doldur, sonra herkese açık bir
-> adreste yayınla (ör. GitHub Pages, Google Sites) ve o bağlantıyı Play Console > Uygulama içeriği > Gizlilik
-> politikası alanına yapıştır. Reklam ya da satın alma eklendiğinde ilgili bölümleri güncelle.
+> Bu metin hukuki danışmanlık değildir. Yayınlanmış gizlilik politikası sayfasını bu metinle değiştir; bağlantı
+> değişirse Play Console > Uygulama içeriği > Gizlilik politikası alanını da güncelle.
 
 ---
 
 **Privacy Policy for DodgeIt!!**
 
-Last updated: [DATE]
+Last updated: November 2, 2026
 
-DodgeIt!! ("the game") is published by Dealit Games ("we", "us"). This policy explains what information the game
+DodgeIt!! ("the game") is published by Deality Games ("we", "us"). This policy explains what information the game
 handles and why.
 
 ## 1. Information the game collects
@@ -24,13 +23,16 @@ score.
 
 **Anonymous player ID.** The game signs you in anonymously through Unity Gaming Services. This creates a random
 player ID that identifies your installation of the game on the leaderboard. It is not linked to your name, email
-address, phone number or any account.
+address or phone number.
 
-**Technical data.** Like any online service, Unity's servers receive standard connection data such as your IP
-address when the game contacts them. We do not use this data to identify you.
+**Advertising data.** The game shows ads through Google AdMob. AdMob may collect your device's advertising ID,
+IP address (from which an approximate location can be inferred), information about how you interact with ads, and
+diagnostic data. See section 5.
 
-The game does not ask for and does not collect your name, email address, phone number, contacts, photos, precise
-location, or payment information.
+**Technical data.** Like any online service, the servers of our service providers receive standard connection data
+such as your IP address when the game contacts them.
+
+The game does not ask for your name, email address, phone number, contacts, photos or precise location.
 
 ## 2. Information stored only on your device
 
@@ -39,34 +41,45 @@ to us. If you uninstall the game or clear its data, this progress is lost.
 
 ## 3. How the information is used
 
-The nickname, score and anonymous player ID are used only to run the global leaderboard. We do not use them for
-advertising, and we do not sell them.
+The nickname, score and anonymous player ID are used to run the global leaderboard. Advertising data is used by
+Google to show, measure and improve ads. We do not sell your information.
 
 ## 4. Service providers
 
-The leaderboard and anonymous sign-in are provided by Unity Gaming Services (Unity Technologies), which processes
-the data above on our behalf. Unity's privacy policy: https://unity.com/legal/privacy-policy
+- **Unity Gaming Services** (Unity Technologies) provides the leaderboard and anonymous sign-in:
+  https://unity.com/legal/privacy-policy
+- **Google AdMob** (Google LLC) provides ads: https://policies.google.com/privacy
+  How Google uses data from apps: https://policies.google.com/technologies/partner-sites
+- **Google Play** processes in-app purchases.
 
-## 5. Advertising and purchases
+## 5. Advertising
 
-The current version of the game does not show advertisements and does not offer in-app purchases. If this changes,
-this policy will be updated before the change is released.
+The game shows rewarded ads, which you choose to watch, and interstitial ads between runs. Where required by law,
+such as in the European Economic Area and the United Kingdom, the game asks for your consent before personalized
+ads are shown. You can also reset or delete your advertising ID, or opt out of personalized ads, in your device's
+settings.
 
-## 6. Children
+## 6. In-app purchases
+
+The game offers optional purchases: coin packs and a Remove Ads option. Payments are handled entirely by Google Play.
+We do not receive or store your payment card details. Remove Ads turns off interstitial ads; rewarded ads you choose
+to watch remain available.
+
+## 7. Children
 
 The game is not directed at children under 13. We do not knowingly collect personal information from children. If
 you believe a child has provided personal information through a nickname, contact us and we will remove it.
 
-## 7. Data retention and deletion
+## 8. Data retention and deletion
 
 Leaderboard entries are kept while the leaderboard is active. You can ask us to delete your nickname and scores at
 any time by emailing us at the address below with your nickname. We will remove your entry within 30 days.
 
-## 8. Changes to this policy
+## 9. Changes to this policy
 
 We may update this policy. The "Last updated" date at the top shows when it last changed.
 
-## 9. Contact
+## 10. Contact
 
-Dealit Games
-Email: [CONTACT EMAIL]
+Deality Games
+Email: aksudoruk@hotmail.com

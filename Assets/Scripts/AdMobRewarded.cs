@@ -9,7 +9,7 @@ public static class AdMobRewarded
 {
     // AdMob > Uygulamalar > DodgeIt!! > Reklam birimleri'ndeki ödüllü reklam biriminin kimliği.
     // Boş kaldıkça Google'ın test reklam birimi kullanılır (gerçek gelir gelmez).
-    private const string ReleaseAdUnitId = "";
+    private const string ReleaseAdUnitId = "ca-app-pub-5764970843009095/9038168527";
     private const string TestAdUnitId = "ca-app-pub-3940256099942544/5224354917";
 
     private static string AdUnitId =>

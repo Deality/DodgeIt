@@ -8,7 +8,7 @@ using GoogleMobileAds.Api;
 public static class AdMobInterstitial
 {
     // AdMob'daki Geçiş (Interstitial) reklam biriminin kimliği. Boş kaldıkça Google'ın test birimi kullanılır.
-    private const string ReleaseAdUnitId = "";
+    private const string ReleaseAdUnitId = "ca-app-pub-5764970843009095/1412206123";
     private const string TestAdUnitId = "ca-app-pub-3940256099942544/1033173712";
 
     private const int RunsBetweenAds = 3;
