@@ -108,7 +108,7 @@ public class DriftModeController : MonoBehaviour
         var brt = box.rectTransform;
         brt.anchorMin = brt.anchorMax = new Vector2(0.5f, 1f);
         brt.sizeDelta = new Vector2(440f, 110f);
-        brt.anchoredPosition = new Vector2(0f, -100f);
+        brt.anchoredPosition = new Vector2(0f, -100f - SafeAreaTopShift.ShiftFor(canvas, 45f)); // üst kenarı kamera deliğine değmesin
         var boxOutline = box.gameObject.AddComponent<Outline>();
         boxOutline.effectColor = Gold; boxOutline.effectDistance = new Vector2(5f, -5f);
         box.transform.SetSiblingIndex(gm.scoreText.transform.GetSiblingIndex());
@@ -133,6 +133,7 @@ public class DriftModeController : MonoBehaviour
         var dbm = DriftBoostManager.instance;
         float ratio = dbm != null && dbm.SpawnedCount > 0 ? Mathf.Clamp01((float)dbm.CollectedCount / dbm.SpawnedCount) : 0f;
         int tier = TierOf(ratio);
+        if (tier == 3) MissionsManager.AddGameplayProgress(MissionType.FinishDriftDiamond, 1);
         int bonus = Mathf.RoundToInt(coins * tierBonusPercents[Mathf.Min(tier, tierBonusPercents.Length - 1)] / 100f);
 
         // Bonus, panel animasyonu beklenmeden eklenir; oyuncu hemen çıksa da kaybolmaz
@@ -196,7 +197,7 @@ public class DriftModeController : MonoBehaviour
             RewardedAd.Show(this, () =>
             {
                 if (GameManager.instance != null) GameManager.instance.AddGems(earned);
-                coinsText.text = "+" + (earned * 2).Dotted();
+                SetCoinsText(card, coinsText, "+" + (earned * 2).Dotted());
                 StartCoroutine(Punch(coinsText.rectTransform, 1.3f));
                 if (AudioManager.instance != null) AudioManager.instance.PlayCoinRushTotal();
                 label.text = "COINS DOUBLED!";
@@ -255,7 +256,7 @@ public class DriftModeController : MonoBehaviour
 
         // Kazanılan kademe + bonus
         result.color = TierColors[tier];
-        result.text = bonus > 0 ? $"{TierNames[tier]}!  +{bonus.Dotted()} BONUS" : TierNames[tier] + "!";
+        result.text = bonus > 0 ? $"{TierNames[tier]}!\n<size=62%>+{bonus.Dotted()} BONUS</size>" : TierNames[tier] + "!";
         result.gameObject.SetActive(true);
         StartCoroutine(Punch(result.rectTransform, 1.3f));
         if (resultBadge != null)
@@ -273,10 +274,23 @@ public class DriftModeController : MonoBehaviour
             while (t < 1f)
             {
                 t += Time.unscaledDeltaTime / 0.6f;
-                coinsText.text = "+" + Mathf.RoundToInt(Mathf.Lerp(coins, coins + bonus, Mathf.Clamp01(t))).Dotted();
+                SetCoinsText(card, coinsText, "+" + Mathf.RoundToInt(Mathf.Lerp(coins, coins + bonus, Mathf.Clamp01(t))).Dotted());
                 yield return null;
             }
         }
+    }
+
+    // Coin simgesi ve sayı, sayı uzadıkça birlikte kartın ortasında kalır
+    static void SetCoinsText(RectTransform card, TextMeshProUGUI text, string value)
+    {
+        const float iconSize = 110f, gap = 16f;
+        text.text = value;
+        float width = text.GetPreferredValues(value).x;
+        var coin = card.Find("Coin") as RectTransform;
+        float total = coin != null ? width + gap + iconSize : width;
+        text.rectTransform.sizeDelta = new Vector2(width + 10f, 120f);
+        text.rectTransform.anchoredPosition = new Vector2(total * 0.5f - width * 0.5f, text.rectTransform.anchoredPosition.y);
+        if (coin != null) coin.anchoredPosition = new Vector2(-total * 0.5f + iconSize * 0.5f, coin.anchoredPosition.y);
     }
 
     // Rozet varsa: aktif kademe tam renkli, diğerleri sönük. Rozet yoksa yazı kademe rengini alır.
@@ -322,7 +336,7 @@ public class DriftModeController : MonoBehaviour
         var outline = card.gameObject.AddComponent<Outline>();
         outline.effectColor = Color.black; outline.effectDistance = new Vector2(6f, -6f);
 
-        NewText("Title", card.rectTransform, font, "DRIFT MODE", 76f, Color.white, new Vector2(0f, 410f), new Vector2(700f, 100f));
+        NewText("Title", card.rectTransform, font, "DRIFT MODE", 76f, Color.white, new Vector2(0f, 420f), new Vector2(700f, 100f));
 
         // Kazanılan coin
         Sprite coinSprite = GetCoinSprite();
@@ -331,9 +345,12 @@ public class DriftModeController : MonoBehaviour
             var coin = NewImage("Coin", card.rectTransform, Color.white);
             coin.sprite = coinSprite; coin.preserveAspect = true;
             coin.rectTransform.sizeDelta = new Vector2(110f, 110f);
-            coin.rectTransform.anchoredPosition = new Vector2(-170f, 280f);
+            coin.rectTransform.anchoredPosition = new Vector2(-170f, 300f);
         }
-        NewText("Coins", card.rectTransform, font, "+" + coins.Dotted(), 96f, Gold, new Vector2(60f, 280f), new Vector2(420f, 120f));
+        var coinsLabel = NewText("Coins", card.rectTransform, font, "", 96f, Gold, new Vector2(0f, 300f), new Vector2(420f, 120f));
+        coinsLabel.enableAutoSizing = false;
+        coinsLabel.textWrappingMode = TextWrappingModes.NoWrap;
+        SetCoinsText(card.rectTransform, coinsLabel, "+" + coins.Dotted());
 
         BuildTierBar(card.rectTransform, font);
 
@@ -385,7 +402,7 @@ public class DriftModeController : MonoBehaviour
         const float width = 640f, height = 64f;
         var bar = NewImage("TierBar", card, Navy);
         bar.rectTransform.sizeDelta = new Vector2(width, height);
-        bar.rectTransform.anchoredPosition = new Vector2(0f, 140f);
+        bar.rectTransform.anchoredPosition = new Vector2(0f, 165f);
         var o = bar.gameObject.AddComponent<Outline>();
         o.effectColor = Color.black; o.effectDistance = new Vector2(4f, -4f);
 
@@ -427,16 +444,16 @@ public class DriftModeController : MonoBehaviour
             }
         }
 
-        NewText("Percent", bar.rectTransform, font, "0%", 40f, Color.white, new Vector2(0f, 62f), new Vector2(300f, 50f));
+        NewText("Percent", bar.rectTransform, font, "0%", 40f, Color.white, Vector2.zero, new Vector2(300f, 50f));
 
-        var result = NewText("TierResult", card, font, "", 60f, TierColors[0], new Vector2(50f, -50f), new Vector2(600f, 90f));
+        var result = NewText("TierResult", card, font, "", 60f, TierColors[0], new Vector2(70f, -35f), new Vector2(440f, 130f));
         result.gameObject.SetActive(false);
 
         // Kazanılan kademenin büyük rozeti, sonuç yazısının solunda
         var resultBadge = NewImage("TierResultBadge", card, Color.white);
         resultBadge.preserveAspect = true;
-        resultBadge.rectTransform.sizeDelta = new Vector2(110f, 110f);
-        resultBadge.rectTransform.anchoredPosition = new Vector2(-300f, -50f);
+        resultBadge.rectTransform.sizeDelta = new Vector2(130f, 130f);
+        resultBadge.rectTransform.anchoredPosition = new Vector2(-225f, -35f);
         resultBadge.gameObject.SetActive(false);
     }
 

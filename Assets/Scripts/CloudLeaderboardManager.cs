@@ -163,9 +163,15 @@ public class CloudLeaderboardManager : MonoBehaviour
 
             IsReady = true;
 
+            // Ad yalnızca değiştiyse gönderilir: her gönderimde sonundaki #numara yenilenebiliyor,
+            // oysa oyuncuyu tabloda ayırt eden şey bu numaranın sabit kalması
             if (NicknameManager.HasNickname())
             {
-                await PushPlayerNameInternal(NicknameManager.GetNickname());
+                string nickname = NicknameManager.GetNickname();
+                string cloudName = await AuthenticationService.Instance.GetPlayerNameAsync();
+                int hash = string.IsNullOrEmpty(cloudName) ? -1 : cloudName.LastIndexOf('#');
+                string cloudNick = hash > 0 ? cloudName.Substring(0, hash) : cloudName;
+                if (cloudNick != nickname) await PushPlayerNameInternal(nickname);
             }
         }
         catch (Exception e)

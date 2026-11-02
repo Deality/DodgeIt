@@ -156,8 +156,8 @@ RectTransform:
   - {fileID: 1267213594}
   - {fileID: 895004147}
   - {fileID: 614765768}
-  - {fileID: 1930863432}
   - {fileID: 1935250540}
+  - {fileID: 1930863432}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1434,12 +1434,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LoadingScreenManager
   targetSceneName: MainMenu
   useSimulatedLoading: 1
-  simulatedSpeed: 0.5
+  loadDuration: 4
+  paceRange: {x: 0.25, y: 1.75}
+  paceChangeRate: 1.2
   loadingFillImage: {fileID: 895004149}
   loadingBorderImage: {fileID: 1267213595}
   loadingBarCanvasGroup: {fileID: 0}
   progressText: {fileID: 614765766}
   statusText: {fileID: 1935250542}
+  tips:
+  - Pass close to traffic for near miss bonuses
+  - Shields let you smash through traffic
+  - Boost destroys the cars in your way
+  - Speed reducers slow the traffic down
+  - Upgrade your power-ups in the Powerups menu
+  - 'Check your missions: some rewards are secret'
+  - Daily quests change every day
+  - Collect 90% of the coins in Drift Mode for Diamond rank
+  - Crashed? Watch an ad for a second chance
+  - Spend your coins on new cars and roads
+  - Don't forget your secret missions!
+  - Secret missions unlock special cars and roads
+  - Some cars can't be bought, only earned through secret missions
   fadeOverlay: {fileID: 1930863434}
   fadeToBlackDuration: 0.5
   carSprites:
@@ -1588,8 +1604,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -580}
-  m_SizeDelta: {x: 900, y: 60}
+  m_AnchoredPosition: {x: 0, y: -240}
+  m_SizeDelta: {x: 900, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1935250541
 CanvasRenderer:
@@ -1621,8 +1637,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Checking internet connection...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
+  m_sharedMaterial: {fileID: -1736952171749976175, guid: 5706648168ca9344f95625db1d6aa1bf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1654,7 +1670,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 4096
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1

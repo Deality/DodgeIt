@@ -46,18 +46,23 @@ public class LeaderboardManager : MonoBehaviour
     }
 
     // Unity Gaming Services her oyuncu adının sonuna "#12345" gibi bir numara ekler. Aynı adı seçen
-    // oyuncular ayırt edilebilsin diye bu numara adın yanında küçük ve soluk gösterilir.
+    // oyuncular ayırt edilebilsin diye bu numara (Tag) adın altında ayrı bir yazıyla gösterilir.
     private static string DisplayName(string cloudName)
     {
         if (string.IsNullOrEmpty(cloudName)) return "Player";
         int hash = cloudName.LastIndexOf('#');
         string name = hash > 0 ? cloudName.Substring(0, hash) : cloudName;
-        string tag = hash > 0 ? cloudName.Substring(hash) : "";
         // Filtre eklenmeden önce alınmış ya da başka yoldan girmiş uygunsuz adlar tabloda gösterilmez
         if (!NameFilter.IsAllowed(name)) name = "Player";
         // noparse: oyuncunun yazdığı "<" gibi karakterler zengin metin etiketi sanılmasın
-        string shown = "<noparse>" + name + "</noparse>";
-        return tag.Length > 0 ? shown + "<size=60%><alpha=#73> " + tag + "</size>" : shown;
+        return "<noparse>" + name + "</noparse>";
+    }
+
+    private static string Tag(string cloudName)
+    {
+        if (string.IsNullOrEmpty(cloudName)) return "";
+        int hash = cloudName.LastIndexOf('#');
+        return hash > 0 ? cloudName.Substring(hash) : "";
     }
 
     private static string Signature(List<CloudLeaderboardManager.CachedEntry> entries)
@@ -105,7 +110,7 @@ public class LeaderboardManager : MonoBehaviour
             {
                 GameObject row = Instantiate(rowPrefab, contentParent);
                 // Oyuncunun kendi satırı koyu mavi çerçeveyle işaretlenir
-                row.GetComponent<LeaderboardEntry>().SetData(entry.rank, DisplayName(entry.name), entry.score, entry.isOwn);
+                row.GetComponent<LeaderboardEntry>().SetData(entry.rank, DisplayName(entry.name), entry.score, entry.isOwn, Tag(entry.name));
                 if (entry.isOwn) myRow = (RectTransform)row.transform;
             }
 

@@ -784,7 +784,8 @@ public class GameManager : MonoBehaviour
         }
         Transform card = doubleCoinsPanel.transform.Find("Card");
         SetPanelText(card, "TitleText", "DOUBLE COINS !!");
-        SetPanelText(card, "SubtitleText", $"Watch an ad to double the coins you collected this round: +{earned.Dotted()}");
+        SetPanelText(card, "SubtitleText", "Watch an ad to double the coins you collected this round:");
+        SetupDoubleCoinsAmount(card, earned);
         SetPanelText(card, "WatchAdButton/Text", "Watch an ad (2x)");
         var fill = card != null ? card.Find("CountdownBarBG/CountdownBarFill") as RectTransform : null;
         var watchButton = card != null ? card.Find("WatchAdButton")?.GetComponent<Button>() : null;
@@ -835,6 +836,38 @@ public class GameManager : MonoBehaviour
         done(watched);
     }
 
+    // Bu turda toplanan coin: açıklamanın altında ortalı "+N" ve coin simgesi
+    void SetupDoubleCoinsAmount(Transform card, int earned)
+    {
+        var subtitle = card != null ? card.Find("SubtitleText") as RectTransform : null;
+        if (subtitle == null) return;
+        subtitle.anchoredPosition = new Vector2(subtitle.anchoredPosition.x, 135f);
+        subtitle.sizeDelta = new Vector2(subtitle.sizeDelta.x, 90f);
+
+        const float rowY = 45f, iconSize = 72f, gap = 14f;
+        var amount = Instantiate(subtitle.gameObject, card).GetComponent<TMPro.TextMeshProUGUI>();
+        amount.name = "CoinAmount";
+        amount.text = "+" + earned.Dotted();
+        amount.fontSize = 60f;
+        amount.color = new Color(0.98f, 0.78f, 0.15f);
+        amount.textWrappingMode = TMPro.TextWrappingModes.NoWrap;
+        float width = amount.GetPreferredValues(amount.text).x;
+        float total = width + gap + iconSize;
+        amount.rectTransform.sizeDelta = new Vector2(width + 10f, 80f);
+        amount.rectTransform.anchoredPosition = new Vector2(-total * 0.5f + width * 0.5f, rowY);
+
+        var prefab = ObstacleManager.instance != null ? ObstacleManager.instance.coinPrefab : null;
+        var coin = prefab != null ? prefab.GetComponentInChildren<SpriteRenderer>(true) : null;
+        if (coin == null) return;
+        var iconGo = new GameObject("CoinIcon", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        iconGo.layer = card.gameObject.layer;
+        var icon = iconGo.GetComponent<Image>();
+        icon.rectTransform.SetParent(card, false);
+        icon.sprite = coin.sprite; icon.preserveAspect = true; icon.raycastTarget = false;
+        icon.rectTransform.sizeDelta = new Vector2(iconSize, iconSize);
+        icon.rectTransform.anchoredPosition = new Vector2(total * 0.5f - iconSize * 0.5f, rowY);
+    }
+
     // 2x penceresi alttan hızla gelir; "keep going" penceresi hâlâ ekrandaysa ona çarpar, onu dönerek yukarı
     // fırlatır, kendisi yerine oturup hafifçe sallanır. Önceki pencere yoksa yalnızca alttan gelip sallanır.
     IEnumerator DoubleCoinsIntroRoutine(RectTransform card)
@@ -875,9 +908,6 @@ public class GameManager : MonoBehaviour
 
         if (collide)
         {
-            if (AudioManager.instance != null && AudioManager.instance.boostDestroySound != null)
-                AudioManager.instance.PlayUI(AudioManager.instance.boostDestroySound);
-
             // 2) Eski pencere dönerek yukarı fırlar, yeni pencere çarpmanın etkisiyle yerine oturur
             Vector2 oldStart = reviveCard.anchoredPosition;
             Vector2 oldEnd = oldStart + new Vector2(140f, panelH * 0.5f + cardH * 1.2f);

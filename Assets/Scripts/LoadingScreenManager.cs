@@ -13,8 +13,12 @@ public class LoadingScreenManager : MonoBehaviour
     [Tooltip("True ise yüklemeyi sahte olarak simüle eder (Test etmek için çok kullanışlıdır).")]
     public bool useSimulatedLoading = true;
 
-    [Tooltip("Simüle yükleme hızı çarpanı (Yüksek değer daha hızlı yükler).")]
-    public float simulatedSpeed = 0.5f;
+    [Tooltip("Yükleme barının dolma süresi (saniye).")]
+    public float loadDuration = 4f;
+    [Tooltip("Barın anlık hızının ortalamaya oranı: en yavaş (x) ve en hızlı (y).")]
+    public Vector2 paceRange = new Vector2(0.25f, 1.75f);
+    [Tooltip("Hızın ne sık değiştiği (yüksek değer daha sık).")]
+    public float paceChangeRate = 1.2f;
 
     [Header("Yükleme Barı UI")]
     [Tooltip("Görseldeki yeşil yükleme barı (Kod bu görseli otomatik olarak 'Filled' tipine dönüştürecektir).")]
@@ -29,8 +33,26 @@ public class LoadingScreenManager : MonoBehaviour
     [Tooltip("İlerleme yüzdesini yazdırabileceğiniz isteğe bağlı metin alanı.")]
     public TextMeshProUGUI progressText;
 
-    [Tooltip("Yükleme adımlarını (İnternet kontrolü vb.) oyuncuya Türkçe bildiren durum yazısı.")]
+    [Tooltip("Yükleme barının yanındaki yazı: her açılışta rastgele bir ipucu gösterir.")]
     public TextMeshProUGUI statusText;
+
+    public string[] tips =
+    {
+        "Pass close to traffic for near miss bonuses",
+        "Shields let you smash through traffic",
+        "Boost destroys the cars in your way",
+        "Speed reducers slow the traffic down",
+        "Upgrade your power-ups in the Powerups menu",
+        "Check your missions: some rewards are secret",
+        "Daily quests change every day",
+        "Collect 90% of the coins in Drift Mode for Diamond rank",
+        "Crashed? Watch an ad for a second chance",
+        "Spend your coins on new cars and roads",
+        // Gizli görevlerin varlığını hatırlatır, ne olduklarını söylemez
+        "Don't forget your secret missions!",
+        "Secret missions unlock special cars and roads",
+        "Some cars can't be bought, only earned through secret missions"
+    };
 
     [Header("Sahne Geçiş Efekti (Siyah Ekran)")]
     [Tooltip("Yükleme bittikten sonra ekranı kaplayacak olan siyah geçiş görseli (Fade Overlay).")]
@@ -185,92 +207,26 @@ public class LoadingScreenManager : MonoBehaviour
         }
     }
 
-    // MOBİL UYUMLU GERÇEKÇİ ÇOK AŞAMALI YÜKLEME AKIŞI
+    // Yükleme akışı internete bakmaz: bağlantı isteyen yerler (reklam, mağaza) uyarıyı kendisi gösterir
     IEnumerator LoadSceneRoutine()
     {
+        float noiseSeed = Random.Range(0f, 100f);
+        UpdateStatus(tips != null && tips.Length > 0 ? tips[Random.Range(0, tips.Length)] : "Loading...");
+
         float progress = 0f;
-
-        // --- 1. AŞAMA: Dosyalar Hazırlanıyor ---
-        UpdateStatus("Loading game files...");
-        float stage1Speed = simulatedSpeed * 2.5f;
-        while (progress < 0.35f)
-        {
-            progress += Time.unscaledDeltaTime * stage1Speed;
-            UpdateLoadingUI(Mathf.Clamp(progress, 0f, 0.35f));
-            yield return null;
-        }
-        progress = 0.35f;
-
-        yield return new WaitForSecondsRealtime(0.25f);
-
-        // --- 2. AŞAMA: Sunucu Senkronizasyonu ---
-        UpdateStatus("Syncing with server...");
-        float stage2Speed = simulatedSpeed * 0.45f;
-        while (progress < 0.75f)
-        {
-            progress += Time.unscaledDeltaTime * stage2Speed;
-            UpdateLoadingUI(Mathf.Clamp(progress, 0.35f, 0.75f));
-            yield return null;
-        }
-        progress = 0.75f;
-
-        // --- 3. AŞAMA: %75 KİLİDİ VE MOBİL İNTERNET/BAĞLANTI KONTROLÜ ---
-        UpdateStatus("Checking internet connection...");
-
-        float checkTimer = 0f;
-        float minimumCheckTime = 1.8f;
-        float offlineNoticeTime = 1.5f;
-        Color originalBorderColor = loadingBorderImage != null ? loadingBorderImage.color : Color.white;
-
-        // İnternet yoksa oyun yine açılır; oyuncuya kısa bir süre "No internet connection" gösterilir
-        bool offline = false;
-        while (checkTimer < minimumCheckTime || (offline && checkTimer < minimumCheckTime + offlineNoticeTime))
-        {
-            offline = Application.internetReachability == NetworkReachability.NotReachable;
-            checkTimer += Time.unscaledDeltaTime;
-
-            if (Application.internetReachability == NetworkReachability.NotReachable)
-            {
-                UpdateStatus("No internet connection");
-                if (loadingBorderImage != null)
-                {
-                    float pulse = (Mathf.Sin(Time.unscaledTime * 6f) + 1f) * 0.5f;
-                    loadingBorderImage.color = Color.Lerp(originalBorderColor, new Color(1f, 0.3f, 0.3f, 1f), pulse);
-                }
-            }
-            else
-            {
-                UpdateStatus("Connected, verifying profile...");
-                if (loadingBorderImage != null)
-                {
-                    loadingBorderImage.color = Color.Lerp(loadingBorderImage.color, originalBorderColor, Time.unscaledDeltaTime * 5f);
-                }
-            }
-
-            yield return null;
-        }
-
-        if (loadingBorderImage != null)
-        {
-            loadingBorderImage.color = originalBorderColor;
-        }
-
-        // --- 4. AŞAMA: Profil Yükleme ve Giriş Yapma ---
-        UpdateStatus("Signing in...");
-        float stage4Speed = simulatedSpeed * 1.8f;
         while (progress < 1f)
         {
-            progress += Time.unscaledDeltaTime * stage4Speed;
-            UpdateLoadingUI(Mathf.Clamp(progress, 0.75f, 1f));
+            // Hız zamanla rastgele değişir (bazen hızlanır, bazen yavaşlar) ama bar hiç durmaz
+            float pace = Mathf.Lerp(paceRange.x, paceRange.y, Mathf.PerlinNoise(noiseSeed, Time.unscaledTime * paceChangeRate));
+            progress += Time.unscaledDeltaTime * pace / Mathf.Max(loadDuration, 0.01f);
+            UpdateLoadingUI(Mathf.Clamp01(progress));
             yield return null;
         }
-        progress = 1f;
         UpdateLoadingUI(1f);
 
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(0.2f);
 
-        // --- 5. AŞAMA: Siyah Ekran Kararma Geçişi ---
-        UpdateStatus("Verifying sign-in...");
+        // Siyah ekran kararma geçişi
         if (fadeOverlay != null)
         {
             fadeOverlay.gameObject.SetActive(true);

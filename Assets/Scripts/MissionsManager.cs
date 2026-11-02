@@ -23,7 +23,14 @@ public enum MissionType
     CollectAllCoinRushCoins,       // Bir Coin Rush'ta çıkan altınların tamamını topla
     BoostWhileShielded,            // Kalkan açıkken boost kullan (gizli görev)
     DestroyPoliceCar,              // Ana menüde arkadan geçen polis arabasına dokunup patlat (gizli görev)
-    ReachWindSpeed                 // Rüzgar efektlerinin çıktığı hıza ulaş (gizli görev)
+    ReachWindSpeed,                // Rüzgar efektlerinin çıktığı hıza ulaş (gizli görev)
+    FinishDriftDiamond,            // Drift modunu Diamond rütbesinde bitir
+    // Powerups yükseltmeleri: ilerleme satın alma sayısından değil, kayıtlı seviyeden hesaplanır
+    UpgradeTotal,                  // Tüm güçlendirmelerde alınan toplam seviye
+    UpgradeShield,
+    UpgradeCoinRush,
+    UpgradeSpeedReducer,
+    UpgradeCoinValue
 }
 
 public enum RewardType
@@ -321,6 +328,44 @@ public class MissionsManager : MonoBehaviour
 
         LoadAndSyncProgress(allWeeklyQuests);
         LoadAndSyncProgress(allAchievements);
+        SyncUpgradeProgress();
+    }
+
+    // Yükseltme başarımları kayıtlı seviyeyi okur: görevler eklenmeden önce yükseltme almış oyuncular da sayılır
+    void SyncUpgradeProgress()
+    {
+        if (allAchievements == null) return;
+        foreach (var m in allAchievements)
+        {
+            if (m == null || m.isClaimed) continue;
+            int value = UpgradeProgressValue(m.missionType);
+            if (value < 0) continue;
+            m.CheckAbsoluteTarget(value);
+            PlayerPrefs.SetInt("Progress_" + m.missionID, m.currentValue);
+        }
+        PlayerPrefs.Save();
+    }
+
+    static int UpgradeProgressValue(MissionType type)
+    {
+        switch (type)
+        {
+            case MissionType.UpgradeTotal:
+                return PowerUpUpgrades.GetLevel(UpgradeType.Shield) + PowerUpUpgrades.GetLevel(UpgradeType.CoinRush)
+                    + PowerUpUpgrades.GetLevel(UpgradeType.SpeedReducer) + PowerUpUpgrades.GetLevel(UpgradeType.CoinValue);
+            case MissionType.UpgradeShield: return PowerUpUpgrades.GetLevel(UpgradeType.Shield);
+            case MissionType.UpgradeCoinRush: return PowerUpUpgrades.GetLevel(UpgradeType.CoinRush);
+            case MissionType.UpgradeSpeedReducer: return PowerUpUpgrades.GetLevel(UpgradeType.SpeedReducer);
+            case MissionType.UpgradeCoinValue: return PowerUpUpgrades.GetLevel(UpgradeType.CoinValue);
+            default: return -1;
+        }
+    }
+
+    // Powerups panelinden yükseltme alınınca çağrılır
+    public void OnUpgradesChanged()
+    {
+        SyncUpgradeProgress();
+        RefreshAndSortUI();
     }
 
     // Döngüde henüz çıkmamış görevlerden rastgele seçer; yeterli kalmadıysa döngü baştan başlar

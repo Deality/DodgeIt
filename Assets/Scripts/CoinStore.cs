@@ -12,18 +12,19 @@ public static class CoinStore
     // Kimlikler Play Console'dakilerle birebir aynı olmalı.
     public static readonly Dictionary<string, int> Packs = new Dictionary<string, int>
     {
-        { "coins_5000", 5000 },
-        { "coins_17500", 17500 },
-        { "coins_32500", 32500 },
-        { "coins_75000", 75000 },
+        { "coins_15000", 15000 },
+        { "coins_50000", 50000 },
+        { "coins_100000", 100000 },
+        { "coins_250000", 250000 },
     };
 
     // Kalıcı ürün: geçiş reklamlarını kapatır (ödüllü reklamlar isteğe bağlı olduğu için kalır)
     public const string RemoveAdsId = "remove_ads";
+    // Remove Ads kampanyası: satın alırken bir kez verilir (yeniden yüklemede geri yüklenirken verilmez)
+    public const int RemoveAdsBonusCoins = 60000;
 
     private const string GemsKey = "GemsCount";
     private const string AdsRemovedKey = "IAP_AdsRemoved";
-    private const string PurchaserKey = "IAP_HasPurchased"; // bir kez bile satın alan oyuncuya geçiş reklamı yok
     private const string GrantedOrdersKey = "IAP_GrantedOrders"; // aynı siparişin coini iki kez verilmesin
 
     public static event Action PricesChanged;
@@ -35,7 +36,8 @@ public static class CoinStore
 
     public static bool IsReady => connected;
     public static bool AdsRemoved => PlayerPrefs.GetInt(AdsRemovedKey, 0) == 1;
-    public static bool NoForcedAds => AdsRemoved || PlayerPrefs.GetInt(PurchaserKey, 0) == 1;
+    // Geçiş reklamlarını yalnızca Remove Ads kapatır; coin paketi almak kapatmaz
+    public static bool NoForcedAds => AdsRemoved;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static async void Bootstrap()
@@ -101,7 +103,7 @@ public static class CoinStore
             {
                 string id = item.Product.definition.id;
                 if (Packs.TryGetValue(id, out int amount)) coins += amount * item.Quantity;
-                if (id == RemoveAdsId) removeAds = true;
+                if (id == RemoveAdsId) { removeAds = true; coins += RemoveAdsBonusCoins; }
             }
 
             if (coins > 0)
@@ -109,7 +111,6 @@ public static class CoinStore
                 if (GameManager.instance != null) GameManager.instance.AddGems(coins);
                 else PlayerPrefs.SetInt(GemsKey, PlayerPrefs.GetInt(GemsKey, 0) + coins);
             }
-            PlayerPrefs.SetInt(PurchaserKey, 1);
             if (removeAds) SetAdsRemoved();
 
             if (!string.IsNullOrEmpty(transactionId)) PlayerPrefs.SetString(GrantedOrdersKey, granted + transactionId + ";");

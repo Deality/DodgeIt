@@ -6,6 +6,8 @@ public class LeaderboardEntry : MonoBehaviour
 {
     public TextMeshProUGUI rankText;
     public TextMeshProUGUI nameText;
+    [Tooltip("Adın altındaki #numara; ad ne kadar uzun olursa olsun boyutu sabittir.")]
+    public TextMeshProUGUI tagText;
     public TextMeshProUGUI scoreText;
 
     [Header("Oyuncunun Kendi Satırı")]
@@ -16,10 +18,11 @@ public class LeaderboardEntry : MonoBehaviour
 
     private Sprite defaultFrameSprite;
 
-    public void SetData(int rank, string playerName, int score, bool isOwn = false)
+    public void SetData(int rank, string playerName, int score, bool isOwn = false, string playerTag = "")
     {
         rankText.text = rank.ToString();
         nameText.text = playerName;
+        if (tagText != null) tagText.text = playerTag;
         scoreText.text = score.Dotted();
 
         if (frameImage == null) frameImage = GetComponent<Image>();

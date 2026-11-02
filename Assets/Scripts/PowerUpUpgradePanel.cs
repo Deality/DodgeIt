@@ -95,6 +95,7 @@ public class PowerUpUpgradePanel : MonoBehaviour
         {
             if (AudioManager.instance != null && AudioManager.instance.coinSound != null)
                 AudioManager.instance.PlayUI(AudioManager.instance.coinSound);
+            if (MissionsManager.Instance != null) MissionsManager.Instance.OnUpgradesChanged();
         }
         Refresh();
     }

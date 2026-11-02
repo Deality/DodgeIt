@@ -16,6 +16,10 @@ public class MissionRowView : MonoBehaviour
     public Image rewardIcon;
     [Tooltip("Silüetin üstündeki soru işareti. Görev gizliyken görünür, tamamlanınca kaybolur.")]
     public GameObject secretMark;
+    [Tooltip("Coin/boost ödüllü gizli görevde, görev açılınca görünen simgeli ödül grubu.")]
+    public GameObject revealedRewardRoot;
+    public TextMeshProUGUI revealedCoinText;
+    public TextMeshProUGUI revealedBoostText;
 
     [Header("İlerleme Çubuğu (TAKE butonunun altında)")]
     [Tooltip("Çubuğun tamamı. Gizli görev açığa çıkana kadar gizlenir.")]
@@ -160,11 +164,19 @@ public class MissionRowView : MonoBehaviour
         if (rewardText != null)
         {
             if (hidden) rewardText.text = secretReward;
+            else if (revealedRewardRoot != null) rewardText.text = ""; // simgeli ödül grubu gösterir
             // Araba ödülünde ikon (arabanın kendisi) kutuyu dolduruyorsa ayrıca yazı gösterme
             else if (mission.rewardType == RewardType.Car) rewardText.text = rewardIcon != null ? "" : "CAR";
             else if (mission.rewardType == RewardType.Road) rewardText.text = rewardIcon != null ? "" : "ROAD";
             else if (mission.bonusBoostReward > 0) rewardText.text = $"+{mission.rewardAmount.Dotted()} {mission.rewardType}\n+{mission.bonusBoostReward} Boost";
             else rewardText.text = $"+{mission.rewardAmount.Dotted()} {mission.rewardType}";
+        }
+
+        if (revealedRewardRoot != null)
+        {
+            revealedRewardRoot.SetActive(!hidden);
+            if (revealedCoinText != null) revealedCoinText.text = mission.rewardAmount.Dotted();
+            if (revealedBoostText != null) revealedBoostText.text = mission.bonusBoostReward.ToString();
         }
 
         int shownValue = Mathf.Clamp(mission.currentValue, 0, Mathf.Max(mission.targetValue, 0));
