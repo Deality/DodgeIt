@@ -171,7 +171,7 @@ PlayerSettings:
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
-  AndroidBundleVersionCode: 9
+  AndroidBundleVersionCode: 10
   AndroidMinSdkVersion: 25
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -884,7 +884,8 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Purchasing: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
