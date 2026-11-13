@@ -9,8 +9,14 @@ public static class AdMobRewarded
 {
     // AdMob > Uygulamalar > DodgeIt!! > Reklam birimleri'ndeki ödüllü reklam biriminin kimliği.
     // Boş kaldıkça Google'ın test reklam birimi kullanılır (gerçek gelir gelmez).
+#if UNITY_IOS
+    // iOS reklam birimi (AdMob > DodgeIt iOS uygulaması). Boşken test reklamı gösterilir.
+    private const string ReleaseAdUnitId = "ca-app-pub-5764970843009095/5625562779";
+    private const string TestAdUnitId = "ca-app-pub-3940256099942544/1712485313";
+#else
     private const string ReleaseAdUnitId = "ca-app-pub-5764970843009095/9038168527";
     private const string TestAdUnitId = "ca-app-pub-3940256099942544/5224354917";
+#endif
 
     private static string AdUnitId =>
         (Debug.isDebugBuild || string.IsNullOrEmpty(ReleaseAdUnitId)) ? TestAdUnitId : ReleaseAdUnitId;

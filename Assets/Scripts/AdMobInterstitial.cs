@@ -8,8 +8,14 @@ using GoogleMobileAds.Api;
 public static class AdMobInterstitial
 {
     // AdMob'daki Geçiş (Interstitial) reklam biriminin kimliği. Boş kaldıkça Google'ın test birimi kullanılır.
+#if UNITY_IOS
+    // iOS reklam birimi (AdMob > DodgeIt iOS uygulaması). Boşken test reklamı gösterilir.
+    private const string ReleaseAdUnitId = "ca-app-pub-5764970843009095/9707123060";
+    private const string TestAdUnitId = "ca-app-pub-3940256099942544/4411468910";
+#else
     private const string ReleaseAdUnitId = "ca-app-pub-5764970843009095/1412206123";
     private const string TestAdUnitId = "ca-app-pub-3940256099942544/1033173712";
+#endif
 
     private const int RunsBetweenAds = 3;
     private const int FreeRunsForNewPlayers = 3;
