@@ -43,7 +43,7 @@ public static class CoinStore
     static async void Bootstrap()
     {
         store = UnityIAPServices.StoreController();
-        store.OnProductsFetched += _ => { connected = true; PricesChanged?.Invoke(); store.FetchPurchases(); };
+        store.OnProductsFetched += p => { Debug.Log("[IAP] Products fetched: " + p.Count); connected = true; PricesChanged?.Invoke(); store.FetchPurchases(); };
         store.OnProductsFetchFailed += f => Debug.LogWarning("IAP products fetch failed: " + f.FailureReason);
         store.OnPurchasePending += OnPurchasePending;
         store.OnPurchaseFailed += OnPurchaseFailed;
@@ -57,7 +57,9 @@ public static class CoinStore
 
         try
         {
+            Debug.Log("[IAP] Connecting");
             await store.Connect();
+            Debug.Log("[IAP] Connected");
         }
         catch (Exception e)
         {

@@ -36,12 +36,15 @@ public static class AdMobRewarded
 #pragma warning restore CS0618
 
         // GDPR izni: gerekmeyen ülkelerde form hiç açılmaz
+        Debug.Log("[Ads] Consent update starting");
         ConsentInformation.Update(new ConsentRequestParameters(), updateError =>
         {
-            if (updateError != null) Debug.LogWarning("Consent update failed: " + updateError.Message);
+            if (updateError != null) Debug.LogWarning("[Ads] Consent update failed: " + updateError.Message);
+            Debug.Log("[Ads] Consent status: " + ConsentInformation.ConsentStatus + ", canRequestAds: " + ConsentInformation.CanRequestAds());
             ConsentForm.LoadAndShowConsentFormIfRequired(formError =>
             {
-                if (formError != null) Debug.LogWarning("Consent form failed: " + formError.Message);
+                if (formError != null) Debug.LogWarning("[Ads] Consent form failed: " + formError.Message);
+                Debug.Log("[Ads] Consent form done, canRequestAds: " + ConsentInformation.CanRequestAds());
                 if (ConsentInformation.CanRequestAds()) InitializeAds();
             });
         });
@@ -54,8 +57,10 @@ public static class AdMobRewarded
     {
         if (initialized) return;
         initialized = true;
+        Debug.Log("[Ads] MobileAds.Initialize starting");
         MobileAds.Initialize(_ =>
         {
+            Debug.Log("[Ads] MobileAds initialized");
             Load();
             AdMobInterstitial.OnAdsInitialized();
         });
@@ -74,13 +79,14 @@ public static class AdMobRewarded
                 return;
             }
             loadedAd = ad;
+            Debug.Log("[Ads] Rewarded ad loaded");
         });
     }
 
     // onFinished(true) yalnızca oyuncu reklamı ödül alacak kadar izlediyse çağrılır.
     public static void Show(Action<bool> onFinished)
     {
-        if (!IsReady) { onFinished?.Invoke(false); Load(); return; }
+        if (!IsReady) { Debug.Log("[Ads] Rewarded not ready (initialized=" + initialized + ", loading=" + loading + ")"); onFinished?.Invoke(false); Load(); return; }
 
         var ad = loadedAd;
         loadedAd = null;
