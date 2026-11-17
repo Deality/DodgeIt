@@ -2,6 +2,7 @@
   "dependencies": {
     "com.coplaydev.coplay": "https://github.com/CoplayDev/coplay-unity-plugin.git#beta",
     "com.google.ads.mobile": "11.5.0",
+    "com.unity.ads.ios-support": "1.2.0",
     "com.unity.burst": "1.8.29",
     "com.unity.device-simulator.devices": "1.0.1",
     "com.unity.feature.2d": "2.0.2",

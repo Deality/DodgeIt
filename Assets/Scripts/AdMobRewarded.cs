@@ -1,5 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
+#if UNITY_IOS && !UNITY_EDITOR
+using Unity.Advertisement.IosSupport;
+#endif
 using GoogleMobileAds.Api;
 using GoogleMobileAds.Ump.Api;
 
@@ -51,6 +55,37 @@ public static class AdMobRewarded
 
         // Önceki oturumdan izin varsa formu beklemeden başla
         if (ConsentInformation.CanRequestAds()) InitializeAds();
+
+        // İzin servisi cevap vermezse (iOS'ta görüldü) reklamlar hiç başlamasın diye yedek yol
+        ConsentTimeoutFallback();
+    }
+
+    static async void ConsentTimeoutFallback()
+    {
+        await Task.Delay(6000);
+        if (initialized) return;
+        Debug.Log("[Ads] Consent timeout, using fallback (ATT + init)");
+        await RequestTrackingIfNeeded();
+        InitializeAds();
+    }
+
+    // iOS takip izni (ATT): normalde UMP'nin IDFA mesajı açar; açılmadıysa burada istenir
+    static async Task RequestTrackingIfNeeded()
+    {
+#if UNITY_IOS && !UNITY_EDITOR
+        if (ATTrackingStatusBinding.GetAuthorizationTrackingStatus() !=
+            ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED) return;
+        ATTrackingStatusBinding.RequestAuthorizationTracking();
+        for (int i = 0; i < 120; i++) // kullanıcı cevap verene kadar en fazla ~60 sn bekle
+        {
+            await Task.Delay(500);
+            if (ATTrackingStatusBinding.GetAuthorizationTrackingStatus() !=
+                ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED) break;
+        }
+        Debug.Log("[Ads] ATT status: " + ATTrackingStatusBinding.GetAuthorizationTrackingStatus());
+#else
+        await Task.CompletedTask;
+#endif
     }
 
     static void InitializeAds()
