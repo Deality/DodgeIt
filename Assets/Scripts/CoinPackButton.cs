@@ -11,12 +11,12 @@ public class CoinPackButton : MonoBehaviour
     public TMP_Text priceText;
 
     private Button button;
-    private string fallbackPrice; // mağaza bağlanana kadar sahnedeki yazı kalır
+    // Mağaza bağlanana kadar gösterilen yazı (sahnedeki sabit fiyat yanlış olabileceği için kullanılmıyor)
+    private const string FallbackPrice = "...";
 
     void Awake()
     {
         button = GetComponent<Button>();
-        if (priceText != null) fallbackPrice = priceText.text;
         button.onClick.AddListener(OnClick);
     }
 
@@ -31,7 +31,7 @@ public class CoinPackButton : MonoBehaviour
     void Refresh()
     {
         if (priceText == null) return;
-        priceText.text = CoinStore.GetPrice(productId) ?? fallbackPrice;
+        priceText.text = CoinStore.GetPrice(productId) ?? FallbackPrice;
     }
 
     void OnClick()
